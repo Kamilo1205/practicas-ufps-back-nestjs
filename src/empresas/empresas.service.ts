@@ -19,25 +19,22 @@ export class EmpresasService {
     private configService: ConfigService,
   ) {}
 
-  async create(createEmpresaDto: CreateEmpresaDto, fileRut: Express.Multer.File) {
+  async create(
+    createEmpresaDto: CreateEmpresaDto,
+    fileRut: Express.Multer.File,
+    fileCamara: Express.Multer.File,
+  ) {
     const { nombre, nit } = createEmpresaDto;
     const nombreFolder = `${nit}-${nombre}`;
     const folderEmpresaId = await this.googleDriveService.createFolder(nombreFolder, this.folderEmpresasId);
 
-    const fileMetadata = {
-      name: fileRut.originalname,
-      parents: [folderEmpresaId],
-      public: false,
-    };
-    const media = {
-      mimeType: fileRut.mimetype,
-      body: Readable.from(fileRut.buffer),
-    };
-    const rutId = await this.googleDriveService.uploadFile(fileMetadata, media);
+    const rutId = await this.uploadRutFile(nit, folderEmpresaId, fileRut);
+    const camaraComercioId = await this.uploadCamaraComercioFile(nit, folderEmpresaId, fileCamara);
 
     this.empresasRepository.create({
       ...createEmpresaDto,
       rutUrl: rutId,
+      camaraComercialUrl: camaraComercioId,
     });
   }
 
@@ -55,5 +52,31 @@ export class EmpresasService {
 
   remove(id: number) {
     return `This action removes a #${id} empresa`;
+  }
+
+  uploadRutFile(nit: string, folderEmpresaId: string, file: Express.Multer.File) {
+    const fileMetadata = {
+      name: `${nit}-rut`,
+      parents: [folderEmpresaId],
+      public: false,
+    };
+    const media = {
+      mimeType: file.mimetype,
+      body: Readable.from(file.buffer),
+    };
+    return this.googleDriveService.uploadFile(fileMetadata, media);
+  }
+
+  uploadCamaraComercioFile(nit: string, folderEmpresaId: string, file: Express.Multer.File) {
+    const fileMetadata = {
+      name: `${nit}-camara-de-comercio`,
+      parents: [folderEmpresaId],
+      public: false,
+    };
+    const media = {
+      mimeType: file.mimetype,
+      body: Readable.from(file.buffer),
+    };
+    return this.googleDriveService.uploadFile(fileMetadata, media);
   }
 }

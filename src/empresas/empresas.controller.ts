@@ -21,14 +21,19 @@ export class EmpresasController {
 
   @Public()
   @Post()
-  @UseInterceptors(FileInterceptor('rut'))
+  @UseInterceptors(FileInterceptor('rut'), FileInterceptor('camara'))
   async create(
     @Body() createEmpresaDto: CreateEmpresaDto,
     @UploadedFile() fileRut: Express.Multer.File,
+    @UploadedFile() fileCamara: Express.Multer.File,
   ) {
     if (!fileRut) throw new BadRequestException('Document file is required.');
 
-    const empresa = await this.empresasService.create(createEmpresaDto, fileRut);
+    const empresa = await this.empresasService.create(
+      createEmpresaDto,
+      fileRut,
+      fileCamara,
+    );
     return empresa;
   }
 
