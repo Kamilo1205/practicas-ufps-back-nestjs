@@ -7,6 +7,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
+    const isSSL = this.configService.get<boolean>('DB_SSL');
     return {
       type: this.configService.get<'mysql' | 'postgres'>('BD_TYPE'),
       host: this.configService.get<string>('BD_HOST'),
@@ -16,6 +17,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       database: this.configService.get<string>('BD_DATABASE'),
       synchronize: true,
       autoLoadEntities: true,
+      ssl: isSSL,
+      extra: isSSL ? { ssl: { rejectUnauthorized: false } } : undefined,
     };
   }
 }
