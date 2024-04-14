@@ -12,6 +12,6 @@ async function bootstrap() {
     credentials: true, // Permitir el intercambio de cookies
   });
   app.use(cookieParser());
-  await app.listen(3000);
+  await app.listen(configService.get<number>('PORT') || 3000);
 }
 bootstrap();
