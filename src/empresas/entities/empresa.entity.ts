@@ -34,13 +34,13 @@ export class Empresa {
   industria: string;
 
   @Column()
-  rutUrl: string;
+  rutUrl?: string;
 
   @Column()
-  camaraComercialUrl: string;
+  camaraComercialUrl?: string;
 
   @Column()
-  registroMercantilUrl: string;
+  registroMercantilUrl?: string;
 
   @CreateDateColumn()
   fechaCreacion: Date;

@@ -17,8 +17,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       database: this.configService.get<string>('BD_DATABASE'),
       synchronize: true,
       autoLoadEntities: true,
-      ssl: isSSL,
-      extra: isSSL ? { ssl: { rejectUnauthorized: false } } : undefined,
+      // ssl: isSSL,
+      // extra: isSSL ? { ssl: { rejectUnauthorized: false } } : undefined,
     };
   }
 }

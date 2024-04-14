@@ -1,11 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEmpresaDto } from './dto/create-empresa.dto';
-import { UpdateEmpresaDto } from './dto/update-empresa.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { Repository } from 'typeorm';
+import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
+import { Empresa } from './entities/empresa.entity';
+import { GoogleDriveService } from '../google-drive/google-drive.service';
+import { Readable } from 'stream';
 
 @Injectable()
 export class EmpresasService {
-  create(createEmpresaDto: CreateEmpresaDto) {
-    return 'This action adds a new empresa';
+  folderEmpresasId: string =
+    this.configService.get<string>('FOLDER_EMPRESAS_ID');
+
+  constructor(
+    @InjectRepository(Empresa)
+    private empresasRepository: Repository<Empresa>,
+    private googleDriveService: GoogleDriveService,
+    private configService: ConfigService,
+  ) {}
+
+  async create(createEmpresaDto: CreateEmpresaDto, fileRut: Express.Multer.File) {
+    const { nombre, nit } = createEmpresaDto;
+    const nombreFolder = `${nit}-${nombre}`;
+    const folderEmpresaId = await this.googleDriveService.createFolder(nombreFolder, this.folderEmpresasId);
+
+    const fileMetadata = {
+      name: fileRut.originalname,
+      parents: [folderEmpresaId],
+      public: false,
+    };
+    const media = {
+      mimeType: fileRut.mimetype,
+      body: Readable.from(fileRut.buffer),
+    };
+    const rutId = await this.googleDriveService.uploadFile(fileMetadata, media);
+
+    this.empresasRepository.create({
+      ...createEmpresaDto,
+      rutUrl: rutId,
+    });
   }
 
   findAll() {

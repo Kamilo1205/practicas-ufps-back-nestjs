@@ -1,32 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  BadRequestException,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { EmpresasService } from './empresas.service';
-import { CreateEmpresaDto } from './dto/create-empresa.dto';
-import { UpdateEmpresaDto } from './dto/update-empresa.dto';
+import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Public } from '../auth/decorators';
 
 @Controller('empresas')
 export class EmpresasController {
   constructor(private readonly empresasService: EmpresasService) {}
 
+  @Public()
   @Post()
-  create(@Body() createEmpresaDto: CreateEmpresaDto) {
-    return this.empresasService.create(createEmpresaDto);
+  @UseInterceptors(FileInterceptor('rut'))
+  async create(
+    @Body() createEmpresaDto: CreateEmpresaDto,
+    @UploadedFile() fileRut: Express.Multer.File,
+  ) {
+    if (!fileRut) throw new BadRequestException('Document file is required.');
+
+    const empresa = await this.empresasService.create(createEmpresaDto, fileRut);
+    return empresa;
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.empresasService.findAll();
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.empresasService.findOne(+id);
   }
 
+  @Public()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEmpresaDto: UpdateEmpresaDto) {
     return this.empresasService.update(+id, updateEmpresaDto);
   }
 
+  @Public()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.empresasService.remove(+id);
