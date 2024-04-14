@@ -12,7 +12,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       type: this.configService.get<'mysql' | 'postgres'>('BD_TYPE'),
       host: this.configService.get<string>('BD_HOST'),
       port: +this.configService.get<number>('BD_PORT'),
-      username: this.configService.get<string>('BD_NAME'),
+      username: this.configService.get<string>('BD_USERNAME'),
       password: this.configService.get<string>('BD_PASSWORD'),
       database: this.configService.get<string>('BD_DATABASE'),
       synchronize: true,
