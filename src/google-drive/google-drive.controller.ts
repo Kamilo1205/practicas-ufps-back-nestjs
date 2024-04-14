@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GoogleDriveService } from './google-drive.service';
-import { Roles } from 'src/auth/decorators';
+import { Public, Roles } from 'src/auth/decorators';
 import { Role } from 'src/usuarios/enums/role.enum';
 import { Readable } from 'stream';
 
@@ -16,7 +16,7 @@ import { Readable } from 'stream';
 export class GoogleDriveController {
   constructor(private readonly googleDriveService: GoogleDriveService) {}
 
-  @Roles(Role.Coordinador)
+  @Public()
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFileToDrive(@UploadedFile() file: Express.Multer.File) {
