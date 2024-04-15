@@ -3,10 +3,13 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Role } from '../enums/role.enum';
+import { Empresa } from 'src/empresas/entities/empresa.entity';
+import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 
 @Entity() // Define que esta clase es una entidad de la base de datos.
 export class Usuario {
@@ -43,4 +46,11 @@ export class Usuario {
 
   @DeleteDateColumn() // Columna para la fecha y hora de eliminación lógica del registro de usuario (si se elimina).
   fechaEliminacion: Date; // Fecha y hora de eliminación lógica del registro de usuario (si se aplica).
+
+  // Relaciones
+  @OneToOne(() => Empresa, (empresa) => empresa.usuario)
+  empresa: Empresa;
+
+  @OneToOne(() => Estudiante, (estudiante) => estudiante.usuario)
+  estudiante: Estudiante;
 }

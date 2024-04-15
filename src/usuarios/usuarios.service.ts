@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcryptjs';
 import { CreateUsuarioDto, UpdateUsuarioDto } from './dto';
 import { Usuario } from './entities/usuario.entity';
 
@@ -9,13 +9,13 @@ import { Usuario } from './entities/usuario.entity';
 export class UsuariosService {
   constructor(
     @InjectRepository(Usuario)
-    private usuariosRepository: Repository<Usuario>,
+    private readonly usuariosRepository: Repository<Usuario>,
   ) {}
 
   create(createUsuarioDto: CreateUsuarioDto) {
     const { password } = createUsuarioDto;
     const hashedPassword = password ? bcrypt.hashSync(password, 10) : null;
-    return this.usuariosRepository.create({
+    return this.usuariosRepository.save({
       ...createUsuarioDto,
       password: hashedPassword,
     });
@@ -35,11 +35,17 @@ export class UsuariosService {
   }
 
   findOne(id: string) {
-    return this.usuariosRepository.findOne({ where: { id } });
+    return this.usuariosRepository.findOne({
+      where: { id },
+      relations: ['empresa', 'estudiante'],
+    });
   }
 
   findOneByEmail(email: string) {
-    return this.usuariosRepository.findOne({ where: { email } });
+    return this.usuariosRepository.findOne({
+      where: { email },
+      relations: ['empresa', 'estudiante'],
+    });
   }
 
   update(id: string, updateUsuarioDto: UpdateUsuarioDto) {

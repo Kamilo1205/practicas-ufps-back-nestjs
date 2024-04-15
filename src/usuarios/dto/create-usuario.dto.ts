@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsDate,
   IsEmail,
   IsNotEmpty,
   IsOptional,
@@ -17,12 +18,15 @@ export class CreateUsuarioDto {
 
   rol: string;
 
+  @IsOptional()
   @IsBoolean()
   estaActivo: boolean;
 
   @IsOptional()
+  @IsDate()
   emailConfirmado: Date;
 
+  @IsOptional()
   @IsBoolean()
   estaRegistrado: boolean;
 }

@@ -7,13 +7,12 @@ import {
   Param,
   Delete,
   Query,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from './enums/role.enum';
+import { Roles } from 'src/auth/decorators';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -27,10 +26,7 @@ export class UsuariosController {
 
   @Roles(Role.Coordinador)
   @Get()
-  findAll(
-    @Query('page', ParseIntPipe) page: number = 1,
-    @Query('limit', ParseIntPipe) limit: number = 10,
-  ) {
+  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
     return this.usuariosService.findAll(page, limit);
   }
 
