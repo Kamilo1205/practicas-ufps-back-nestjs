@@ -34,17 +34,17 @@ export class UsuariosService {
     return { data, total };
   }
 
-  findOne(id: string) {
+  findOne(id: string, relations: string[] = ['empresa', 'estudiante']) {
     return this.usuariosRepository.findOne({
       where: { id },
-      relations: ['empresa', 'estudiante'],
+      relations,
     });
   }
 
-  findOneByEmail(email: string) {
+  findOneByEmail(email: string, relations: string[] = ['empresa', 'estudiante']) {
     return this.usuariosRepository.findOne({
       where: { email },
-      relations: ['empresa', 'estudiante'],
+      relations,
     });
   }
 
