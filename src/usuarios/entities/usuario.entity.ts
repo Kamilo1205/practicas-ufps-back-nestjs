@@ -40,6 +40,10 @@ export class Usuario {
   @Column({ default: false }) // Define una columna con valor predeterminado "false".
   estaRegistrado: boolean; // Indica si la cuenta del usuario esta registrada.
 
+  @Column({ nullable: true })
+  @Exclude()
+  hashedRefreshToken?: string;
+
   @CreateDateColumn() // Columna para la fecha y hora de creación del registro de usuario.
   fechaCreacion: Date; // Fecha y hora de creación del registro de usuario.
 
