@@ -31,6 +31,10 @@ export class CreateUsuarioDto {
   emailConfirmado: Date;
 
   @IsOptional()
+  @IsString()
+  currentHashedRefreshToken: string;
+
+  @IsOptional()
   @IsBoolean()
   estaRegistrado: boolean;
 }

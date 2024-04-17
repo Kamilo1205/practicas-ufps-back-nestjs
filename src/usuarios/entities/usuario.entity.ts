@@ -42,7 +42,7 @@ export class Usuario {
 
   @Column({ nullable: true })
   @Exclude()
-  hashedRefreshToken?: string;
+  currentHashedRefreshToken: string;
 
   @CreateDateColumn() // Columna para la fecha y hora de creación del registro de usuario.
   fechaCreacion: Date; // Fecha y hora de creación del registro de usuario.
