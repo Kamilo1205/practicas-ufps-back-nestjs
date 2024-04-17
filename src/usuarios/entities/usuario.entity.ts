@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { Role } from '../enums/role.enum';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
@@ -20,6 +21,7 @@ export class Usuario {
   email: string; // Correo electrónico del usuario (debe ser único).
 
   @Column({ nullable: true })
+  @Exclude()
   password?: string; // Contraseña del usuario.
 
   @Column({
