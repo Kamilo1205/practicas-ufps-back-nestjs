@@ -77,4 +77,10 @@ export class UsuariosService {
   remove(id: string) {
     return this.usuariosRepository.softDelete({ id });
   }
+
+  removeRefreshToken(id: string) {
+    return this.usuariosRepository.update(id, {
+      currentHashedRefreshToken: null
+    });
+  }
 }
