@@ -41,16 +41,33 @@ export class UsuariosService {
     });
   }
 
-  findOneByEmail(email: string, relations: string[] = ['empresa', 'estudiante']) {
+  findOneByEmail(
+    email: string,
+    relations: string[] = ['empresa', 'estudiante'],
+  ) {
     return this.usuariosRepository.findOne({
       where: { email },
       relations,
     });
   }
 
+  async getUserIfRefreshTokenMatches(usuarioId: string, refreshToken: string) {
+    const usuario = await this.findOne(usuarioId);
+
+    const isRefreshTokenMatching = await bcrypt.compare(
+      refreshToken,
+      usuario.currentHashedRefreshToken,
+    );
+
+    if (!isRefreshTokenMatching) return null;
+    return usuario;
+  }
+
   async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
     const { password } = updateUsuarioDto;
-    const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
+    const hashedPassword = password
+      ? await bcrypt.hash(password, 10)
+      : undefined;
     return this.usuariosRepository.update(id, {
       ...updateUsuarioDto,
       ...(hashedPassword && { password: hashedPassword }),
