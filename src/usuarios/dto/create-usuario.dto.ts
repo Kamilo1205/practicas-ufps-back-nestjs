@@ -2,10 +2,12 @@ import {
   IsBoolean,
   IsDate,
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
+import { Role } from '../enums/role.enum';
 
 export class CreateUsuarioDto {
   @IsNotEmpty()
@@ -16,7 +18,9 @@ export class CreateUsuarioDto {
   @IsString()
   password: string;
 
-  rol: string;
+  @IsNotEmpty()
+  @IsEnum(Role) // Valida que el valor de rol sea uno de los valores del enum Role
+  rol: Role;
 
   @IsOptional()
   @IsBoolean()
