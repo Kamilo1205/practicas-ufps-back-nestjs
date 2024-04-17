@@ -12,9 +12,9 @@ export class UsuariosService {
     private readonly usuariosRepository: Repository<Usuario>,
   ) {}
 
-  create(createUsuarioDto: CreateUsuarioDto) {
+  async create(createUsuarioDto: CreateUsuarioDto) {
     const { password } = createUsuarioDto;
-    const hashedPassword = password ? bcrypt.hashSync(password, 10) : null;
+    const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
     return this.usuariosRepository.save({
       ...createUsuarioDto,
       password: hashedPassword,
@@ -48,9 +48,9 @@ export class UsuariosService {
     });
   }
 
-  update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
+  async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
     const { password } = updateUsuarioDto;
-    const hashedPassword = password ? bcrypt.hashSync(password, 10) : undefined;
+    const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
     return this.usuariosRepository.update(id, {
       ...updateUsuarioDto,
       ...(hashedPassword && { password: hashedPassword }),
