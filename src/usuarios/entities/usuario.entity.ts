@@ -27,7 +27,7 @@ export class Usuario {
     enum: Role,
     default: Role.Estudiante,
   })
-  rol: string; // Rol del usuario.
+  rol: Role; // Rol del usuario.
 
   @Column({ default: true }) // Define una columna con valor predeterminado "true".
   estaActivo: boolean; // Indica si la cuenta del usuario está activa.
