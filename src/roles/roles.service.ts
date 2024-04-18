@@ -28,6 +28,6 @@ export class RolesService {
   }
 
   remove(id: string) {
-    return this.rolesRepository.remove();
+    return this.rolesRepository.softDelete({ id });
   }
 }
