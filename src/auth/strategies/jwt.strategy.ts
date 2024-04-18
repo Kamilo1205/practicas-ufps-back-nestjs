@@ -1,8 +1,10 @@
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
+import { TokenPayload } from '../interfaces';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -18,13 +20,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         JwtStrategy.extractJwtFromCookie,
       ]),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET'),
+      secretOrKey: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
     });
   }
 
-  private static extractJwtFromCookie(req: any) {
+  private static extractJwtFromCookie(req: Request) {
     if (req && req.cookies) {
-      return req.cookies['auth_token']; // Ajusta el nombre de la cookie según sea necesario
+      return req.cookies['access_token']; // Ajusta el nombre de la cookie según sea necesario
     }
     return null;
   }
@@ -34,10 +36,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * @param payload - Los datos del token JWT.
    * @returns El usuario si se encuentra o lanza una excepción de UnauthorizedException.
    */
-  async validate(payload: any) {
-    if (!payload) {
-      throw new UnauthorizedException('Token invalido o token expirado');
-    }
+  async validate(payload: TokenPayload) {
     return this.usuariosSerivce.findOne(payload.sub);
   }
 }

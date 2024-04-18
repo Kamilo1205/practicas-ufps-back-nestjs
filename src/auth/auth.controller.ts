@@ -6,11 +6,14 @@ import {
   Res,
   Post,
   HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
+import { GoogleOauthGuard, JwtRefreshGuard, LocalAuthGuard } from './guards';
+import { Public } from './decorators';
+import { RequestWithUser } from './interfaces';
 import { AuthService } from './auth.service';
-import { GoogleOauthGuard, LocalAuthGuard } from './guards';
-import { Public } from './decorators/public.decorator';
 import { Role } from '../usuarios/enums/role.enum';
 import { UsuariosService } from '../usuarios/usuarios.service';
 
@@ -55,18 +58,15 @@ export class AuthController {
   @Public()
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
-  async googleLoginCallback(@Req() req, @Res() res) {
+  async googleLoginCallback(@Req() req: RequestWithUser, @Res() res: Response) {
     try {
       const usuario = await this.usuariosService.findOneByEmail(
         req.user?.email,
       );
       if (!usuario) return res.redirect(this.redirectionUrls.default);
 
-      const { access_token } = await this.authService.login(usuario);
-      this.setAuthCookie(res, access_token);
-
-      const redirectUrl =
-        this.redirectionUrls[usuario.rol] || this.redirectionUrls.default;
+      await this.authenticateAndSetCookie(req.user, res);
+      const redirectUrl = this.getSafeRedirectUrl(usuario.rol);
       return res.redirect(redirectUrl);
     } catch (error) {
       return res.redirect(this.redirectionUrls.default);
@@ -80,13 +80,13 @@ export class AuthController {
    * @returns El usuario autenticado si la autenticación es exitosa, de lo contrario lanza una excepción.
    */
   @Public()
+  @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Req() req, @Res() res) {
+  async login(@Req() req: RequestWithUser, @Res() res: Response) {
     try {
-      const { access_token } = await this.authService.login(req.user);
-      this.setAuthCookie(res, access_token);
-      res.status(HttpStatus.OK).send(req.user);
+      await this.authenticateAndSetCookie(req.user, res);
+      return res.send(req.user);
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -101,21 +101,82 @@ export class AuthController {
    */
   @UseGuards(LocalAuthGuard)
   @Get('profile')
-  getProfile(@Req() req) {
+  getProfile(@Req() req: RequestWithUser) {
     return req.user;
   }
 
+  @UseGuards(JwtRefreshGuard)
+  @Get('refresh')
+  refresh(@Req() req: RequestWithUser, @Res() res: Response) {
+    this.setCookieAccessToken(req.user, res);
+    return res.send(req.user);
+  }
+
+  @Post('logout')
+  logout(@Res() res: Response) {
+    res.cookie('access_token', '', { path: '/', maxAge: 0 });
+    res.cookie('refresh_token', '', { path: '/', maxAge: 0 });
+    return res.status(HttpStatus.OK).json({ message: 'Logout successful' });
+  }
+
+  private getSafeRedirectUrl(role: Role) {
+    return this.redirectionUrls[role] || this.redirectionUrls.default;
+  }
+
   /**
-   * Configura una cookie segura en la respuesta que contiene el token JWT del usuario.
-   * @param res - El objeto de respuesta donde se configura la cookie.
-   * @param token - El token JWT que se almacena en la cookie.
+   * Proceso común para autenticar al usuario, asignar token y configurar cookie.
+   * @param user - El usuario autenticado cuyo token se necesita configurar.
+   * @param res - Objeto de respuesta HTTP donde configurar la cookie.
    */
-  private setAuthCookie(res, token: string) {
-    res.cookie('auth_token', token, {
+  private async authenticateAndSetCookie(
+    user: RequestWithUser['user'],
+    res: Response,
+  ) {
+    const refreshToken = await this.setCookieRefreshToken(user, res);
+    const accessToken = this.setCookieAccessToken(user, res);
+    return { accessToken, refreshToken }; // Retornar el token por si es necesario para otros usos
+  }
+
+  private setCookieAccessToken(user: RequestWithUser['user'], res: Response) {
+    const accessToken = this.authService.getJwtAccessToke(user.id);
+    const accessTokenTime = this.configService.get(
+      'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+    );
+    this.setCookie(res, 'access_token', accessToken, accessTokenTime);
+    return accessToken; // Retornar el token por si es necesario para otros usos
+  }
+
+  private async setCookieRefreshToken(
+    user: RequestWithUser['user'],
+    res: Response,
+  ) {
+    const refreshToken = this.authService.getJwtRefreshToken(user.id);
+    const refreshTokenTime = this.configService.get(
+      'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+    );
+    await this.authService.setCurrentRefreshToken(user.id, refreshToken);
+    this.setCookie(res, 'refresh_token', refreshToken, refreshTokenTime);
+    return refreshToken; // Retornar el token por si es necesario para otros usos
+  }
+
+  /**
+   * Configura una cookie segura en la respuesta que contiene un valor específico.
+   * @param res - El objeto de respuesta donde se configura la cookie.
+   * @param token - El valor que se almacena en la cookie.
+   * @param cookieName - Nombre de la cookie.
+   * @param maxAgeInSeconds - Duración de la cookie en segundos.
+   */
+  private setCookie(
+    res: Response,
+    cookieName: string,
+    token: string,
+    maxAgeInSeconds: number,
+  ) {
+    res.cookie(cookieName, token, {
       httpOnly: true,
-      secure: false, // Nota: Cambiar a 'true' en entornos de producción
-      sameSite: 'lax',
-      maxAge: 1000 * 60 * 60 * 24, // 1 día
+      secure: false, // Asegura la cookie en producción
+      sameSite: 'lax', // La configuración 'SameSite=lax' es generalmente adecuada para la mayoría de los casos
+      maxAge: maxAgeInSeconds * 1000, // maxAge en milisegundos
     });
   }
 }
