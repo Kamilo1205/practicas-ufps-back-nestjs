@@ -37,7 +37,7 @@ export class RolesGuard implements CanActivate {
     // Comprueba si el usuario tiene al menos uno de los roles requeridos
     const hasRole = requiredRoles.some((role) => user.rol.nombre == role);
     if (!hasRole) {
-      throw new UnauthorizedException('Forbidden resource');
+      throw new UnauthorizedException('Accesso Denegado: Rol invalido');
     }
     return true;
   }
