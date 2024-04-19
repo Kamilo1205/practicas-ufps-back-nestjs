@@ -6,7 +6,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Role {
+export class Rol {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
