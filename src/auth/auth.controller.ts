@@ -14,7 +14,7 @@ import { GoogleOauthGuard, JwtRefreshGuard, LocalAuthGuard } from './guards';
 import { Public } from './decorators';
 import { RequestWithUser } from './interfaces';
 import { AuthService } from './auth.service';
-import { Role } from '../usuarios/enums/role.enum';
+import { Rol } from './enums/rol.enum';
 import { UsuariosService } from '../usuarios/usuarios.service';
 
 /**
@@ -23,15 +23,13 @@ import { UsuariosService } from '../usuarios/usuarios.service';
 @Controller('auth')
 export class AuthController {
   private readonly redirectionUrls = {
-    [Role.Coordinador]: this.configService.get<string>(
+    [Rol.Coordinador]: this.configService.get<string>(
       'COORDINADOR_REDIRECT_URL',
     ),
-    [Role.Director]: this.configService.get<string>('DIRECTOR_REDIRECT_URL'),
-    [Role.Empresa]: this.configService.get<string>('EMPRESA_REDIRECT_URL'),
-    [Role.Estudiante]: this.configService.get<string>(
-      'ESTUDIANTE_REDIRECT_URL',
-    ),
-    [Role.Tutor]: this.configService.get<string>('TUTOR_REDIRECT_URL'),
+    [Rol.Director]: this.configService.get<string>('DIRECTOR_REDIRECT_URL'),
+    [Rol.Empresa]: this.configService.get<string>('EMPRESA_REDIRECT_URL'),
+    [Rol.Estudiante]: this.configService.get<string>('ESTUDIANTE_REDIRECT_URL'),
+    [Rol.Tutor]: this.configService.get<string>('TUTOR_REDIRECT_URL'),
     default: this.configService.get<string>('LOGIN_REDIRECT_URL'),
   };
 
@@ -66,7 +64,7 @@ export class AuthController {
       if (!usuario) return res.redirect(this.redirectionUrls.default);
 
       await this.authenticateAndSetCookie(req.user, res);
-      const redirectUrl = this.getSafeRedirectUrl(usuario.rol);
+      const redirectUrl = this.getSafeRedirectUrl(usuario.rol.nombre as Rol);
       return res.redirect(redirectUrl);
     } catch (error) {
       return res.redirect(this.redirectionUrls.default);
@@ -119,8 +117,8 @@ export class AuthController {
     return res.status(HttpStatus.OK).json({ message: 'Logout successful' });
   }
 
-  private getSafeRedirectUrl(role: Role) {
-    return this.redirectionUrls[role] || this.redirectionUrls.default;
+  private getSafeRedirectUrl(rol: Rol) {
+    return this.redirectionUrls[rol] || this.redirectionUrls.default;
   }
 
   /**
