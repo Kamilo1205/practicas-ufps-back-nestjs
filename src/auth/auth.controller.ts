@@ -42,8 +42,8 @@ export class AuthController {
   /**
    * Inicia el flujo de autenticación con Google OAuth.
    */
-  @Public()
   @Get('google')
+  @Public()
   @UseGuards(GoogleOauthGuard)
   googleLogin() {}
 
@@ -53,8 +53,8 @@ export class AuthController {
    * @param res - El objeto de respuesta para manejar redirecciones.
    * @returns Redirección a la URL específica del rol del usuario o a la URL por defecto.
    */
-  @Public()
   @Get('google/callback')
+  @Public()
   @UseGuards(GoogleOauthGuard)
   async googleLoginCallback(@Req() req: RequestWithUser, @Res() res: Response) {
     try {
@@ -77,10 +77,10 @@ export class AuthController {
    * @param res - El objeto de respuesta para enviar el usuario autenticado.
    * @returns El usuario autenticado si la autenticación es exitosa, de lo contrario lanza una excepción.
    */
-  @Public()
   @HttpCode(200)
-  @UseGuards(LocalAuthGuard)
   @Post('login')
+  @Public()
+  @UseGuards(LocalAuthGuard)
   async login(@Req() req: RequestWithUser, @Res() res: Response) {
     try {
       await this.authenticateAndSetCookie(req.user, res);
@@ -97,14 +97,15 @@ export class AuthController {
    * @param req - El objeto de solicitud que contiene los datos del usuario.
    * @returns Los datos del perfil del usuario autenticado.
    */
-  @UseGuards(LocalAuthGuard)
   @Get('profile')
+  @UseGuards(LocalAuthGuard)
   getProfile(@Req() req: RequestWithUser) {
     return req.user;
   }
 
-  @UseGuards(JwtRefreshGuard)
   @Get('refresh')
+  @Public()
+  @UseGuards(JwtRefreshGuard)
   refresh(@Req() req: RequestWithUser, @Res() res: Response) {
     this.setCookieAccessToken(req.user, res);
     return res.send(req.user);
