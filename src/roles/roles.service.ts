@@ -19,8 +19,11 @@ export class RolesService {
     return this.rolesRepository.find();
   }
 
-  findOne(id: string) {
-    return this.rolesRepository.findOne({ where: { id } });
+  findOne(id: string, relations: string[] = ['permisos']) {
+    return this.rolesRepository.findOne({
+      where: { id },
+      relations,
+    });
   }
 
   update(id: string, updateRoleDto: UpdateRoleDto) {
