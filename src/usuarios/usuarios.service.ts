@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcryptjs';
 import { CreateUsuarioDto, UpdateUsuarioDto } from './dto';
 import { Usuario } from './entities/usuario.entity';
 
@@ -29,12 +29,16 @@ export class UsuariosService {
       order: {
         fechaCreacion: 'DESC',
       },
+      relations: ['rol'],
     });
 
     return { data, total };
   }
 
-  findOne(id: string, relations: string[] = ['empresa', 'estudiante']) {
+  findOne(
+    id: string,
+    relations: string[] = ['empresa', 'estudiante', 'rol', 'permisos'],
+  ) {
     return this.usuariosRepository.findOne({
       where: { id },
       relations,
@@ -43,7 +47,7 @@ export class UsuariosService {
 
   findOneByEmail(
     email: string,
-    relations: string[] = ['empresa', 'estudiante'],
+    relations: string[] = ['empresa', 'estudiante', 'rol', 'permisos'],
   ) {
     return this.usuariosRepository.findOne({
       where: { email },
@@ -58,7 +62,6 @@ export class UsuariosService {
       refreshToken,
       usuario.currentHashedRefreshToken,
     );
-
     if (!isRefreshTokenMatching) return null;
     return usuario;
   }
@@ -74,13 +77,19 @@ export class UsuariosService {
     });
   }
 
+  updateRefreshToken(id: string, refreshToken: string) {
+    return this.usuariosRepository.update(id, {
+      currentHashedRefreshToken: refreshToken,
+    });
+  }
+
   remove(id: string) {
     return this.usuariosRepository.softDelete({ id });
   }
 
   removeRefreshToken(id: string) {
     return this.usuariosRepository.update(id, {
-      currentHashedRefreshToken: null
+      currentHashedRefreshToken: null,
     });
   }
 }
