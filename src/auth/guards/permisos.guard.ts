@@ -19,8 +19,10 @@ export class PermisosGuard implements CanActivate {
       return true;
     }
     const { user } = context.switchToHttp().getRequest();
-    const hasPermission = requiredPermisos.every((permiso) =>
-      user.permisos?.includes(permiso),
+    const hasPermission = requiredPermisos.every((permisoRequerido) =>
+      user.permisos.some(
+        (permisoUsuario) => permisoUsuario.nombre === permisoRequerido,
+      ),
     );
     if (!hasPermission) {
       throw new UnauthorizedException(
