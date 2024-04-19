@@ -3,12 +3,16 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { Role } from '../enums/role.enum';
+import { Rol } from 'src/roles/entities/rol.entity';
+import { Permiso } from 'src/permisos/entities/permiso.entity';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 
@@ -24,13 +28,6 @@ export class Usuario {
   @Exclude()
   password?: string; // Contraseña del usuario.
 
-  @Column({
-    type: 'enum',
-    enum: Role,
-    default: Role.Estudiante,
-  })
-  rol: Role; // Rol del usuario.
-
   @Column({ default: true }) // Define una columna con valor predeterminado "true".
   estaActivo: boolean; // Indica si la cuenta del usuario está activa.
 
@@ -41,7 +38,6 @@ export class Usuario {
   estaRegistrado: boolean; // Indica si la cuenta del usuario esta registrada.
 
   @Column({ nullable: true })
-  @Exclude()
   currentHashedRefreshToken: string;
 
   @CreateDateColumn() // Columna para la fecha y hora de creación del registro de usuario.
@@ -54,6 +50,13 @@ export class Usuario {
   fechaEliminacion: Date; // Fecha y hora de eliminación lógica del registro de usuario (si se aplica).
 
   // Relaciones
+  @ManyToOne(() => Rol, (rol) => rol.usuarios)
+  rol: Rol; // Rol del usuario.
+
+  @ManyToMany(() => Permiso)
+  @JoinTable()
+  permisos: Permiso[];
+
   @OneToOne(() => Empresa, (empresa) => empresa.usuario)
   empresa: Empresa;
 
