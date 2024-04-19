@@ -3,9 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Entity()
 export class Empresa {
@@ -18,7 +21,7 @@ export class Empresa {
   @Column()
   direccion: string;
 
-  @Column()
+  @Column({ unique: true })
   nit: string;
 
   @Column()
@@ -28,19 +31,25 @@ export class Empresa {
   pais: string;
 
   @Column()
+  departamento: string;
+
+  @Column()
   municipio: string;
 
   @Column()
   industria: string;
 
-  @Column()
+  @Column({ nullable: true })
   rutUrl?: string;
 
-  @Column()
-  camaraComercialUrl?: string;
+  @Column({ nullable: true })
+  camaraComercialUrl: string;
 
-  @Column()
-  registroMercantilUrl?: string;
+  @Column({ nullable: true })
+  registroMercantilUrl: string;
+
+  @Column({ nullable: true })
+  googleDriveFolderId: string;
 
   @CreateDateColumn()
   fechaCreacion: Date;
@@ -50,4 +59,9 @@ export class Empresa {
 
   @DeleteDateColumn()
   fechaEliminacion: Date;
+
+  // Relaciones
+  @OneToOne(() => Usuario, (usuario) => usuario.empresa)
+  @JoinColumn()
+  usuario: Usuario;
 }

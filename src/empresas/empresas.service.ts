@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Repository } from 'typeorm';
+import { Repository, Connection } from 'typeorm';
+import { Readable } from 'stream';
 import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
 import { Empresa } from './entities/empresa.entity';
-import { GoogleDriveService } from '../google-drive/google-drive.service';
-import { Readable } from 'stream';
+import { GoogleDriveService } from 'src/google-drive/google-drive.service';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Injectable()
 export class EmpresasService {
@@ -13,6 +14,7 @@ export class EmpresasService {
     this.configService.get<string>('FOLDER_EMPRESAS_ID');
 
   constructor(
+    private connection: Connection,
     @InjectRepository(Empresa)
     private empresasRepository: Repository<Empresa>,
     private googleDriveService: GoogleDriveService,
@@ -23,38 +25,80 @@ export class EmpresasService {
     createEmpresaDto: CreateEmpresaDto,
     fileRut: Express.Multer.File,
     fileCamara: Express.Multer.File,
+    usuario: Usuario,
   ) {
-    const { nombre, nit } = createEmpresaDto;
-    const nombreFolder = `${nit}-${nombre}`;
-    const folderEmpresaId = await this.googleDriveService.createFolder(nombreFolder, this.folderEmpresasId);
+    const queryRunner = this.connection.createQueryRunner();
 
-    const rutId = await this.uploadRutFile(nit, folderEmpresaId, fileRut);
-    const camaraComercioId = await this.uploadCamaraComercioFile(nit, folderEmpresaId, fileCamara);
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    this.empresasRepository.create({
-      ...createEmpresaDto,
-      rutUrl: rutId,
-      camaraComercialUrl: camaraComercioId,
+    try {
+      const { nombre, nit } = createEmpresaDto;
+      const nombreFolder = `${nit}-${nombre}`;
+      const folderEmpresaId = await this.googleDriveService.createFolder(
+        nombreFolder,
+        this.folderEmpresasId,
+      );
+
+      // Uso de Promise.all para subir ambos archivos simultáneamente
+      const [rutId, camaraComercioId] = await Promise.all([
+        this.uploadRutFile(nit, folderEmpresaId, fileRut),
+        this.uploadCamaraComercioFile(nit, folderEmpresaId, fileCamara),
+      ]);
+
+      const empresa = this.empresasRepository.create({
+        ...createEmpresaDto,
+        rutUrl: rutId,
+        camaraComercialUrl: camaraComercioId,
+        googleDriveFolderId: folderEmpresaId,
+        usuario,
+      });
+
+      await queryRunner.manager.save(empresa);
+      await queryRunner.commitTransaction();
+      return empresa;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async findAll(page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+    const [data, total] = await this.empresasRepository.findAndCount({
+      take: limit,
+      skip: skip,
+      order: {
+        fechaCreacion: 'DESC',
+      },
+      relations: ['usuario'],
+    });
+
+    return { data, total };
+  }
+
+  findOne(id: string) {
+    return this.empresasRepository.findOne({
+      where: { id },
+      relations: ['usuario'],
     });
   }
 
-  findAll() {
-    return `This action returns all empresas`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} empresa`;
-  }
-
-  update(id: number, updateEmpresaDto: UpdateEmpresaDto) {
+  update(id: string, updateEmpresaDto: UpdateEmpresaDto) {
     return `This action updates a #${id} empresa`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} empresa`;
+  remove(id: string) {
+    return this.empresasRepository.softDelete({ id });
   }
 
-  uploadRutFile(nit: string, folderEmpresaId: string, file: Express.Multer.File) {
+  uploadRutFile(
+    nit: string,
+    folderEmpresaId: string,
+    file: Express.Multer.File,
+  ) {
     const fileMetadata = {
       name: `${nit}-rut`,
       parents: [folderEmpresaId],
@@ -67,7 +111,11 @@ export class EmpresasService {
     return this.googleDriveService.uploadFile(fileMetadata, media);
   }
 
-  uploadCamaraComercioFile(nit: string, folderEmpresaId: string, file: Express.Multer.File) {
+  uploadCamaraComercioFile(
+    nit: string,
+    folderEmpresaId: string,
+    file: Express.Multer.File,
+  ) {
     const fileMetadata = {
       name: `${nit}-camara-de-comercio`,
       parents: [folderEmpresaId],
