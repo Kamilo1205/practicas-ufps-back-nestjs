@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { Rol } from 'src/roles/entities/rol.entity';
 import { Permiso } from 'src/permisos/entities/permiso.entity';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
@@ -38,7 +38,8 @@ export class Usuario {
   estaRegistrado: boolean; // Indica si la cuenta del usuario esta registrada.
 
   @Column({ nullable: true })
-  currentHashedRefreshToken: string;
+  @Transform(({ value }) => (value ? value : undefined))
+  currentHashedRefreshToken?: string;
 
   @CreateDateColumn() // Columna para la fecha y hora de creación del registro de usuario.
   fechaCreacion: Date; // Fecha y hora de creación del registro de usuario.
@@ -47,7 +48,8 @@ export class Usuario {
   fechaActualizacion: Date; // Fecha y hora de la última actualización del registro de usuario.
 
   @DeleteDateColumn() // Columna para la fecha y hora de eliminación lógica del registro de usuario (si se elimina).
-  fechaEliminacion: Date; // Fecha y hora de eliminación lógica del registro de usuario (si se aplica).
+  @Transform(({ value }) => (value ? value : undefined))
+  fechaEliminacion?: Date; // Fecha y hora de eliminación lógica del registro de usuario (si se aplica).
 
   // Relaciones
   @ManyToOne(() => Rol, (rol) => rol.usuarios)
@@ -58,8 +60,10 @@ export class Usuario {
   permisos: Permiso[];
 
   @OneToOne(() => Empresa, (empresa) => empresa.usuario)
+  @Transform(({ value }) => (value ? value : undefined))
   empresa: Empresa;
 
   @OneToOne(() => Estudiante, (estudiante) => estudiante.usuario)
+  @Transform(({ value }) => (value ? value : undefined))
   estudiante: Estudiante;
 }
