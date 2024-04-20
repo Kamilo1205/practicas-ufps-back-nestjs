@@ -25,8 +25,8 @@ export class Usuario {
   email: string; // Correo electrónico del usuario (debe ser único).
 
   @Column({ nullable: true })
-  @Exclude()
-  password?: string; // Contraseña del usuario.
+  @Exclude({ toPlainOnly: true })
+  password?: string | null; // Contraseña del usuario.
 
   @Column({ default: true }) // Define una columna con valor predeterminado "true".
   estaActivo: boolean; // Indica si la cuenta del usuario está activa.
@@ -38,7 +38,7 @@ export class Usuario {
   estaRegistrado: boolean; // Indica si la cuenta del usuario esta registrada.
 
   @Column({ nullable: true })
-  @Transform(({ value }) => (value ? value : undefined))
+  @Exclude()
   currentHashedRefreshToken?: string;
 
   @CreateDateColumn() // Columna para la fecha y hora de creación del registro de usuario.
