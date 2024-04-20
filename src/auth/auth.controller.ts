@@ -61,7 +61,8 @@ export class AuthController {
         const redirectUrl = this.authService.getSafeRedirectUrl(
           usuario.rol.nombre as Rol,
         );
-        return { redirectUrl };
+        const error = 'Usuario no regitrador';
+        return { redirectUrl, error };
       }
 
       const accessToken = this.authService.getJwtAccessToke(req.user.id);
@@ -74,10 +75,12 @@ export class AuthController {
         refreshToken,
         redirectUrl,
       };
-    } catch (error) {
+    } catch (err) {
       const redirectUrl = this.authService.getSafeRedirectUrl();
+      const error = 'Error de autenticación';
       return {
         redirectUrl,
+        error,
       };
     }
   }
@@ -120,6 +123,7 @@ export class AuthController {
   @Get('refresh')
   @Public()
   @UseGuards(JwtRefreshGuard)
+  @UseInterceptors(JwtCookieInterceptor)
   refresh(
     @Req() req: RequestWithUser,
     @Res({ passthrough: true }) res: Response,

@@ -26,7 +26,12 @@ export class JwtCookieInterceptor implements NestInterceptor {
             this.attachCookies(res, accessToken, refreshToken);
           }
           if (data.redirectUrl) {
-            return res.redirect(data.redirectUrl);
+            const error = data.error;
+            if (error) {
+              const encodedError = encodeURIComponent(error);
+              return res.redirect(`${data.redirectUrl}?error=${encodedError}`);
+            }
+            return res.redirect(`${data.redirectUrl}`);
           }
         }
       }),
