@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { Permiso } from 'src/permisos/entities/permiso.entity';
+import { Transform } from 'class-transformer';
 
 @Entity()
 export class Rol {
@@ -19,6 +20,7 @@ export class Rol {
   nombre: string;
 
   @DeleteDateColumn()
+  @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion?: Date;
 
   //Relaciones
