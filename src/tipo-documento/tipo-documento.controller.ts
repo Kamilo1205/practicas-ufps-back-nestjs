@@ -9,33 +9,36 @@ import {
 } from '@nestjs/common';
 import { TipoDocumentoService } from './tipo-documento.service';
 import { CreateTipoDocumentoDto, UpdateTipoDocumentoDto } from './dto';
-import { Roles } from 'src/auth/decorators';
+import { Permisos, Public, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums/rol.enum';
 
 @Controller('tipo-documento')
 export class TipoDocumentoController {
   constructor(private readonly tipoDocumentoService: TipoDocumentoService) {}
 
-  @Roles(Rol.Coordinador)
   @Post()
+  @Roles(Rol.Coordinador)
+  @Permisos('crear-tipo-documento')
   create(@Body() createTipoDocumentoDto: CreateTipoDocumentoDto) {
     return this.tipoDocumentoService.create(createTipoDocumentoDto);
   }
 
-  @Roles(Rol.Coordinador)
   @Get()
+  @Public()
   findAll() {
     return this.tipoDocumentoService.findAll();
   }
 
-  @Roles(Rol.Coordinador)
   @Get(':id')
+  @Roles(Rol.Coordinador)
+  @Permisos('obtener-tipo-documento')
   findOne(@Param('id') id: string) {
     return this.tipoDocumentoService.findOne(id);
   }
 
-  @Roles(Rol.Coordinador)
   @Patch(':id')
+  @Roles(Rol.Coordinador)
+  @Permisos('actualizar-tipo-documento')
   update(
     @Param('id') id: string,
     @Body() updateTipoDocumentoDto: UpdateTipoDocumentoDto,
@@ -43,8 +46,9 @@ export class TipoDocumentoController {
     return this.tipoDocumentoService.update(id, updateTipoDocumentoDto);
   }
 
-  @Roles(Rol.Coordinador)
   @Delete(':id')
+  @Roles(Rol.Coordinador)
+  @Permisos('remover-tipo-documento')
   remove(@Param('id') id: string) {
     return this.tipoDocumentoService.remove(id);
   }
