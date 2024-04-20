@@ -3,7 +3,6 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  HttpStatus,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -20,16 +19,14 @@ export class JwtCookieInterceptor implements NestInterceptor {
         const res: Response = context.switchToHttp().getResponse();
         const req = context.switchToHttp().getRequest();
 
-        if (
-          context.getType() === 'http' &&
-          (data.accessToken || req.user.accessToken)
-        ) {
-          const accessToken = data.accessToken || req.user.accessToken;
-          const refreshToken = data.refreshToken || req.user.refreshToken;
-          this.attachCookies(res, accessToken, refreshToken);
-
-          if (data.url) {
-            res.redirect(HttpStatus.FOUND, data.url);
+        if (!res.headersSent) {
+          if (data.accessToken) {
+            const accessToken = data.accessToken || req.user.accessToken;
+            const refreshToken = data.refreshToken || req.user.refreshToken;
+            this.attachCookies(res, accessToken, refreshToken);
+          }
+          if (data.redirectUrl) {
+            return res.redirect(data.redirectUrl);
           }
         }
       }),

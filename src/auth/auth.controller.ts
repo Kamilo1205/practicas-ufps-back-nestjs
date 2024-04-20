@@ -5,13 +5,17 @@ import {
   Req,
   Res,
   Post,
-  HttpStatus,
   HttpCode,
   UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
-import { GoogleOauthGuard, JwtRefreshGuard, LocalAuthGuard } from './guards';
+import {
+  GoogleOauthGuard,
+  JwtAuthGuard,
+  JwtRefreshGuard,
+  LocalAuthGuard,
+} from './guards';
 import { Public } from './decorators';
 import { RequestWithUser } from './interfaces';
 import { AuthService } from './auth.service';
@@ -24,17 +28,6 @@ import { JwtCookieInterceptor } from './interceptors/jwt-cookie.interceptor';
  */
 @Controller('auth')
 export class AuthController {
-  private readonly redirectionUrls = {
-    [Rol.Coordinador]: this.configService.get<string>(
-      'COORDINADOR_REDIRECT_URL',
-    ),
-    [Rol.Director]: this.configService.get<string>('DIRECTOR_REDIRECT_URL'),
-    [Rol.Empresa]: this.configService.get<string>('EMPRESA_REDIRECT_URL'),
-    [Rol.Estudiante]: this.configService.get<string>('ESTUDIANTE_REDIRECT_URL'),
-    [Rol.Tutor]: this.configService.get<string>('TUTOR_REDIRECT_URL'),
-    default: this.configService.get<string>('LOGIN_REDIRECT_URL'),
-  };
-
   constructor(
     private readonly authService: AuthService,
     private readonly usuariosService: UsuariosService,
@@ -64,14 +57,28 @@ export class AuthController {
       const usuario = await this.usuariosService.findOneByEmail(
         req.user?.email,
       );
-      if (!usuario) return res.redirect(this.redirectionUrls.default);
+      if (!usuario) {
+        const redirectUrl = this.authService.getSafeRedirectUrl(
+          usuario.rol.nombre as Rol,
+        );
+        return { redirectUrl };
+      }
 
       const accessToken = this.authService.getJwtAccessToke(req.user.id);
       const refreshToken = this.authService.getJwtRefreshToken(req.user.id);
-      const redirectUrl = this.getSafeRedirectUrl(usuario.rol.nombre as Rol);
-      return res.redirect(redirectUrl);
+      const redirectUrl = this.authService.getSafeRedirectUrl(
+        usuario.rol.nombre as Rol,
+      );
+      return {
+        accessToken,
+        refreshToken,
+        redirectUrl,
+      };
     } catch (error) {
-      return res.redirect(this.redirectionUrls.default);
+      const redirectUrl = this.authService.getSafeRedirectUrl();
+      return {
+        redirectUrl,
+      };
     }
   }
 
@@ -105,7 +112,7 @@ export class AuthController {
    * @returns Los datos del perfil del usuario autenticado.
    */
   @Get('profile')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(JwtAuthGuard)
   getProfile(@Req() req: RequestWithUser) {
     return req.user;
   }
@@ -124,14 +131,12 @@ export class AuthController {
     };
   }
 
+  @HttpCode(200)
   @Post('logout')
-  logout(@Res() res: Response) {
+  async logout(@Req() req: RequestWithUser, @Res() res: Response) {
     res.cookie('access_token', '', { path: '/', maxAge: 0 });
     res.cookie('refresh_token', '', { path: '/', maxAge: 0 });
-    return res.status(HttpStatus.OK).json({ message: 'Logout successful' });
-  }
-
-  private getSafeRedirectUrl(rol: Rol) {
-    return this.redirectionUrls[rol] || this.redirectionUrls.default;
+    await this.authService.removeCurrentRefreshToken(req.user.id);
+    return { message: 'Cerrar sesion exitosamente' };
   }
 }
