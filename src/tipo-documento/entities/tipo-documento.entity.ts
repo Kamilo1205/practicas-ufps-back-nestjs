@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -22,5 +23,6 @@ export class TipoDocumento {
   fechaActualizacion: Date;
 
   @DeleteDateColumn()
+  @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion: Date;
 }
