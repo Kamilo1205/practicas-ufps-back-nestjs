@@ -1,5 +1,5 @@
-import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { In, Repository } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePermisoDto, UpdatePermisoDto } from './dto';
 import { Permiso } from './entities/permiso.entity';
@@ -20,7 +20,7 @@ export class PermisosService {
   }
 
   findOne(id: string) {
-    return this.permisosRepository.find({ where: { id } });
+    return this.permisosRepository.findOne({ where: { id } });
   }
 
   update(id: string, updatePermisoDto: UpdatePermisoDto) {
@@ -29,5 +29,16 @@ export class PermisosService {
 
   remove(id: string) {
     return this.permisosRepository.softDelete({ id });
+  }
+
+  async findByIds(ids: string[]) {
+    const permisos = await this.permisosRepository.findBy({ id: In(ids) });
+    if (permisos.length !== ids.length) {
+      // Lanzar una excepción si algún ID no devuelve un permiso
+      throw new NotFoundException(
+        `Uno o más permisos no se pudieron encontrar.`,
+      );
+    }
+    return permisos;
   }
 }
