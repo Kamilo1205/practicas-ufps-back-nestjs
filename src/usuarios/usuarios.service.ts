@@ -1,15 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { CreateUsuarioDto, UpdateUsuarioDto } from './dto';
 import { Usuario } from './entities/usuario.entity';
+import { PermisosService } from '../permisos/permisos.service';
 
 @Injectable()
 export class UsuariosService {
   constructor(
     @InjectRepository(Usuario)
     private readonly usuariosRepository: Repository<Usuario>,
+    private readonly permisosService: PermisosService,
   ) {}
 
   async create(createUsuarioDto: CreateUsuarioDto) {
@@ -81,6 +83,19 @@ export class UsuariosService {
     return this.usuariosRepository.update(id, {
       currentHashedRefreshToken: refreshToken,
     });
+  }
+
+  async addPermisos(id: string, permisosIds: string[]) {
+    const usuario = await this.usuariosRepository.findOne({
+      where: { id },
+      relations: ['permisos'],
+    });
+    if (!usuario)
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado.`);
+
+    const permisos = await this.permisosService.findByIds(permisosIds);
+    usuario.permisos = [...usuario.permisos, ...permisos];
+    return this.usuariosRepository.save(usuario);
   }
 
   remove(id: string) {

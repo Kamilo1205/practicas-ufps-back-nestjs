@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
-import { CreateUsuarioDto, UpdateUsuarioDto } from './dto';
+import { AddPermisosDto, CreateUsuarioDto, UpdateUsuarioDto } from './dto';
 import { Rol } from '../auth/enums/rol.enum';
 import { Permisos, Roles } from 'src/auth/decorators';
 
@@ -36,6 +36,13 @@ export class UsuariosController {
   @Permisos('obtener-usuario')
   findOne(@Param('id') id: string) {
     return this.usuariosService.findOne(id);
+  }
+
+  @Patch(':id/permisos')
+  @Roles(Rol.Coordinador)
+  @Permisos('agregar-permisos-usuario')
+  addPermisos(@Param('id') id: string, @Body() addPermisosDto: AddPermisosDto) {
+    return this.usuariosService.addPermisos(id, addPermisosDto.permisosIds);
   }
 
   @Patch(':id')
