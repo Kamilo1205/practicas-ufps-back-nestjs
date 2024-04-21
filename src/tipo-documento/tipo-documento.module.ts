@@ -8,5 +8,6 @@ import { TipoDocumentoController } from './tipo-documento.controller';
   imports: [TypeOrmModule.forFeature([TipoDocumento])],
   controllers: [TipoDocumentoController],
   providers: [TipoDocumentoService],
+  exports: [TipoDocumentoService],
 })
 export class TipoDocumentoModule {}
