@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  BadRequestException,
   UseInterceptors,
   UploadedFiles,
   Query,
@@ -14,9 +13,10 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { EmpresasService } from './empresas.service';
 import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
-import { GetUser, Roles } from 'src/auth/decorators';
+import { GetUser, Permisos, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums/rol.enum';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { CreateRepresentanteLegalDto } from 'src/representante-legal/dto';
 
 @Controller('empresas')
 export class EmpresasController {
@@ -28,33 +28,23 @@ export class EmpresasController {
     FileFieldsInterceptor([
       { name: 'rut', maxCount: 1 },
       { name: 'camara', maxCount: 1 },
+      { name: 'documento', maxCount: 1 },
+      { name: 'solicitudConvenio', maxCount: 1 },
     ]),
   )
   async create(
     @GetUser() usuario: Usuario,
     @Body() createEmpresaDto: CreateEmpresaDto,
+    @Body() createRepresentanteLegalDto: CreateRepresentanteLegalDto,
     @UploadedFiles()
-    files: { rut?: Express.Multer.File[]; camara?: Express.Multer.File[] },
+    files: { rut: Express.Multer.File[]; camara: Express.Multer.File[]; documento: Express.Multer.File[]; solicitudConvenio: Express.Multer.File[] },
   ) {
-    if (
-      !files.rut ||
-      files.rut.length === 0 ||
-      !files.camara ||
-      files.camara.length === 0
-    ) {
-      throw new BadRequestException('Se requiren archivos rut y camara.');
-    }
-
-    const fileRut = files.rut[0];
-    const fileCamara = files.camara[0];
-
-    const empresa = await this.empresasService.create(
+    return this.empresasService.create(
       createEmpresaDto,
-      fileRut,
-      fileCamara,
+      createRepresentanteLegalDto,
       usuario,
+      files,
     );
-    return empresa;
   }
 
   @Roles(Rol.Empresa)
@@ -63,14 +53,16 @@ export class EmpresasController {
     return this.empresasService.findOne(usuario.empresa.id);
   }
 
-  @Roles(Rol.Coordinador)
   @Get()
+  @Roles(Rol.Coordinador)
+  @Permisos('obtener-empresas')
   findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
     return this.empresasService.findAll(page, limit);
   }
 
-  @Roles(Rol.Coordinador)
   @Get(':id')
+  @Roles(Rol.Coordinador)
+  @Permisos('obtener-empresas-id')
   findOne(@Param('id') id: string) {
     return this.empresasService.findOne(id);
   }

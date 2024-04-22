@@ -46,9 +46,6 @@ export class Empresa {
   camaraComercialUrl: string;
 
   @Column({ nullable: true })
-  registroMercantilUrl: string;
-
-  @Column({ nullable: true })
   googleDriveFolderId: string;
 
   @CreateDateColumn()

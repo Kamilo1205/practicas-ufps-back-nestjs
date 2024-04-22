@@ -3,11 +3,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmpresasService } from './empresas.service';
 import { EmpresasController } from './empresas.controller';
 import { Empresa } from './entities/empresa.entity';
-import { GoogleDriveService } from '../google-drive/google-drive.service';
+import { RepresentanteLegalModule } from 'src/representante-legal/representante-legal.module';
+import { GoogleDriveModule } from 'src/google-drive/google-drive.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Empresa])],
+  imports: [
+    TypeOrmModule.forFeature([Empresa]),
+    GoogleDriveModule,
+    RepresentanteLegalModule,
+  ],
   controllers: [EmpresasController],
-  providers: [EmpresasService, GoogleDriveService],
+  providers: [EmpresasService],
 })
 export class EmpresasModule {}

@@ -7,6 +7,7 @@ import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
 import { Empresa } from './entities/empresa.entity';
 import { GoogleDriveService } from 'src/google-drive/google-drive.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { CreateRepresentanteLegalDto } from 'src/representante-legal/dto';
 
 @Injectable()
 export class EmpresasService {
@@ -23,45 +24,29 @@ export class EmpresasService {
 
   async create(
     createEmpresaDto: CreateEmpresaDto,
-    fileRut: Express.Multer.File,
-    fileCamara: Express.Multer.File,
+    createRepresentanteLegalDto: CreateRepresentanteLegalDto,
     usuario: Usuario,
+    files: any,
   ) {
-    const queryRunner = this.connection.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
     try {
-      const { nombre, nit } = createEmpresaDto;
-      const nombreFolder = `${nit}-${nombre}`;
+      const { nit, nombre } = createEmpresaDto;
       const folderEmpresaId = await this.googleDriveService.createFolder(
-        nombreFolder,
+        `${nit}-${nombre}`,
         this.folderEmpresasId,
       );
 
-      // Uso de Promise.all para subir ambos archivos simultáneamente
-      const [rutId, camaraComercioId] = await Promise.all([
-        this.uploadRutFile(nit, folderEmpresaId, fileRut),
-        this.uploadCamaraComercioFile(nit, folderEmpresaId, fileCamara),
-      ]);
-
-      const empresa = this.empresasRepository.create({
-        ...createEmpresaDto,
-        rutUrl: rutId,
-        camaraComercialUrl: camaraComercioId,
-        googleDriveFolderId: folderEmpresaId,
-        usuario,
-      });
-
-      await queryRunner.manager.save(empresa);
-      await queryRunner.commitTransaction();
-      return empresa;
+      /* const { rut, camara, documento, solicitudConvenio } = files;
+      const [rutId, nitId, solicitudConvenio] = Promise.all([
+        this.uploadFile(`${nit}-rut`, folderEmpresaId, rut[0]),
+        this.uploadFile(`${nit}-camara`, folderEmpresaId, camara[0]),
+        this.uploadFile(
+          `${nit}-solicitud-convenio`,
+          folderEmpresaId,
+          solicitudConvenio[0],
+        ),
+      ]); */
     } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
+      console.log(error);
     }
   }
 
@@ -94,30 +79,9 @@ export class EmpresasService {
     return this.empresasRepository.softDelete({ id });
   }
 
-  uploadRutFile(
-    nit: string,
-    folderEmpresaId: string,
-    file: Express.Multer.File,
-  ) {
+  uploadFile(name: string, folderEmpresaId: string, file: Express.Multer.File) {
     const fileMetadata = {
-      name: `${nit}-rut`,
-      parents: [folderEmpresaId],
-      public: false,
-    };
-    const media = {
-      mimeType: file.mimetype,
-      body: Readable.from(file.buffer),
-    };
-    return this.googleDriveService.uploadFile(fileMetadata, media);
-  }
-
-  uploadCamaraComercioFile(
-    nit: string,
-    folderEmpresaId: string,
-    file: Express.Multer.File,
-  ) {
-    const fileMetadata = {
-      name: `${nit}-camara-de-comercio`,
+      name,
       parents: [folderEmpresaId],
       public: false,
     };
