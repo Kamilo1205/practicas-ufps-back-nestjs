@@ -1,13 +1,13 @@
 import { Controller, Post } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { Roles } from '../auth/decorators';
-import { Role } from '../usuarios/enums/role.enum';
+import { Rol } from '../auth/enums/rol.enum';
 
 @Controller('mail')
 export class MailController {
   constructor(private mailService: MailService) {}
 
-  @Roles(Role.Coordinador)
+  @Roles(Rol.Coordinador)
   @Post()
   async sendMail() {
     await this.mailService.sendWelcomeEmail(
