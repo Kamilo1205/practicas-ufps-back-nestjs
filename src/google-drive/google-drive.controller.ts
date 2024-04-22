@@ -9,7 +9,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GoogleDriveService } from './google-drive.service';
 import { Public, Roles } from 'src/auth/decorators';
-import { Role } from 'src/usuarios/enums/role.enum';
+import { Rol } from 'src/auth/enums/rol.enum';
 import { Readable } from 'stream';
 
 @Controller('google-drive')

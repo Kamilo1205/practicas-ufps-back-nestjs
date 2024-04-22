@@ -16,8 +16,4 @@ export class CreateDocumentoIdentidadDto {
   @IsNotEmpty()
   @IsString()
   tipoDocumentoId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  folderId: string;
 }
