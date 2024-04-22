@@ -12,13 +12,13 @@ async function bootstrap() {
     origin: configService.get<string>('URL_FRONTEND'), // Reemplaza con el origen de tu aplicación Angular
     credentials: true, // Permitir el intercambio de cookies
   });
-  app.use(cookieParser());
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
     }),
   );
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.use(cookieParser());
   await app.listen(configService.get<number>('PORT') || 3000);
 }
 bootstrap();

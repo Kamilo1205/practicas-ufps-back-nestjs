@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Public } from './auth/decorators/public.decorator';
 import { Roles } from './auth/decorators/roles.decorator';
-import { Role } from './usuarios/enums/role.enum';
+import { Rol } from './auth/enums/rol.enum';
 
 @Controller()
 export class AppController {
@@ -14,13 +14,13 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Roles(Role.Coordinador)
+  @Roles(Rol.Coordinador)
   @Get('coordinador')
   getHelloCoordinador(): string {
     return this.appService.getHello();
   }
 
-  @Roles(Role.Estudiante)
+  @Roles(Rol.Estudiante)
   @Get('estudiante')
   getHelloEstudiante(): string {
     return this.appService.getHello();
