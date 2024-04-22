@@ -22,12 +22,9 @@ export class DocumentoIdentidadService {
   async create(
     createDocumentoIdentidadDto: CreateDocumentoIdentidadDto,
     documento: Express.Multer.File,
+    folderId: string,
   ) {
-    console.log(createDocumentoIdentidadDto.folderId);
-    const documentoId = await this.uploadDocumentoFile(
-      documento,
-      createDocumentoIdentidadDto.folderId,
-    );
+    const documentoId = await this.uploadDocumentoFile(documento, folderId);
     const tipoDocumento = await this.tipoDocumentoService.findOne(
       createDocumentoIdentidadDto.tipoDocumentoId,
     );

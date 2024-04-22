@@ -30,11 +30,13 @@ export class DocumentoIdentidadController {
   @UseInterceptors(FileInterceptor('documento'))
   create(
     @Body() createDocumentoIdentidadDto: CreateDocumentoIdentidadDto,
+    @Body() folderId: string,
     @UploadedFile() documento: Express.Multer.File,
   ) {
     return this.documentoIdentidadService.create(
       createDocumentoIdentidadDto,
       documento,
+      folderId,
     );
   }
 
