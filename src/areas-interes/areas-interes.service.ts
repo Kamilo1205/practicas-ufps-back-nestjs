@@ -23,11 +23,13 @@ export class AreasInteresService {
     return this.areaInteresRepository.find();
   }
 
-  findOne(id: string) {
-    return this.areaInteresRepository.findOne({
+  async findOne(id: string) {
+    const areaInteres = this.areaInteresRepository.findOne({
       where: { id },
       relations: ['estudiantes'],
     });
+    if ( !areaInteres ) throw new AreaInteresNotFoundException(id);
+    return areaInteres;
   }
 
   async update(id: string, updateAreaInteresDto: UpdateAreaInteresDto) {
