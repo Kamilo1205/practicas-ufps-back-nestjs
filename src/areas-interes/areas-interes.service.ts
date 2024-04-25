@@ -24,10 +24,11 @@ export class AreasInteresService {
   }
 
   async findOne(id: string) {
-    const areaInteres = this.areaInteresRepository.findOne({
+    const areaInteres = await this.areaInteresRepository.findOne({
       where: { id },
       relations: ['estudiantes'],
     });
+    console.log(areaInteres);
     if ( !areaInteres ) throw new AreaInteresNotFoundException(id);
     return areaInteres;
   }
