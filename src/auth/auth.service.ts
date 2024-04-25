@@ -1,17 +1,16 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { TokenPayload } from './interfaces';
 import { Rol } from './enums/rol.enum';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
+import { IncorrectPasswordException, NullPasswordException, UserNotFoundException } from './exceptions';
 
 @Injectable()
 export class AuthService {
   private readonly redirectionUrls = {
-    [Rol.Coordinador]: this.configService.get<string>(
-      'COORDINADOR_REDIRECT_URL',
-    ),
+    [Rol.Coordinador]: this.configService.get<string>('COORDINADOR_REDIRECT_URL'),
     [Rol.Director]: this.configService.get<string>('DIRECTOR_REDIRECT_URL'),
     [Rol.Empresa]: this.configService.get<string>('EMPRESA_REDIRECT_URL'),
     [Rol.Estudiante]: this.configService.get<string>('ESTUDIANTE_REDIRECT_URL'),
@@ -29,30 +28,18 @@ export class AuthService {
     const usuario = await this.usuariosService.findOneByEmail(email);
 
     // Caso cuando el usuario no existe
-    if (!usuario) {
-      throw new UnauthorizedException(
-        'No se encontró ningún usuario con el email proporcionado.',
-      );
-    }
+    if (!usuario) throw new UserNotFoundException();
 
     // Caso cuando el usuario tiene `password` como null (posiblemente porque se registró mediante Google)
-    if (usuario.password === null) {
-      throw new UnauthorizedException(
-        'No tienes una contraseña establecida. Por favor, utiliza la opcion Iniciar con Google para acceder a tu cuenta',
-      );
-    }
+    if (usuario.password === null) throw new NullPasswordException();
 
     // Caso cuando la contraseña no coincide
-    if (!bcrypt.compareSync(password, usuario.password)) {
-      throw new UnauthorizedException(
-        'La contraseña proporcionada es incorrecta.',
-      );
-    }
+    if (!bcrypt.compareSync(password, usuario.password)) throw new IncorrectPasswordException();
 
     return usuario;
   }
 
-  getJwtAccessToke(usuarioId: string) {
+  getJwtAccessToken(usuarioId: string) {
     const payload: TokenPayload = { sub: usuarioId };
     const token = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
@@ -74,12 +61,13 @@ export class AuthService {
     return this.redirectionUrls[rol] || this.redirectionUrls.default;
   }
 
+  getUsuario(email: string) {
+    return this.usuariosService.findOneByEmail(email);
+  }
+
   async setCurrentRefreshToken(usuarioId: string, refreshToken: string) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-    await this.usuariosService.updateRefreshToken(
-      usuarioId,
-      currentHashedRefreshToken,
-    );
+    await this.usuariosService.updateRefreshToken(usuarioId, currentHashedRefreshToken);
   }
 
   async removeCurrentRefreshToken(usuarioId: string) {

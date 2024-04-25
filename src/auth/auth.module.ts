@@ -7,7 +7,7 @@ import { AuthController } from './auth.controller';
 import { UsuariosModule } from '../usuarios/usuarios.module';
 
 @Module({
-  imports: [PassportModule, UsuariosModule, JwtModule.register({})],
+  imports: [PassportModule, UsuariosModule, JwtModule],
   controllers: [AuthController],
   providers: [
     AuthService,

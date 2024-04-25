@@ -54,19 +54,20 @@ export class AuthController {
   @UseInterceptors(JwtCookieInterceptor)
   async googleLoginCallback(@Req() req: RequestWithUser, @Res() res: Response) {
     try {
-      const usuario = await this.usuariosService.findOneByEmail(
-        req.user?.email,
+      const usuario = await this.authService.getUsuario(
+        req.user.email,
       );
       if (!usuario) {
         const redirectUrl = this.authService.getSafeRedirectUrl(
           usuario.rol.nombre as Rol,
         );
-        const error = 'Usuario no regitrador';
+        const error = 'Usuario no regitrado';
         return { redirectUrl, error };
       }
 
-      const accessToken = this.authService.getJwtAccessToke(req.user.id);
+      const accessToken = this.authService.getJwtAccessToken(req.user.id);
       const refreshToken = this.authService.getJwtRefreshToken(req.user.id);
+      await this.authService.setCurrentRefreshToken(req.user.id, refreshToken);
       const redirectUrl = this.authService.getSafeRedirectUrl(
         usuario.rol.nombre as Rol,
       );
@@ -100,10 +101,11 @@ export class AuthController {
     @Req() req: RequestWithUser,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const accessToken = this.authService.getJwtAccessToke(req.user.id);
+    const accessToken = this.authService.getJwtAccessToken(req.user.id);
     const refreshToken = this.authService.getJwtRefreshToken(req.user.id);
+    await this.authService.setCurrentRefreshToken(req.user.id, refreshToken);
     return {
-      ususario: req.user,
+      usuario: req.user,
       accessToken,
       refreshToken,
     };
@@ -128,7 +130,7 @@ export class AuthController {
     @Req() req: RequestWithUser,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const accessToken = this.authService.getJwtAccessToke(req.user.id);
+    const accessToken = this.authService.getJwtAccessToken(req.user.id);
     return {
       usuario: req.user,
       accessToken,
