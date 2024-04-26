@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { InsufficientPermissionsException } from '../exceptions';
 
 @Injectable()
 export class PermisosGuard implements CanActivate {
@@ -24,11 +25,7 @@ export class PermisosGuard implements CanActivate {
         (permisoUsuario) => permisoUsuario.nombre === permisoRequerido,
       ),
     );
-    if (!hasPermission) {
-      throw new UnauthorizedException(
-        'Accesso Denegado: Permisos insuficientes',
-      );
-    }
+    if (!hasPermission) throw new InsufficientPermissionsException(requiredPermisos)
     return true;
   }
 }
