@@ -28,7 +28,6 @@ export class AreasInteresService {
       where: { id },
       relations: ['estudiantes'],
     });
-    console.log(areaInteres);
     if ( !areaInteres ) throw new AreaInteresNotFoundException(id);
     return areaInteres;
   }
