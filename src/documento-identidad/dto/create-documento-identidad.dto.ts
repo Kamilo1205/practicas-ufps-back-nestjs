@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty, IsString } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateDocumentoIdentidadDto {
   @IsNotEmpty()
@@ -14,6 +14,6 @@ export class CreateDocumentoIdentidadDto {
   lugarExpedicion: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   tipoDocumentoId: string;
 }

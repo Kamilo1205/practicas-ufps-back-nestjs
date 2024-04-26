@@ -1,22 +1,10 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors, Query } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { DocumentoIdentidadService } from './documento-identidad.service';
-import {
-  CreateDocumentoIdentidadDto,
-  UpdateDocumentoIdentidadDto,
-} from './dto';
+import { CreateDocumentoIdentidadDto, UpdateDocumentoIdentidadDto } from './dto';
 import { Permisos, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums/rol.enum';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { PaginationDto, UuidDto } from 'src/common/dto';
 
 @Controller('documento-identidad')
 export class DocumentoIdentidadController {
@@ -33,44 +21,38 @@ export class DocumentoIdentidadController {
     @Body() folderId: string,
     @UploadedFile() documento: Express.Multer.File,
   ) {
-    return this.documentoIdentidadService.create(
-      createDocumentoIdentidadDto,
-      documento,
-      folderId,
-    );
+    return this.documentoIdentidadService.create( createDocumentoIdentidadDto, documento, folderId );
   }
 
   @Get()
   @Roles(Rol.Coordinador)
-  //@Permisos('obtener-documentos-identidad')
-  findAll() {
-    return this.documentoIdentidadService.findAll();
+  @Permisos('obtener-documentos-identidad')
+  findAll(@Query() { page, limit }: PaginationDto) {
+    console.log(page, limit);
+    return this.documentoIdentidadService.findAll(page, limit);
   }
 
   @Get(':id')
   @Roles(Rol.Coordinador)
-  //@Permisos('obtener-documento-identidad')
-  findOne(@Param('id') id: string) {
+  @Permisos('obtener-documento-identidad')
+  findOne(@Param() { id }: UuidDto) {
     return this.documentoIdentidadService.findOne(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador)
-  //@Permisos('actualizar-documento-identidad')
+  @Permisos('actualizar-documento-identidad')
   update(
-    @Param('id') id: string,
+    @Param() { id }: UuidDto,
     @Body() updateDocumentoIdentidadDto: UpdateDocumentoIdentidadDto,
   ) {
-    return this.documentoIdentidadService.update(
-      id,
-      updateDocumentoIdentidadDto,
-    );
+    return this.documentoIdentidadService.update(id, updateDocumentoIdentidadDto);
   }
 
   @Delete(':id')
-  //@Roles(Rol.Coordinador)
+  @Roles(Rol.Coordinador)
   @Permisos('remover-documento-identidad')
-  remove(@Param('id') id: string) {
+  remove(@Param() { id }: UuidDto) {
     return this.documentoIdentidadService.remove(id);
   }
 }
