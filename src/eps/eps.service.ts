@@ -34,7 +34,7 @@ export class EpsService {
     if ( !eps ) throw new EpsNotFoundException(id);
 
     const { nit } = updateEpsDto;
-    if (nit) {
+    if (nit && eps.nit != nit) {
       const eps = await this.epsRepository.findOneBy({ nit });
       if (eps) throw new EpsExistsException(nit);
     }
