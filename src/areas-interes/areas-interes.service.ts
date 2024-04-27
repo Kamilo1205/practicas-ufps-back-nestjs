@@ -43,7 +43,7 @@ export class AreasInteresService {
     }
     
     await this.areaInteresRepository.update(id, updateAreaInteresDto);
-    return await this.areaInteresRepository.findOneBy({ id });
+    return this.areaInteresRepository.findOneBy({ id });
   }
 
   async remove(id: string) {
