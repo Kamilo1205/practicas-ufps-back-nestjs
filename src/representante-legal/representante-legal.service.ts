@@ -71,7 +71,8 @@ export class RepresentanteLegalService {
       const documentoIdentidadId = representanteLegal.documentoIdentidad.id;
       await this.documentoIdentidadService.update(documentoIdentidadId, updateDocumentoIdentidadDto, documento, folderId);
     }
-    return this.representanteLegalRepository.update(id, updateRepresentanteLegalDto);
+    await this.representanteLegalRepository.update(id, updateRepresentanteLegalDto);
+    return this.representanteLegalRepository.findOneBy({ id });
   }
 
   async remove(id: string) {
