@@ -12,5 +12,6 @@ import { DocumentoIdentidadModule } from 'src/documento-identidad/documento-iden
   ],
   controllers: [RepresentanteLegalController],
   providers: [RepresentanteLegalService],
+  exports: [RepresentanteLegalService]
 })
 export class RepresentanteLegalModule {}

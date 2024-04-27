@@ -1,13 +1,5 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Transform } from 'class-transformer';
 import { DocumentoIdentidad } from 'src/documento-identidad/entities/documento-identidad.entity';
 
 @Entity()
@@ -34,13 +26,11 @@ export class RepresentanteLegal {
   fechaActualizacion: Date;
 
   @DeleteDateColumn()
+  @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion: Date;
 
   // Relaciones
-  @OneToOne(
-    () => DocumentoIdentidad,
-    //(documentoIdentidad) => documentoIdentidad.representanteLegal,
-  )
+  @OneToOne(() => DocumentoIdentidad, (documentoIdentidad) => documentoIdentidad.representanteLegal, { eager: true })
   @JoinColumn()
   documentoIdentidad: DocumentoIdentidad;
 }

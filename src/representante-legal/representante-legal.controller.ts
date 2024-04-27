@@ -1,24 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
-import { RepresentanteLegalService } from './representante-legal.service';
-import {
-  CreateRepresentanteLegalDto,
-  UpdateRepresentanteLegalDto,
-} from './dto';
-import { Roles } from 'src/auth/decorators';
-import { Rol } from 'src/auth/enums/rol.enum';
-import { CreateDocumentoIdentidadDto } from 'src/documento-identidad/dto';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { RepresentanteLegalService } from './representante-legal.service';
+import { CreateRepresentanteLegalDto, UpdateRepresentanteLegalDto } from './dto';
+import { CreateDocumentoIdentidadDto, UpdateDocumentoIdentidadDto } from 'src/documento-identidad/dto';
+import { UuidDto } from 'src/common/dto';
+import { Permisos, Roles } from 'src/auth/decorators';
+import { Rol } from 'src/auth/enums/rol.enum';
 
 @Controller('representante-legal')
 export class RepresentanteLegalController {
@@ -29,47 +16,46 @@ export class RepresentanteLegalController {
   @Post()
   @Roles(Rol.Coordinador)
   @UseInterceptors(FileInterceptor('documento'))
+  @Permisos('crear-representante-legal')
   create(
     @Body() createRepresentanteLegalDto: CreateRepresentanteLegalDto,
     @Body() createDocumentoIdentidadDto: CreateDocumentoIdentidadDto,
-    @Body() folderId: string,
-    @UploadedFile() file: Express.Multer.File,
+    @Body('folderId') folderId: string,
+    @UploadedFile() documento: Express.Multer.File,
   ) {
-    return this.representanteLegalService.create(
-      createRepresentanteLegalDto,
-      createDocumentoIdentidadDto,
-      file,
-      folderId,
-    );
+    return this.representanteLegalService.create( createRepresentanteLegalDto, createDocumentoIdentidadDto, documento, folderId);
   }
 
-  @Roles(Rol.Coordinador)
   @Get()
+  @Roles(Rol.Coordinador)
+  @Permisos('obtener-representantes-legales')
   findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
     return this.representanteLegalService.findAll(page, limit);
   }
 
-  @Roles(Rol.Coordinador)
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Roles(Rol.Coordinador)
+  @Permisos('obtener-representante-legal')
+  findOne(@Param() { id }: UuidDto) {
     return this.representanteLegalService.findOne(id);
   }
 
   @Roles(Rol.Coordinador)
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('documento'))
   update(
-    @Param('id') id: string,
+    @Param() { id }: UuidDto,
     @Body() updateRepresentanteLegalDto: UpdateRepresentanteLegalDto,
+    @Body() UpdateDocumentoIdentidadDto?: UpdateDocumentoIdentidadDto,
+    @Body('folderId') folderId?: string,
+    @UploadedFile() documento?: Express.Multer.File,
   ) {
-    return this.representanteLegalService.update(
-      id,
-      updateRepresentanteLegalDto,
-    );
+    return this.representanteLegalService.update(id, updateRepresentanteLegalDto, UpdateDocumentoIdentidadDto, documento, folderId);
   }
 
   @Roles(Rol.Coordinador)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param() { id }: UuidDto) {
     return this.representanteLegalService.remove(id);
   }
 }
