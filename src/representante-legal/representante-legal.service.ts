@@ -62,7 +62,7 @@ export class RepresentanteLegalService {
     if (!representanteLegal) throw new RepresentanteLegalNotFoundException(id);
 
     const { email } = updateRepresentanteLegalDto;
-    if (email) {
+    if (email && representanteLegal.email != email) {
       const existingRepresentanteLegal = await this.representanteLegalRepository.findOneBy({ email });
       if (existingRepresentanteLegal) throw new RepresentanteLegalExistsException(email);
     }
