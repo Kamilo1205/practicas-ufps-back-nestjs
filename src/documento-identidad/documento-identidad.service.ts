@@ -23,7 +23,7 @@ export class DocumentoIdentidadService {
   ) {
     const { numero, tipoDocumentoId } = createDocumentoIdentidadDto;
     const existingDocumentoIdentidad = await this.documentoIdentidadRepository.findOneBy({ numero });
-    if ( existingDocumentoIdentidad ) throw new DocumentoIdentidadExistsException(numero);
+    if (existingDocumentoIdentidad) throw new DocumentoIdentidadExistsException(numero);
     
     const tipoDocumento = await this.tipoDocumentoService.findOne(tipoDocumentoId);
     const documentoUrl = await this.googleDriveService.uploadFile('Documento', [folderId], documentoFile);
@@ -58,12 +58,19 @@ export class DocumentoIdentidadService {
   async update(id: string, updateDocumentoIdentidadDto: UpdateDocumentoIdentidadDto, documentoFile?: Express.Multer.File, folderId?: string) {
     const documentoIdentidad = await this.documentoIdentidadRepository.findOneBy({ id });
     if (!documentoIdentidad) throw new DocumentoIdentidadNotFoundException(id);
+    
+    const { numero } = updateDocumentoIdentidadDto;
+    if (numero) {
+      const existingDocumentoIdentidad = await this.documentoIdentidadRepository.findOneBy({ numero });
+      if (existingDocumentoIdentidad) throw new DocumentoIdentidadExistsException(numero);
+    }
+    
     if (documentoFile) {
       this.googleDriveService.deleteFile(documentoIdentidad.documentoUrl);
       const documentoUrl = await this.googleDriveService.uploadFile('Documento', [folderId], documentoFile);
-      this.documentoIdentidadRepository.update(id, {...updateDocumentoIdentidadDto, documentoUrl });  
+      await this.documentoIdentidadRepository.update(id, {...updateDocumentoIdentidadDto, documentoUrl });  
     } else {
-      this.documentoIdentidadRepository.update(id,updateDocumentoIdentidadDto);
+      await this.documentoIdentidadRepository.update(id,updateDocumentoIdentidadDto);
     } 
     return await this.documentoIdentidadRepository.findOneBy({ id });
   }
