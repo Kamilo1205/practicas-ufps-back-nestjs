@@ -79,7 +79,7 @@ export class UsuariosService {
     if (usuario) throw new UsuarioNotFoundException(id);
 
     const { email, password } = updateUsuarioDto;
-    if(email) {
+    if(email && usuario.email != email) {
       const existingUsuario = await this.usuariosRepository.findOneBy({ email });
       if (existingUsuario) throw new UsuairoExistsException(email);
     }
