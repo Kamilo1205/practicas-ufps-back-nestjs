@@ -29,8 +29,15 @@ export class PermisosService {
 
   async update(id: string, updatePermisoDto: UpdatePermisoDto) {
     const permiso = await this.permisosRepository.findOneBy({ id });
-    if (!permiso) throw new PermisoNotFoundException(id); 
-    return this.permisosRepository.update(id, updatePermisoDto);
+    if (!permiso) throw new PermisoNotFoundException(id);
+
+    const { nombre } = updatePermisoDto;
+    if (nombre && permiso.nombre) {
+      const permiso = await this.permisosRepository.findOneBy({ nombre });
+      if (permiso) throw new PermisoExistsException(nombre);
+    }
+    await this.permisosRepository.update(id, updatePermisoDto);
+    return this.permisosRepository.findOneBy({ id });
   }
 
   async remove(id: string) {
