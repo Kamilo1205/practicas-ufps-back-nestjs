@@ -34,7 +34,7 @@ export class TipoDocumentoService {
     if (!tipoDocumento) throw new TipoDocumentoNotFoundException(id);
 
     const { nombre } = updateTipoDocumentoDto;
-    if (nombre) {
+    if (nombre && tipoDocumento.nombre != nombre) {
       const existingTipoDocumento = await this.tipoDocumentoRepository.findOneBy({ nombre });
       if (existingTipoDocumento) throw new TipoDocumentoExistsException(nombre);
     }
