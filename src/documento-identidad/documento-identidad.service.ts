@@ -72,7 +72,7 @@ export class DocumentoIdentidadService {
     } else {
       await this.documentoIdentidadRepository.update(id,updateDocumentoIdentidadDto);
     } 
-    return await this.documentoIdentidadRepository.findOneBy({ id });
+    return this.documentoIdentidadRepository.findOneBy({ id });
   }
 
   async remove(id: string) {
