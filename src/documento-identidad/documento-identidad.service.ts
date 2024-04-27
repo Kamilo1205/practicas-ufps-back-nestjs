@@ -60,7 +60,7 @@ export class DocumentoIdentidadService {
     if (!documentoIdentidad) throw new DocumentoIdentidadNotFoundException(id);
     
     const { numero } = updateDocumentoIdentidadDto;
-    if (numero) {
+    if (numero && documentoIdentidad.numero != numero) {
       const existingDocumentoIdentidad = await this.documentoIdentidadRepository.findOneBy({ numero });
       if (existingDocumentoIdentidad) throw new DocumentoIdentidadExistsException(numero);
     }
