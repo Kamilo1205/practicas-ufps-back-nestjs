@@ -76,8 +76,8 @@ export class UsuariosService {
   }
 
   async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
-    const existingUsuario = await this.usuariosRepository.findOneBy({ id });
-    if (existingUsuario) throw new UsuarioNotFoundException(id);
+    const usuario = await this.usuariosRepository.findOneBy({ id });
+    if (usuario) throw new UsuarioNotFoundException(id);
     const { password } = updateUsuarioDto;
     const hashedPassword = password
       ? await bcrypt.hash(password, 10)
