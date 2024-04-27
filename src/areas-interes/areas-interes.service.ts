@@ -14,8 +14,8 @@ export class AreasInteresService {
 
   async create(createAreaInteresDto: CreateAreaInteresDto) {
     const { nombre } = createAreaInteresDto;
-    const existingAreaInteres = await this.areaInteresRepository.findOneBy({ nombre });
-    if (existingAreaInteres) throw new AreaInteresExistsException(nombre);
+    const areaInteres = await this.areaInteresRepository.findOneBy({ nombre });
+    if (areaInteres) throw new AreaInteresExistsException(nombre);
     return this.areaInteresRepository.save(createAreaInteresDto);
   }
 
@@ -35,6 +35,13 @@ export class AreasInteresService {
   async update(id: string, updateAreaInteresDto: UpdateAreaInteresDto) {
     const areaInteres = await this.areaInteresRepository.findOneBy({ id });
     if ( !areaInteres ) throw new AreaInteresNotFoundException(id);
+    
+    const { nombre } = updateAreaInteresDto;
+    if (nombre) {
+      const existingAreaInteres = await this.areaInteresRepository.findOneBy({ nombre });
+      if (existingAreaInteres) throw new AreaInteresExistsException(nombre);
+    }
+    
     await this.areaInteresRepository.update(id, updateAreaInteresDto);
     return await this.areaInteresRepository.findOneBy({ id });
   }
