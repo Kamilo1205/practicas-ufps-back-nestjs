@@ -1,8 +1,9 @@
 import { In, Repository } from 'typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePermisoDto, UpdatePermisoDto } from './dto';
 import { Permiso } from './entities/permiso.entity';
+import { PermisoExistsException, PermisoNotFoundException, PermisosNotFoundException } from './exceptions';
 
 @Injectable()
 export class PermisosService {
@@ -11,7 +12,10 @@ export class PermisosService {
     private readonly permisosRepository: Repository<Permiso>,
   ) {}
 
-  create(createPermisoDto: CreatePermisoDto) {
+  async create(createPermisoDto: CreatePermisoDto) {
+    const { nombre } = createPermisoDto;
+    const permiso = await this.permisosRepository.findOneBy({ nombre });
+    if (permiso) throw new PermisoExistsException(nombre);
     return this.permisosRepository.save(createPermisoDto);
   }
 
@@ -20,24 +24,27 @@ export class PermisosService {
   }
 
   findOne(id: string) {
-    return this.permisosRepository.findOne({ where: { id } });
+    return this.permisosRepository.findOneBy({ id });
   }
 
-  update(id: string, updatePermisoDto: UpdatePermisoDto) {
+  async update(id: string, updatePermisoDto: UpdatePermisoDto) {
+    const permiso = await this.permisosRepository.findOneBy({ id });
+    if (!permiso) throw new PermisoNotFoundException(id); 
     return this.permisosRepository.update(id, updatePermisoDto);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const permiso = await this.permisosRepository.findOneBy({ id });
+    if (!permiso) throw new PermisoNotFoundException(id);
     return this.permisosRepository.softDelete({ id });
   }
 
   async findByIds(ids: string[]) {
     const permisos = await this.permisosRepository.findBy({ id: In(ids) });
-    if (permisos.length !== ids.length) {
-      // Lanzar una excepción si algún ID no devuelve un permiso
-      throw new NotFoundException(
-        `Uno o más permisos no se pudieron encontrar.`,
-      );
+    const foundIds = permisos.map((permiso) => permiso.id);
+    const notFoundIds = ids.filter((id) => !foundIds.includes(id));
+    if (notFoundIds.length > 0) {
+      throw new PermisosNotFoundException(notFoundIds);
     }
     return permisos;
   }
