@@ -1,12 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
 import { Transform } from 'class-transformer';
 import { DocumentoIdentidad } from 'src/documento-identidad/entities/documento-identidad.entity';
 
@@ -29,9 +21,6 @@ export class TipoDocumento {
   fechaEliminacion: Date;
 
   // Relaciones
-  @OneToMany(
-    () => DocumentoIdentidad,
-    (documentoIdentidad) => documentoIdentidad.tipoDocumento,
-  )
+  @OneToMany(() => DocumentoIdentidad, (documentoIdentidad) => documentoIdentidad.tipoDocumento)
   documentos: DocumentoIdentidad[];
 }
