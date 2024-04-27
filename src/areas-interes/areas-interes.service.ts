@@ -15,7 +15,7 @@ export class AreasInteresService {
   async create(createAreaInteresDto: CreateAreaInteresDto) {
     const { nombre } = createAreaInteresDto;
     const existingAreaInteres = await this.areaInteresRepository.findOneBy({ nombre });
-    if ( existingAreaInteres ) throw new AreaInteresExistsException(nombre);
+    if (existingAreaInteres) throw new AreaInteresExistsException(nombre);
     return this.areaInteresRepository.save(createAreaInteresDto);
   }
 
