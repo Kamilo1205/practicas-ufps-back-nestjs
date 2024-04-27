@@ -14,8 +14,8 @@ export class RolesService {
 
   async create(createRoleDto: CreateRoleDto) {
     const { nombre } = createRoleDto;
-    const existingEps = await this.rolesRepository.findOneBy({ nombre });
-    if ( existingEps ) throw new RolExistsException(nombre);
+    const rol = await this.rolesRepository.findOneBy({ nombre });
+    if (rol) throw new RolExistsException(nombre);
     return this.rolesRepository.save(createRoleDto);
   }
 
