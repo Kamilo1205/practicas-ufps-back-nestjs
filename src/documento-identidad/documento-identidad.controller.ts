@@ -14,7 +14,7 @@ export class DocumentoIdentidadController {
 
   @Post()
   @Roles(Rol.Coordinador)
-  //@Permisos('crear-documento-identidad')
+  @Permisos('crear-documento-identidad')
   @UseInterceptors(FileInterceptor('documento'))
   create(
     @Body() createDocumentoIdentidadDto: CreateDocumentoIdentidadDto,
@@ -26,21 +26,21 @@ export class DocumentoIdentidadController {
 
   @Get()
   @Roles(Rol.Coordinador)
-  //@Permisos('obtener-documentos-identidad')
+  @Permisos('obtener-documentos-identidad')
   findAll(@Query() { page, limit }: PaginationDto) {
     return this.documentoIdentidadService.findAll(page, limit);
   }
 
   @Get(':id')
   @Roles(Rol.Coordinador)
-  //@Permisos('obtener-documento-identidad')
+  @Permisos('obtener-documento-identidad')
   findOne(@Param() { id }: UuidDto) {
     return this.documentoIdentidadService.findOne(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador)
-  //@Permisos('actualizar-documento-identidad')
+  @Permisos('actualizar-documento-identidad')
   @UseInterceptors(FileInterceptor('documento'))
   update(
     @Param() { id }: UuidDto,
