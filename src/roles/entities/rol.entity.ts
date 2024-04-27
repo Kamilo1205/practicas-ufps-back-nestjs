@@ -25,7 +25,7 @@ export class Rol {
   @OneToMany(() => Usuario, (usuario) => usuario.rol)
   usuarios: Usuario[];
 
-  @ManyToMany(() => Permiso)
+  @ManyToMany(() => Permiso, { eager: true })
   @JoinTable()
   permisos: Permiso[];
 }

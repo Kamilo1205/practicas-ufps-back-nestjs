@@ -3,6 +3,7 @@ import { RolesService } from './roles.service';
 import { CreateRoleDto, UpdateRoleDto } from './dto';
 import { Permisos, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums/rol.enum';
+import { UuidDto } from 'src/common/dto';
 
 @Controller('roles')
 export class RolesController {
@@ -25,21 +26,21 @@ export class RolesController {
   @Get(':id')
   @Roles(Rol.Coordinador)
   @Permisos('obtener-rol')
-  findOne(@Param() id: string) {
+  findOne(@Param() { id }: UuidDto) {
     return this.rolesService.findOne(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador)
   @Permisos('actualizar-rol')
-  update(@Param() id: string, @Body() updateRoleDto: UpdateRoleDto) {
+  update(@Param() { id }: UuidDto, @Body() updateRoleDto: UpdateRoleDto) {
     return this.rolesService.update(id, updateRoleDto);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador)
   @Permisos('remover-rol')
-  remove(@Param() id: string) {
+  remove(@Param() { id }: UuidDto) {
     return this.rolesService.remove(id);
   }
 }
