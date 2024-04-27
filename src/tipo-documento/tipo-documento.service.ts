@@ -15,7 +15,7 @@ export class TipoDocumentoService {
   async create(createTipoDocumentoDto: CreateTipoDocumentoDto) {
     const { nombre } = createTipoDocumentoDto;
     const tipoDocumento = await this.tipoDocumentoRepository.findOneBy({ nombre });
-    if ( tipoDocumento ) throw new TipoDocumentoExistsException(nombre);
+    if (tipoDocumento) throw new TipoDocumentoExistsException(nombre);
     return this.tipoDocumentoRepository.save(createTipoDocumentoDto);
   }
 
@@ -25,14 +25,22 @@ export class TipoDocumentoService {
 
   async findOne(id: string) {
     const tipoDocumento = await this.tipoDocumentoRepository.findOneBy({ id });
-    if ( !tipoDocumento ) throw new TipoDocumentoNotFoundException(id);
+    if (!tipoDocumento) throw new TipoDocumentoNotFoundException(id);
     return tipoDocumento;
   }
 
   async update(id: string, updateTipoDocumentoDto: UpdateTipoDocumentoDto) {
     const tipoDocumento = await this.tipoDocumentoRepository.findOneBy({ id });
-    if ( !tipoDocumento ) throw new TipoDocumentoNotFoundException(id);
-    return this.tipoDocumentoRepository.update(id, updateTipoDocumentoDto);
+    if (!tipoDocumento) throw new TipoDocumentoNotFoundException(id);
+
+    const { nombre } = updateTipoDocumentoDto;
+    if (nombre) {
+      const existingTipoDocumento = await this.tipoDocumentoRepository.findOneBy({ nombre });
+      if (existingTipoDocumento) throw new TipoDocumentoExistsException(nombre);
+    }
+    
+    await this.tipoDocumentoRepository.update(id, updateTipoDocumentoDto);
+    return this.tipoDocumentoRepository.findOneBy({ id });
   }
 
   async remove(id: string) {
