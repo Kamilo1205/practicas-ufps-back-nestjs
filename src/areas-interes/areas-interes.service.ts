@@ -37,7 +37,7 @@ export class AreasInteresService {
     if (!areaInteres) throw new AreaInteresNotFoundException(id);
     
     const { nombre } = updateAreaInteresDto;
-    if (nombre) {
+    if (nombre && areaInteres.nombre) {
       const existingAreaInteres = await this.areaInteresRepository.findOneBy({ nombre });
       if (existingAreaInteres) throw new AreaInteresExistsException(nombre);
     }
