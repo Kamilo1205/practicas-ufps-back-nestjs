@@ -25,21 +25,21 @@ export class RolesController {
   @Get(':id')
   @Roles(Rol.Coordinador)
   @Permisos('obtener-rol')
-  findOne(@Param('id') id: string) {
+  findOne(@Param() id: string) {
     return this.rolesService.findOne(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador)
   @Permisos('actualizar-rol')
-  update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
+  update(@Param() id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.rolesService.update(id, updateRoleDto);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador)
   @Permisos('remover-rol')
-  remove(@Param('id') id: string) {
+  remove(@Param() id: string) {
     return this.rolesService.remove(id);
   }
 }
