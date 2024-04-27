@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { AddPermisosDto, CreateUsuarioDto, UpdateUsuarioDto } from './dto';
 import { Rol } from '../auth/enums/rol.enum';

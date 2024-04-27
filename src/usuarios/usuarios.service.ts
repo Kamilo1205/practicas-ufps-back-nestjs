@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
 import { CreateUsuarioDto, UpdateUsuarioDto } from './dto';
 import { Usuario } from './entities/usuario.entity';
 import { PermisosService } from '../permisos/permisos.service';
+import { UsuairoExistsException, UsuarioNotFoundException } from './exceptions';
 
 @Injectable()
 export class UsuariosService {
@@ -15,12 +16,15 @@ export class UsuariosService {
   ) {}
 
   async create(createUsuarioDto: CreateUsuarioDto) {
-    const { password } = createUsuarioDto;
+    const { email, password } = createUsuarioDto;
+    const usuarioExists = await this.usuariosRepository.findOneBy({ email });
+    if (usuarioExists) throw new UsuairoExistsException(email);
     const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
-    return this.usuariosRepository.save({
+    const usuario = this.usuariosRepository.create({
       ...createUsuarioDto,
       password: hashedPassword,
     });
+    return this.usuariosRepository.save(usuario);
   }
 
   async findAll(page = 1, limit = 10) {
@@ -37,29 +41,32 @@ export class UsuariosService {
     return { data, total };
   }
 
-  findOne(
+  async findOne(
     id: string,
     relations: string[] = ['empresa', 'estudiante', 'rol', 'permisos'],
   ) {
-    return this.usuariosRepository.findOne({
+    const usuario = await this.usuariosRepository.findOne({
       where: { id },
       relations,
     });
+    if (!usuario) throw new UsuarioNotFoundException(id);
+    return usuario;
   }
 
-  findOneByEmail(
+  async findOneByEmail(
     email: string,
     relations: string[] = ['empresa', 'estudiante', 'rol', 'permisos'],
   ) {
-    return this.usuariosRepository.findOne({
+    const usuario = await this.usuariosRepository.findOne({
       where: { email },
       relations,
     });
+    if (!usuario) throw new UsuarioNotFoundException(email);
+    return usuario;
   }
 
   async getUserIfRefreshTokenMatches(usuarioId: string, refreshToken: string) {
     const usuario = await this.findOne(usuarioId);
-
     const isRefreshTokenMatching = await bcrypt.compare(
       refreshToken,
       usuario.currentHashedRefreshToken,
@@ -69,6 +76,8 @@ export class UsuariosService {
   }
 
   async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
+    const usuarioExists = await this.usuariosRepository.findOneBy({ id });
+    if (usuarioExists) throw new UsuarioNotFoundException(id);
     const { password } = updateUsuarioDto;
     const hashedPassword = password
       ? await bcrypt.hash(password, 10)
@@ -90,15 +99,15 @@ export class UsuariosService {
       where: { id },
       relations: ['permisos'],
     });
-    if (!usuario)
-      throw new NotFoundException(`Usuario con ID ${id} no encontrado.`);
-
+    if (!usuario) throw new UsuarioNotFoundException(id);
     const permisos = await this.permisosService.findByIds(permisosIds);
     usuario.permisos = [...usuario.permisos, ...permisos];
     return this.usuariosRepository.save(usuario);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const usuarioExists = await this.usuariosRepository.findOneBy({ id });
+    if (usuarioExists) throw new UsuarioNotFoundException(id);
     return this.usuariosRepository.softDelete({ id });
   }
 
