@@ -17,8 +17,8 @@ export class UsuariosService {
 
   async create(createUsuarioDto: CreateUsuarioDto) {
     const { email, password } = createUsuarioDto;
-    const usuarioExists = await this.usuariosRepository.findOneBy({ email });
-    if (usuarioExists) throw new UsuairoExistsException(email);
+    const existingUsuario = await this.usuariosRepository.findOneBy({ email });
+    if (existingUsuario) throw new UsuairoExistsException(email);
     const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
     const usuario = this.usuariosRepository.create({
       ...createUsuarioDto,
@@ -76,8 +76,8 @@ export class UsuariosService {
   }
 
   async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
-    const usuarioExists = await this.usuariosRepository.findOneBy({ id });
-    if (usuarioExists) throw new UsuarioNotFoundException(id);
+    const existingUsuario = await this.usuariosRepository.findOneBy({ id });
+    if (existingUsuario) throw new UsuarioNotFoundException(id);
     const { password } = updateUsuarioDto;
     const hashedPassword = password
       ? await bcrypt.hash(password, 10)
