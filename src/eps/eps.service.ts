@@ -14,8 +14,8 @@ export class EpsService {
 
   async create(createEpsDto: CreateEpsDto) {
     const { nit } = createEpsDto;
-    const existingEps = await this.epsRepository.findOneBy({ nit });
-    if ( existingEps ) throw new EpsExistsException(nit);
+    const eps = await this.epsRepository.findOneBy({ nit });
+    if (eps) throw new EpsExistsException(nit);
     return this.epsRepository.create(createEpsDto);
   }
 
@@ -32,7 +32,15 @@ export class EpsService {
   async update(id: string, updateEpsDto: UpdateEpsDto) {
     const eps = await this.epsRepository.findOneBy({ id });
     if ( !eps ) throw new EpsNotFoundException(id);
-    return this.epsRepository.update(id, updateEpsDto);
+
+    const { nit } = updateEpsDto;
+    if (nit) {
+      const eps = await this.epsRepository.findOneBy({ nit });
+      if (eps) throw new EpsExistsException(nit);
+    }
+    
+    await this.epsRepository.update(id, updateEpsDto);
+    return this.epsRepository.findOneBy({ id });
   }
 
   async remove(id: string) {
