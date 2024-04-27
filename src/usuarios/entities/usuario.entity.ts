@@ -41,7 +41,7 @@ export class Usuario {
   fechaEliminacion?: Date; // Fecha y hora de eliminación lógica del registro de usuario (si se aplica).
 
   // Relaciones
-  @ManyToOne(() => Rol, (rol) => rol.usuarios)
+  @ManyToOne(() => Rol, (rol) => rol.usuarios, { eager: true })
   rol: Rol; // Rol del usuario.
 
   @ManyToMany(() => Permiso)

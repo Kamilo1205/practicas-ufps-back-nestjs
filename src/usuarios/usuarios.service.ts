@@ -34,8 +34,7 @@ export class UsuariosService {
       skip: skip,
       order: {
         fechaCreacion: 'DESC',
-      },
-      relations: ['rol'],
+      }
     });
 
     return { data, total };
@@ -43,7 +42,7 @@ export class UsuariosService {
 
   async findOne(
     id: string,
-    relations: string[] = ['empresa', 'estudiante', 'rol', 'permisos'],
+    relations: string[] = ['empresa', 'estudiante', 'permisos'],
   ) {
     const usuario = await this.usuariosRepository.findOne({
       where: { id },
@@ -55,7 +54,7 @@ export class UsuariosService {
 
   async findOneByEmail(
     email: string,
-    relations: string[] = ['empresa', 'estudiante', 'rol', 'permisos'],
+    relations: string[] = ['empresa', 'estudiante', 'permisos'],
   ) {
     const usuario = await this.usuariosRepository.findOne({
       where: { email },
@@ -78,14 +77,21 @@ export class UsuariosService {
   async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
     const usuario = await this.usuariosRepository.findOneBy({ id });
     if (usuario) throw new UsuarioNotFoundException(id);
-    const { password } = updateUsuarioDto;
+
+    const { email, password } = updateUsuarioDto;
+    if(email) {
+      const existingUsuario = await this.usuariosRepository.findOneBy({ email });
+      if (existingUsuario) throw new UsuairoExistsException(email);
+    }
+
     const hashedPassword = password
       ? await bcrypt.hash(password, 10)
       : undefined;
-    return this.usuariosRepository.update(id, {
+    await this.usuariosRepository.update(id, {
       ...updateUsuarioDto,
       ...(hashedPassword && { password: hashedPassword }),
     });
+    return this.usuariosRepository.findOneBy({ id });
   }
 
   updateRefreshToken(id: string, refreshToken: string) {
