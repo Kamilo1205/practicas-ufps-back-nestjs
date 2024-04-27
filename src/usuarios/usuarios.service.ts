@@ -60,7 +60,6 @@ export class UsuariosService {
       where: { email },
       relations,
     });
-    if (!usuario) throw new UsuarioNotFoundException(email);
     return usuario;
   }
 
