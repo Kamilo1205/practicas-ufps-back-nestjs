@@ -14,8 +14,8 @@ export class TipoDocumentoService {
 
   async create(createTipoDocumentoDto: CreateTipoDocumentoDto) {
     const { nombre } = createTipoDocumentoDto;
-    const existingEps = await this.tipoDocumentoRepository.findOneBy({ nombre });
-    if ( existingEps ) throw new TipoDocumentoExistsException(nombre);
+    const tipoDocumento = await this.tipoDocumentoRepository.findOneBy({ nombre });
+    if ( tipoDocumento ) throw new TipoDocumentoExistsException(nombre);
     return this.tipoDocumentoRepository.save(createTipoDocumentoDto);
   }
 
