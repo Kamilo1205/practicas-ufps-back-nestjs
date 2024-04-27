@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Readable } from 'stream';
 import { CreateDocumentoIdentidadDto, UpdateDocumentoIdentidadDto } from './dto';
+import { DocumentoIdentidadExistsException, DocumentoIdentidadNotFoundException } from './exceptions';
 import { DocumentoIdentidad } from './entities/documento-identidad.entity';
 import { GoogleDriveService } from 'src/google-drive/google-drive.service';
 import { TipoDocumentoService } from 'src/tipo-documento/tipo-documento.service';
-import { DocumentoIdentidadExistsException, DocumentoIdentidadNotFoundException } from './exceptions';
 
 @Injectable()
 export class DocumentoIdentidadService {
@@ -19,15 +18,15 @@ export class DocumentoIdentidadService {
 
   async create(
     createDocumentoIdentidadDto: CreateDocumentoIdentidadDto,
-    documento: Express.Multer.File,
+    documentoFile: Express.Multer.File,
     folderId: string,
   ) {
     const { numero, tipoDocumentoId } = createDocumentoIdentidadDto;
-    const existingDocumentoIdentidad = this.documentoIdentidadRepository.findBy({ numero });
+    const existingDocumentoIdentidad = await this.documentoIdentidadRepository.findOneBy({ numero });
     if ( existingDocumentoIdentidad ) throw new DocumentoIdentidadExistsException(numero);
     
     const tipoDocumento = await this.tipoDocumentoService.findOne(tipoDocumentoId);
-    const documentoUrl = await this.uploadDocumentoFile(documento, folderId);
+    const documentoUrl = await this.googleDriveService.uploadFile('Documento', [folderId], documentoFile);
 
     const documentoIdentidad = this.documentoIdentidadRepository.create({
       ...createDocumentoIdentidadDto,
@@ -56,10 +55,16 @@ export class DocumentoIdentidadService {
     return documentoIdentidad;
   }
 
-  async update(id: string, updateDocumentoIdentidadDto: UpdateDocumentoIdentidadDto) {
+  async update(id: string, updateDocumentoIdentidadDto: UpdateDocumentoIdentidadDto, documentoFile?: Express.Multer.File, folderId?: string) {
     const documentoIdentidad = await this.documentoIdentidadRepository.findOneBy({ id });
     if (!documentoIdentidad) throw new DocumentoIdentidadNotFoundException(id);
-    this.documentoIdentidadRepository.update(id,updateDocumentoIdentidadDto);
+    if (documentoFile) {
+      this.googleDriveService.deleteFile(documentoIdentidad.documentoUrl);
+      const documentoUrl = await this.googleDriveService.uploadFile('Documento', [folderId], documentoFile);
+      this.documentoIdentidadRepository.update(id, {...updateDocumentoIdentidadDto, documentoUrl });  
+    } else {
+      this.documentoIdentidadRepository.update(id,updateDocumentoIdentidadDto);
+    } 
     return await this.documentoIdentidadRepository.findOneBy({ id });
   }
 
@@ -67,17 +72,5 @@ export class DocumentoIdentidadService {
     const documentoIdentidad = await this.documentoIdentidadRepository.findOneBy({ id });
     if (!documentoIdentidad) throw new DocumentoIdentidadNotFoundException(id);
     return this.documentoIdentidadRepository.remove(documentoIdentidad);
-  }
-
-  uploadDocumentoFile(file: Express.Multer.File, folderParentId: string) {
-    const fileMetadata = {
-      name: 'Documento de Identidad',
-      parents: [folderParentId],
-    };
-    const media = {
-      mimeType: file.mimetype,
-      body: Readable.from(file.buffer),
-    };
-    return this.googleDriveService.uploadFile(fileMetadata, media);
   }
 }

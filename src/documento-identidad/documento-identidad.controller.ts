@@ -18,7 +18,7 @@ export class DocumentoIdentidadController {
   @UseInterceptors(FileInterceptor('documento'))
   create(
     @Body() createDocumentoIdentidadDto: CreateDocumentoIdentidadDto,
-    @Body() folderId: string,
+    @Body('folderId') folderId: string,
     @UploadedFile() documento: Express.Multer.File,
   ) {
     return this.documentoIdentidadService.create( createDocumentoIdentidadDto, documento, folderId );
@@ -26,27 +26,29 @@ export class DocumentoIdentidadController {
 
   @Get()
   @Roles(Rol.Coordinador)
-  @Permisos('obtener-documentos-identidad')
+  //@Permisos('obtener-documentos-identidad')
   findAll(@Query() { page, limit }: PaginationDto) {
-    console.log(page, limit);
     return this.documentoIdentidadService.findAll(page, limit);
   }
 
   @Get(':id')
   @Roles(Rol.Coordinador)
-  @Permisos('obtener-documento-identidad')
+  //@Permisos('obtener-documento-identidad')
   findOne(@Param() { id }: UuidDto) {
     return this.documentoIdentidadService.findOne(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador)
-  @Permisos('actualizar-documento-identidad')
+  //@Permisos('actualizar-documento-identidad')
+  @UseInterceptors(FileInterceptor('documento'))
   update(
     @Param() { id }: UuidDto,
     @Body() updateDocumentoIdentidadDto: UpdateDocumentoIdentidadDto,
+    @Body('folderId') folderId: string,
+    @UploadedFile() documento: Express.Multer.File,
   ) {
-    return this.documentoIdentidadService.update(id, updateDocumentoIdentidadDto);
+    return this.documentoIdentidadService.update(id, updateDocumentoIdentidadDto, documento, folderId);
   }
 
   @Delete(':id')
