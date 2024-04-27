@@ -25,21 +25,21 @@ export class TipoDocumentoController {
   @Get(':id')
   @Roles(Rol.Coordinador)
   @Permisos('obtener-tipo-documento')
-  findOne(@Param('id') { id }: UuidDto) {
+  findOne(@Param() { id }: UuidDto) {
     return this.tipoDocumentoService.findOne(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador)
   @Permisos('actualizar-tipo-documento')
-  update(@Param('id') { id }: UuidDto, @Body() updateTipoDocumentoDto: UpdateTipoDocumentoDto) {
+  update(@Param() { id }: UuidDto, @Body() updateTipoDocumentoDto: UpdateTipoDocumentoDto) {
     return this.tipoDocumentoService.update(id, updateTipoDocumentoDto);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador)
   @Permisos('remover-tipo-documento')
-  remove(@Param('id') { id }: UuidDto) {
+  remove(@Param() { id }: UuidDto) {
     return this.tipoDocumentoService.remove(id);
   }
 }
