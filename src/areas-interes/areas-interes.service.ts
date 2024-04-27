@@ -28,13 +28,13 @@ export class AreasInteresService {
       where: { id },
       relations: ['estudiantes'],
     });
-    if ( !areaInteres ) throw new AreaInteresNotFoundException(id);
+    if (!areaInteres) throw new AreaInteresNotFoundException(id);
     return areaInteres;
   }
 
   async update(id: string, updateAreaInteresDto: UpdateAreaInteresDto) {
     const areaInteres = await this.areaInteresRepository.findOneBy({ id });
-    if ( !areaInteres ) throw new AreaInteresNotFoundException(id);
+    if (!areaInteres) throw new AreaInteresNotFoundException(id);
     
     const { nombre } = updateAreaInteresDto;
     if (nombre) {
