@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto, UpdateRoleDto } from './dto';
 import { Permisos, Roles } from 'src/auth/decorators';
