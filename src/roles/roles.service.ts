@@ -41,6 +41,10 @@ export class RolesService {
     return rol;
   }
 
+  findOneByNombre(nombre: string) {
+    return this.rolesRepository.findOneBy({ nombre });
+  }
+
   async update(id: string, updateRoleDto: UpdateRoleDto) {
     const existingRol = await this.rolesRepository.findOneBy({ id });
     if ( !existingRol ) throw new RolNotFoundException(id);
