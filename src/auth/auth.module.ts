@@ -5,9 +5,10 @@ import { JwtStrategy, GoogleStrategy, LocalStrategy, JwtRefreshTokenStrategy } f
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsuariosModule } from '../usuarios/usuarios.module';
+import { RolesModule } from 'src/roles/roles.module';
 
 @Module({
-  imports: [PassportModule, UsuariosModule, JwtModule],
+  imports: [PassportModule, UsuariosModule, JwtModule, RolesModule],
   controllers: [AuthController],
   providers: [
     AuthService,

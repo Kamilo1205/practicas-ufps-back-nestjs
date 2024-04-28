@@ -7,6 +7,7 @@ import {
   Post,
   HttpCode,
   UseInterceptors,
+  Body,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
@@ -22,6 +23,7 @@ import { AuthService } from './auth.service';
 import { Rol } from './enums/rol.enum';
 import { UsuariosService } from '../usuarios/usuarios.service';
 import { JwtCookieInterceptor } from './interceptors/jwt-cookie.interceptor';
+import { CreateUsuarioEmpresaDto } from './dto';
 
 /**
  * Controlador para manejar la autenticación de usuarios.
@@ -29,10 +31,14 @@ import { JwtCookieInterceptor } from './interceptors/jwt-cookie.interceptor';
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly authService: AuthService,
-    private readonly usuariosService: UsuariosService,
-    private configService: ConfigService,
+    private readonly authService: AuthService
   ) {}
+
+  @Post('register')
+  @Public()
+  register(@Body() createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
+    this.authService.crearUsuarioEmpresa(createUsuarioEmpresaDto);
+  }
 
   /**
    * Inicia el flujo de autenticación con Google OAuth.

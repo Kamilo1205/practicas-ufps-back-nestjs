@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
+import { CreateUsuarioEmpresaDto } from './dto';
+import { IncorrectPasswordException, NullPasswordException, UserNotFoundException } from './exceptions';
 import { TokenPayload } from './interfaces';
 import { Rol } from './enums/rol.enum';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
-import { IncorrectPasswordException, NullPasswordException, UserNotFoundException } from './exceptions';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class AuthService {
@@ -22,9 +24,21 @@ export class AuthService {
     private readonly usuariosService: UsuariosService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly rolesService: RolesService
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async crearUsuarioEmpresa(createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
+    const { id: rolId } = await this.rolesService.findOneByNombre(Rol.Empresa);
+    return this.usuariosService.create({
+      ...createUsuarioEmpresaDto, 
+      rolId,
+      estaActivo: true,
+      emailConfirmado: undefined,
+      estaRegistrado: false
+    });
+  }
+
+  async validateUser(email: string, password: string) {
     const usuario = await this.usuariosService.findOneByEmail(email);
 
     // Caso cuando el usuario no existe
