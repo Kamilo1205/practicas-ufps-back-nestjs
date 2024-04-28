@@ -1,13 +1,18 @@
+import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Repository, Connection } from 'typeorm';
-import { Readable } from 'stream';
 import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
+import { EmpresaExistsException, EmpresaNotFoundException, UsuarioAlreadyHasEmpresaException } from './exceptions';
 import { Empresa } from './entities/empresa.entity';
 import { GoogleDriveService } from 'src/google-drive/google-drive.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
-import { CreateRepresentanteLegalDto } from 'src/representante-legal/dto';
+import { CreateRepresentanteLegalDto, UpdateRepresentanteLegalDto } from 'src/representante-legal/dto';
+import { RepresentanteLegalService } from 'src/representante-legal/representante-legal.service';
+import { CreateDocumentoIdentidadDto, UpdateDocumentoIdentidadDto } from 'src/documento-identidad/dto';
+import { DocumentosService } from 'src/documentos/documentos.service';
+import { CreateUsuarioDto, UpdateUsuarioDto } from 'src/usuarios/dto';
+import { UsuariosService } from 'src/usuarios/usuarios.service';
 
 @Injectable()
 export class EmpresasService {
@@ -15,39 +20,71 @@ export class EmpresasService {
     this.configService.get<string>('FOLDER_EMPRESAS_ID');
 
   constructor(
-    private connection: Connection,
     @InjectRepository(Empresa)
-    private empresasRepository: Repository<Empresa>,
-    private googleDriveService: GoogleDriveService,
-    private configService: ConfigService,
+    private readonly empresasRepository: Repository<Empresa>,
+    private readonly googleDriveService: GoogleDriveService,
+    private readonly representanteLegalService: RepresentanteLegalService,
+    private readonly documentosService: DocumentosService,
+    private readonly usuariosService: UsuariosService,
+    private readonly configService: ConfigService,
   ) {}
 
   async create(
     createEmpresaDto: CreateEmpresaDto,
-    createRepresentanteLegalDto: CreateRepresentanteLegalDto,
     usuario: Usuario,
-    files: any,
+    camara: Express.Multer.File,
+    rut: Express.Multer.File
   ) {
-    try {
-      const { nit, nombre } = createEmpresaDto;
-      const folderEmpresaId = await this.googleDriveService.createFolder(
-        `${nit}-${nombre}`,
-        this.folderEmpresasId,
-      );
+    if (usuario.empresa) throw new UsuarioAlreadyHasEmpresaException(usuario.id);
+    const { nit, nombre } = createEmpresaDto;
+    const exisitingEmpresa = await this.empresasRepository.findOneBy({ nit });
+    if (exisitingEmpresa) throw new EmpresaExistsException(nit);
 
-      /* const { rut, camara, documento, solicitudConvenio } = files;
-      const [rutId, nitId, solicitudConvenio] = Promise.all([
-        this.uploadFile(`${nit}-rut`, folderEmpresaId, rut[0]),
-        this.uploadFile(`${nit}-camara`, folderEmpresaId, camara[0]),
-        this.uploadFile(
-          `${nit}-solicitud-convenio`,
-          folderEmpresaId,
-          solicitudConvenio[0],
-        ),
-      ]); */
-    } catch (error) {
-      console.log(error);
-    }
+    const folderNombre = `${nit}-${nombre}`;
+    const folderEmpresaId = await this.googleDriveService.createFolder(folderNombre, this.folderEmpresasId);
+    const [camaraComercialUrl, rutUrl] = await Promise.all([
+      this.googleDriveService.uploadFile(`${nit}_Camara`, [folderEmpresaId], camara),
+      this.googleDriveService.uploadFile(`${nit}_Rut`, [folderEmpresaId], rut),
+    ]);
+
+    const empresa = this.empresasRepository.create({
+      ...createEmpresaDto,
+      usuario,
+      camaraComercialUrl,
+      rutUrl,
+      googleDriveFolderId: folderEmpresaId
+    });
+    return this.empresasRepository.save(empresa);
+  }
+
+  async createWithUsuario(
+    createEmpresaDto: CreateEmpresaDto,
+    createUsuario: CreateUsuarioDto,
+    camara: Express.Multer.File,
+    rut: Express.Multer.File
+  ) {
+    const usuario = await this.usuariosService.create(createUsuario);
+    return this.create(createEmpresaDto, usuario, camara, rut);
+  }
+
+  async createRepresentanteLegal(
+    id: string,
+    createRepresentanteLegalDto: CreateRepresentanteLegalDto, 
+    createDocumentoIdentidadDto: CreateDocumentoIdentidadDto,
+    documento: Express.Multer.File
+  ) {
+    const exisitingEmpresa = await this.empresasRepository.findOneBy({ id });
+    if (exisitingEmpresa) throw new EmpresaExistsException(id);
+
+    const { googleDriveFolderId } = exisitingEmpresa;
+    const representanteLegal = await this.representanteLegalService.create(
+      createRepresentanteLegalDto, 
+      createDocumentoIdentidadDto, 
+      documento,
+      googleDriveFolderId
+    );
+    const empresa = this.empresasRepository.create({ representanteLegal });
+    return this.empresasRepository.update(id, empresa);
   }
 
   async findAll(page = 1, limit = 10) {
@@ -65,30 +102,101 @@ export class EmpresasService {
   }
 
   findOne(id: string) {
+    const empresa = this.empresasRepository.findOneBy({ id });
+    if (!empresa) throw new EmpresaNotFoundException(id);
     return this.empresasRepository.findOne({
       where: { id },
       relations: ['usuario'],
     });
   }
 
-  update(id: string, updateEmpresaDto: UpdateEmpresaDto) {
-    return `This action updates a #${id} empresa`;
+  async update(id: string, updateEmpresaDto: UpdateEmpresaDto, camara: Express.Multer.File, rut: Express.Multer.File) {
+    const empresa = await this.empresasRepository.findOneBy({ id });
+    if (!empresa) throw new EmpresaNotFoundException(id);
+
+    const { nit, googleDriveFolderId: folderEmpresaId } = empresa;
+    const { nombre } = updateEmpresaDto;
+    if (nombre) {
+      await this.googleDriveService.renameFolder(folderEmpresaId, `${nit}-${nombre}`);
+    }
+
+    if (camara && rut) {
+      const [camaraComercialUrl, rutUrl] = await Promise.all([
+        this.googleDriveService.uploadFile(`${nit}_Camara`, [folderEmpresaId], camara),
+        this.googleDriveService.uploadFile(`${nit}_Rut`, [folderEmpresaId], rut),
+        this.googleDriveService.deleteFile(empresa.camaraComercialUrl),
+        this.googleDriveService.deleteFile(empresa.rutUrl),
+      ]);
+      await this.empresasRepository.update(id, { ...updateEmpresaDto, camaraComercialUrl, rutUrl });
+    }
+
+    if (camara) {
+      const [camaraComercialUrl] = await Promise.all([
+        this.googleDriveService.uploadFile(`${nit}_Camara`, [folderEmpresaId], camara),
+        this.googleDriveService.deleteFile(empresa.camaraComercialUrl),
+      ]);
+      await this.empresasRepository.update(id, { ...updateEmpresaDto, camaraComercialUrl });
+    }
+
+    if (rut) {
+      const [rutUrl] = await Promise.all([
+        this.googleDriveService.uploadFile(`${nit}_Rut`, [folderEmpresaId], rut),
+        this.googleDriveService.deleteFile(empresa.rutUrl),
+      ]);
+      await this.empresasRepository.update(id, { ...updateEmpresaDto, rutUrl });
+    }
+    return this.empresasRepository.findOneBy({ id });
   }
 
-  remove(id: string) {
+  async updateRepresentanteLegal(
+    id: string,
+    updateRepresentanteLegalDto: UpdateRepresentanteLegalDto, 
+    updateDocumentoIdentidadDto: UpdateDocumentoIdentidadDto,
+    documento: Express.Multer.File
+  ) {
+    const exisitingEmpresa = await this.empresasRepository.findOneBy({ id });
+    if (exisitingEmpresa) throw new EmpresaExistsException(id);
+
+    const { representanteLegal, googleDriveFolderId } = exisitingEmpresa;
+    await this.representanteLegalService.update(
+      representanteLegal.id,
+      updateRepresentanteLegalDto, 
+      updateDocumentoIdentidadDto, 
+      documento,
+      googleDriveFolderId
+    );
+  }
+
+  async updateWithUsuario(
+    id: string,
+    updateEmpresaDto: UpdateEmpresaDto,
+    updateUsuarioDto: UpdateUsuarioDto,
+    camara: Express.Multer.File,
+    rut: Express.Multer.File
+  ) {
+    const exisitingEmpresa = await this.empresasRepository.findOneBy({ id });
+    if (exisitingEmpresa) throw new EmpresaExistsException(id);
+
+    const { usuario } = exisitingEmpresa;
+    await this.usuariosService.update(usuario.id, updateUsuarioDto);
+    return this.update(id, updateEmpresaDto, camara, rut);
+  }
+
+  async remove(id: string) {
+    const empresa = await this.empresasRepository.findOneBy({ id });
+    if (empresa) throw new EmpresaNotFoundException(id);
     return this.empresasRepository.softDelete({ id });
   }
 
-  uploadFile(name: string, folderEmpresaId: string, file: Express.Multer.File) {
-    const fileMetadata = {
-      name,
-      parents: [folderEmpresaId],
-      public: false,
-    };
-    const media = {
-      mimeType: file.mimetype,
-      body: Readable.from(file.buffer),
-    };
-    return this.googleDriveService.uploadFile(fileMetadata, media);
+  getConvenioDocument(usuario: Usuario) {
+    return this.documentosService.generateConveioDocument(usuario);
+  }
+
+  async uploadConvenioDocument(usuario: Usuario, documento: Express.Multer.File) {
+    const { id, googleDriveFolderId } = usuario.empresa;
+    const empresa = await this.empresasRepository.findOneBy({ id });
+    if (empresa) throw new EmpresaNotFoundException(id);
+    const convenioId = this.googleDriveService.uploadFile('Convenio', [googleDriveFolderId], documento);
+    console.log(convenioId);
   }
 }

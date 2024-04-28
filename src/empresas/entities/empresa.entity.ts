@@ -1,21 +1,13 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { RepresentanteLegal } from 'src/representante-legal/entities/representante-legal.entity';
 
 @Entity()
 export class Empresa {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column()
   nombre: string;
 
   @Column()
@@ -30,11 +22,11 @@ export class Empresa {
   @Column()
   pais: string;
 
-  @Column()
+  @Column({ nullable: true })
   departamento: string;
 
   @Column()
-  municipio: string;
+  ciudad: string;
 
   @Column()
   industria: string;
@@ -61,4 +53,8 @@ export class Empresa {
   @OneToOne(() => Usuario, (usuario) => usuario.empresa)
   @JoinColumn()
   usuario: Usuario;
+
+  @ManyToOne(() => RepresentanteLegal, (representanteLegal) => representanteLegal.empresas)
+  @JoinColumn()
+  representanteLegal: RepresentanteLegal;
 }

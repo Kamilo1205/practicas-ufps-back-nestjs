@@ -23,7 +23,7 @@ export class CreateEmpresaDto {
 
   @IsNotEmpty()
   @IsString()
-  municipio: string;
+  ciudad: string;
 
   @IsNotEmpty()
   @IsString()
