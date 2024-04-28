@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateRoleDto, UpdateRoleDto } from './dto';
 import { Rol } from './entities/rol.entity';
-import { RolExistsException, RolNotFoundException } from './exceptions';
+import { RolExistsException, RolNombreNotFoundException, RolNotFoundException } from './exceptions';
 import { PermisosService } from 'src/permisos/permisos.service';
 
 @Injectable()
@@ -41,8 +41,10 @@ export class RolesService {
     return rol;
   }
 
-  findOneByNombre(nombre: string) {
-    return this.rolesRepository.findOneBy({ nombre });
+  async findOneByNombre(nombre: string) {
+    const rol = await this.rolesRepository.findOneBy({ nombre });
+    if (!rol) throw new RolNombreNotFoundException(nombre);
+    return rol;
   }
 
   async update(id: string, updateRoleDto: UpdateRoleDto) {
