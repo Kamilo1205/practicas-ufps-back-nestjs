@@ -37,7 +37,7 @@ export class AuthController {
   @Post('register')
   @Public()
   register(@Body() createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
-    this.authService.crearUsuarioEmpresa(createUsuarioEmpresaDto);
+    return this.authService.crearUsuarioEmpresa(createUsuarioEmpresaDto);
   }
 
   /**
