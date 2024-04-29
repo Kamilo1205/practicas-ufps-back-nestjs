@@ -23,21 +23,21 @@ export class EpsController {
 
   @Get(':id')
   @Roles(Rol.Coordinador)
-  @Permisos('crear-eps')
+  @Permisos('obtener-eps')
   findOne(@Param() { id }: UuidDto) {
     return this.epsService.findOne(id);
   }
   
   @Patch(':id')
   @Roles(Rol.Coordinador)
-  @Permisos('crear-eps')
+  @Permisos('actualizar-eps')
   update(@Param() { id }: UuidDto, @Body() updateEpDto: UpdateEpsDto) {
     return this.epsService.update(id, updateEpDto);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador)
-  @Permisos('crear-eps')
+  @Permisos('remover-eps')
   remove(@Param() { id }: UuidDto) {
     return this.epsService.remove(id);
   }
