@@ -15,8 +15,8 @@ export class RepresentanteLegalController {
 
   @Post()
   @Roles(Rol.Coordinador)
-  @UseInterceptors(FileInterceptor('documento'))
   @Permisos('crear-representante-legal')
+  @UseInterceptors(FileInterceptor('documento'))
   create(
     @Body() createRepresentanteLegalDto: CreateRepresentanteLegalDto,
     @Body() createDocumentoIdentidadDto: CreateDocumentoIdentidadDto,
@@ -40,8 +40,9 @@ export class RepresentanteLegalController {
     return this.representanteLegalService.findOne(id);
   }
 
-  @Roles(Rol.Coordinador)
   @Patch(':id')
+  @Roles(Rol.Coordinador)
+  @Permisos('actualizar-representante-legal')
   @UseInterceptors(FileInterceptor('documento'))
   update(
     @Param() { id }: UuidDto,
@@ -53,8 +54,9 @@ export class RepresentanteLegalController {
     return this.representanteLegalService.update(id, updateRepresentanteLegalDto, UpdateDocumentoIdentidadDto, documento, folderId);
   }
 
-  @Roles(Rol.Coordinador)
   @Delete(':id')
+  @Roles(Rol.Coordinador)
+  @Permisos('remover-representante-legal')
   remove(@Param() { id }: UuidDto) {
     return this.representanteLegalService.remove(id);
   }
