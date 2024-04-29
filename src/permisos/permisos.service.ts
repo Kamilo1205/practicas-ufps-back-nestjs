@@ -32,7 +32,7 @@ export class PermisosService {
     if (!permiso) throw new PermisoNotFoundException(id);
 
     const { nombre } = updatePermisoDto;
-    if (nombre && permiso.nombre) {
+    if (nombre && permiso.nombre != nombre) {
       const permiso = await this.permisosRepository.findOneBy({ nombre });
       if (permiso) throw new PermisoExistsException(nombre);
     }
