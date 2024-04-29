@@ -66,8 +66,10 @@ export class DocumentoIdentidadService {
     }
     
     if (documentoFile) {
-      this.googleDriveService.deleteFile(documentoIdentidad.documentoUrl);
-      const documentoUrl = await this.googleDriveService.uploadFile('Documento', [folderId], documentoFile);
+      const [documentoUrl] = await Promise.all([
+        this.googleDriveService.uploadFile('Documento', [folderId], documentoFile),
+        this.googleDriveService.deleteFile(documentoIdentidad.documentoUrl),
+      ]);
       await this.documentoIdentidadRepository.update(id, {...updateDocumentoIdentidadDto, documentoUrl });  
     } else {
       await this.documentoIdentidadRepository.update(id,updateDocumentoIdentidadDto);
