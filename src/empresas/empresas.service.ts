@@ -74,7 +74,7 @@ export class EmpresasService {
     documento: Express.Multer.File
   ) {
     const exisitingEmpresa = await this.empresasRepository.findOneBy({ id });
-    if (exisitingEmpresa) throw new EmpresaExistsException(id);
+    if (!exisitingEmpresa) throw new EmpresaNotFoundException(id);
 
     const { googleDriveFolderId } = exisitingEmpresa;
     const representanteLegal = await this.representanteLegalService.create(
@@ -113,11 +113,18 @@ export class EmpresasService {
   async update(id: string, updateEmpresaDto: UpdateEmpresaDto, camara: Express.Multer.File, rut: Express.Multer.File) {
     const empresa = await this.empresasRepository.findOneBy({ id });
     if (!empresa) throw new EmpresaNotFoundException(id);
-
-    const { nit, googleDriveFolderId: folderEmpresaId } = empresa;
-    const { nombre } = updateEmpresaDto;
-    if (nombre) {
-      await this.googleDriveService.renameFolder(folderEmpresaId, `${nit}-${nombre}`);
+    
+    const { nit, nombre, googleDriveFolderId: folderEmpresaId } = empresa;
+    const { nit: nuevoNit, nombre: nuevoNombre } = updateEmpresaDto;
+    
+    if (nuevoNit && empresa.nit != nuevoNit) {
+      const exisitingEmpresa = await this.empresasRepository.findOneBy({ nit });
+      if (exisitingEmpresa) throw new EmpresaExistsException(nit);
+    }
+    
+    if (nuevoNit || nuevoNombre) {
+      const nombreFolder = `${nuevoNit || nit}-${nuevoNombre || nombre}`;
+      await this.googleDriveService.renameFolder(folderEmpresaId, nombreFolder);
     }
 
     if (camara && rut) {
@@ -130,7 +137,7 @@ export class EmpresasService {
       await this.empresasRepository.update(id, { ...updateEmpresaDto, camaraComercialUrl, rutUrl });
     }
 
-    if (camara) {
+    if (camara && !rut) {
       const [camaraComercialUrl] = await Promise.all([
         this.googleDriveService.uploadFile(`${nit}_Camara`, [folderEmpresaId], camara),
         this.googleDriveService.deleteFile(empresa.camaraComercialUrl),
@@ -138,7 +145,7 @@ export class EmpresasService {
       await this.empresasRepository.update(id, { ...updateEmpresaDto, camaraComercialUrl });
     }
 
-    if (rut) {
+    if (rut && !camara) {
       const [rutUrl] = await Promise.all([
         this.googleDriveService.uploadFile(`${nit}_Rut`, [folderEmpresaId], rut),
         this.googleDriveService.deleteFile(empresa.rutUrl),

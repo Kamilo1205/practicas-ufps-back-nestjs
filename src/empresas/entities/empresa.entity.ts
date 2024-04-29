@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { RepresentanteLegal } from 'src/representante-legal/entities/representante-legal.entity';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Entity()
 export class Empresa {
@@ -22,7 +22,7 @@ export class Empresa {
   @Column()
   pais: string;
 
-  @Column({ nullable: true })
+  @Column()
   departamento: string;
 
   @Column()

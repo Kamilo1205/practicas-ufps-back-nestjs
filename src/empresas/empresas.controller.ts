@@ -43,8 +43,8 @@ export class EmpresasController {
     return this.empresasService.create(createEmpresaDto, usuario, camara, rut);
   }
 
-  @Roles(Rol.Empresa)
   @Patch('registro/informacion-basica')
+  @Roles(Rol.Empresa)
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'rut', maxCount: 1 },
@@ -68,8 +68,8 @@ export class EmpresasController {
     return this.empresasService.update(usuario.empresa.id, updateEmpresaDto, camara, rut);
   }
 
-  @Roles(Rol.Empresa)
   @Post('registro/informacion-legal')
+  @Roles(Rol.Empresa)
   @UseInterceptors(FileInterceptor('documento'))
   registerCompanyLegalInfo(
     @GetUser() usuario: Usuario,    
@@ -92,8 +92,8 @@ export class EmpresasController {
     );
   }
 
-  @Roles(Rol.Empresa)
   @Patch('registro/informacion-legal')
+  @Roles(Rol.Empresa)
   @UseInterceptors(FileInterceptor('documento'))
   updateCompanyLegalInfo(
     @GetUser() usuario: Usuario,    
@@ -116,8 +116,8 @@ export class EmpresasController {
     );
   }
 
-  @Roles(Rol.Empresa)
   @Get('solicitud-convenio')
+  @Roles(Rol.Empresa)
   getSolicitudConvenio(@GetUser() usuario: Usuario, @Res() res: Response) {
     const documentBuffer = this.empresasService.getConvenioDocument(usuario);
     res.set({
@@ -128,8 +128,8 @@ export class EmpresasController {
     res.end();
   }
 
-  @Roles(Rol.Empresa)
   @Post('solicitud-convenio')
+  @Roles(Rol.Empresa)
   @UseInterceptors(FileInterceptor('convenio'))
   uploadSolicitudConvenio(
     @GetUser() usuario: Usuario, 
@@ -145,8 +145,8 @@ export class EmpresasController {
     return this.empresasService.uploadConvenioDocument(usuario, convenio);
   }
 
-  @Roles(Rol.Empresa)
   @Get('perfil')
+  @Roles(Rol.Empresa)
   findOneByUsuarioId(@GetUser() usuario: Usuario) {
     return this.empresasService.findOne(usuario.empresa.id);
   }
@@ -207,8 +207,9 @@ export class EmpresasController {
     this.empresasService.updateWithUsuario(id, updateEmpresaDto, updateUsuarioDto, camara, rut);
   }
 
-  @Roles(Rol.Empresa)
   @Post(':id/informacion-legal')
+  @Roles(Rol.Empresa)
+  @Permisos('crear-empresa')
   @UseInterceptors(FileInterceptor('documento'))
   registerCompanyLegalInfoWithId( 
     @Param() { id }: UuidDto,  
@@ -233,6 +234,7 @@ export class EmpresasController {
 
   @Roles(Rol.Empresa)
   @Patch(':id/informacion-legal')
+  @Permisos('actualizar-empresa')
   @UseInterceptors(FileInterceptor('documento'))
   updateCompanyLegalInfoWithId(   
     @Param() { id }: UuidDto,
