@@ -48,13 +48,13 @@ export class RolesService {
   }
 
   async update(id: string, updateRoleDto: UpdateRoleDto) {
-    const existingRol = await this.rolesRepository.findOneBy({ id });
-    if ( !existingRol ) throw new RolNotFoundException(id);
+    const rol = await this.rolesRepository.findOneBy({ id });
+    if (!rol) throw new RolNotFoundException(id);
 
     const { nombre, permisosIds } = updateRoleDto;
-    if (nombre && existingRol.nombre != nombre) {
-      const existingRolByNombre = await this.rolesRepository.findOneBy({ nombre });
-      if (existingRolByNombre) throw new RolExistsException(nombre);
+    if (nombre && rol.nombre != nombre) {
+      const rol = await this.rolesRepository.findOneBy({ nombre });
+      if (rol) throw new RolExistsException(nombre);
     }
 
     if (permisosIds) {
