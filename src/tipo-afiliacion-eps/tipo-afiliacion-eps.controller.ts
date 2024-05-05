@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CreateTipoAfiliacionEpsDto, UpdateTipoAfiliacionEpsDto } from './dto';
 import { TipoAfiliacionEpsService } from './tipo-afiliacion-eps.service';
 import { UuidDto } from 'src/common/dto';
-import { Permisos, Roles } from 'src/auth/decorators';
+import { Permisos, Public, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums/rol.enum';
 
 @Controller('tipo-afiliacion-eps')
@@ -17,6 +17,7 @@ export class TipoAfiliacionEpsController {
   }
 
   @Get()
+  @Public()
   findAll() {
     return this.tipoAfiliacionEpsService.findAll();
   }
