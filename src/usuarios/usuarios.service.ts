@@ -45,10 +45,7 @@ export class UsuariosService {
     return { data, total };
   }
 
-  async findOne(
-    id: string,
-    relations: string[] = ['empresa', 'estudiante', 'permisos'],
-  ) {
+  async findOne(id: string, relations: string[] = ['empresa', 'estudiante', 'permisos']) {
     const usuario = await this.usuariosRepository.findOne({
       where: { id },
       relations,
@@ -57,10 +54,7 @@ export class UsuariosService {
     return usuario;
   }
 
-  async findOneByEmail(
-    email: string,
-    relations: string[] = ['empresa', 'estudiante', 'permisos'],
-  ) {
+  async findOneByEmail(email: string, relations: string[] = ['empresa', 'estudiante', 'permisos']) {
     const usuario = await this.usuariosRepository.findOne({
       where: { email },
       relations,
@@ -98,10 +92,14 @@ export class UsuariosService {
     return this.usuariosRepository.findOneBy({ id });
   }
 
-  updateRefreshToken(id: string, refreshToken: string) {
-    return this.usuariosRepository.update(id, {
-      currentHashedRefreshToken: refreshToken,
-    });
+  async updatePassword(email: string, newPassword: string) {
+    const usuario = await this.usuariosRepository.findOneBy({ email });
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    return this.usuariosRepository.update(usuario.id, { password: hashedPassword });
+  }
+
+  updateRefreshToken(id: string, currentHashedRefreshToken: string) {
+    return this.usuariosRepository.update(id, { currentHashedRefreshToken });
   }
 
   async addPermisos(id: string, permisosIds: string[]) {
