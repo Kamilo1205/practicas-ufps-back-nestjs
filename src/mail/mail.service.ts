@@ -1,29 +1,40 @@
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class MailService {
-  constructor(private mailerService: MailerService) {}
+  constructor(private readonly mailerService: MailerService, private readonly configService: ConfigService) {}
 
-  async sendWelcomeEmail(email: string, name: string) {
-    const subject = 'Welcome to Our Service!';
-    const text = `Hello ${name}, welcome to our service!`; // Texto plano
-
+  async sendEmail(to: string[], subject: string, text: string) {
     try {
-      await this.mailerService.sendMail({
-        to: email, // Destinatario
-        from: 'no-reply@ufps.edu.co', // Remitente
-        subject: subject,
-        text: text,
-        // Si usas una plantilla Pug o Handlebars:
-        // template: 'welcome',  // Ubicación de la plantilla en '/templates/welcome.pug'
-        // context: {  // Variables de contexto para la plantilla
-        //   name: name,
-        // },
+      const response = await this.mailerService.sendMail({ 
+        to: to.join(','), // Destinatario
+        from: this.configService.get<string>('GOOGLE_USER'), // Remitente
+        subject,
+        text,
       });
-      console.log('Welcome email sent successfully a ' + email);
+      return response;
     } catch (error) {
-      console.log('Nodemailer error:' + error);
+      throw new InternalServerErrorException('Erro al enviar el correo');
+    }
+  }
+
+  async sedForgotPasswordEmail(to: string, token: string) {
+    try {
+      const response = await this.mailerService.sendMail({ 
+        to: to, // Destinatario
+        from: this.configService.get<string>('GOOGLE_USER'), // Remitente
+        subject: 'Solicitud de recuperación de contraseña',
+        template: './forgot-password',
+        context: {
+          name: to,
+          resetUrl: token
+        }
+      });
+      return response;
+    } catch (error) {
+      throw new InternalServerErrorException('Erro al enviar el correo de recuperación de contraseña');
     }
   }
 }

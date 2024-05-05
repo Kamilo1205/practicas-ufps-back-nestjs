@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailService } from './mail.service';
 import { MailController } from './mail.controller';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -22,8 +24,8 @@ import { MailController } from './mail.controller';
           from: `"No Reply" <${configService.get<string>('GOOGLE_USER')}>`,
         },
         template: {
-          dir: process.cwd() + '/templates/',
-          // adapter: new PugAdapter(),
+          dir: join(__dirname, 'templates'),
+          adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
           },
