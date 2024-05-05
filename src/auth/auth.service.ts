@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
@@ -8,6 +8,8 @@ import { TokenPayload } from './interfaces';
 import { Rol } from './enums/rol.enum';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 import { RolesService } from 'src/roles/roles.service';
+import { MailService } from 'src/mail/mail.service';
+import { ResetPasswordTokenDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +26,8 @@ export class AuthService {
     private readonly usuariosService: UsuariosService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly rolesService: RolesService
+    private readonly rolesService: RolesService,
+    private readonly mailService: MailService
   ) {}
 
   async crearUsuarioEmpresa(createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
@@ -86,5 +89,27 @@ export class AuthService {
 
   async removeCurrentRefreshToken(usuarioId: string) {
     await this.usuariosService.removeRefreshToken(usuarioId);
+  }
+
+  async sendPasswordResetEmail(email: string) {
+    const usuario = await this.usuariosService.findOneByEmail(email);
+    if (!usuario) throw new UserNotFoundException();
+    const token = this.jwtService.sign({ email }, {
+      secret: this.configService.get('JWT_RESET_PASSWORD_TOKEN_SECRET'),
+      expiresIn: `${this.configService.get('JWT_RESET_PASSWORD_TOKEN_EXPIRATION_TIME')}s`,
+    });
+
+    await this.mailService.sedForgotPasswordEmail(email, token);
+  }
+
+  async resetPassword(resetPasswordTokenDto: ResetPasswordTokenDto) {
+    try {
+      const decodedToken = this.jwtService.verify(resetPasswordTokenDto.token, {
+        secret: this.configService.get('JWT_RESET_PASSWORD_TOKEN_SECRET'),
+      });
+      await this.usuariosService.updatePassword(decodedToken.email, resetPasswordTokenDto.newPassword);
+    } catch (error) {
+      throw new NotFoundException('Token no válido');
+    }
   }
 }

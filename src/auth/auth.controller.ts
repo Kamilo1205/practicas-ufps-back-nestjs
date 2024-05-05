@@ -1,29 +1,13 @@
-import {
-  Controller,
-  Get,
-  UseGuards,
-  Req,
-  Res,
-  Post,
-  HttpCode,
-  UseInterceptors,
-  Body,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
-import {
-  GoogleOauthGuard,
-  JwtAuthGuard,
-  JwtRefreshGuard,
-  LocalAuthGuard,
-} from './guards';
-import { Public } from './decorators';
+import { Controller, Get, UseGuards, Req, Res, Post, HttpCode, UseInterceptors, Body } from '@nestjs/common';
+import { GoogleOauthGuard, JwtAuthGuard, JwtRefreshGuard, LocalAuthGuard } from './guards';
+import { CreateUsuarioEmpresaDto, FrogotPasswordDto } from './dto';
+import { JwtCookieInterceptor } from './interceptors';
 import { RequestWithUser } from './interfaces';
 import { AuthService } from './auth.service';
-import { Rol } from './enums/rol.enum';
-import { UsuariosService } from '../usuarios/usuarios.service';
-import { JwtCookieInterceptor } from './interceptors/jwt-cookie.interceptor';
-import { CreateUsuarioEmpresaDto } from './dto';
+import { Public } from './decorators';
+import { Rol } from './enums';
+import { ResetPasswordTokenDto } from './dto/reset-password.dto';
 
 /**
  * Controlador para manejar la autenticación de usuarios.
@@ -38,6 +22,18 @@ export class AuthController {
   @Public()
   register(@Body() createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
     return this.authService.crearUsuarioEmpresa(createUsuarioEmpresaDto);
+  }
+
+  @Post('forgot-password')
+  @Public()
+  async forgotPassword(@Body() frogotPasswordDto: FrogotPasswordDto) {
+    await this.authService.sendPasswordResetEmail(frogotPasswordDto.email);
+  }
+
+  @Post('reset-password')
+  @Public()
+  async resetPassword(@Body() resetPasswordTokenDto: ResetPasswordTokenDto) {
+    await this.authService.resetPassword(resetPasswordTokenDto);
   }
 
   /**
@@ -60,35 +56,23 @@ export class AuthController {
   @UseInterceptors(JwtCookieInterceptor)
   async googleLoginCallback(@Req() req: RequestWithUser, @Res() res: Response) {
     try {
-      const usuario = await this.authService.getUsuario(
-        req.user.email,
-      );
+      const usuario = await this.authService.getUsuario(req.user.email);
       if (!usuario) {
-        const redirectUrl = this.authService.getSafeRedirectUrl(
-          usuario.rol.nombre as Rol,
-        );
-        const error = 'Usuario no regitrado';
+        const redirectUrl = this.authService.getSafeRedirectUrl(usuario.rol.nombre as Rol);
+        const error = 'Usuario no registrado';
         return { redirectUrl, error };
       }
 
-      const accessToken = this.authService.getJwtAccessToken(req.user.id);
-      const refreshToken = this.authService.getJwtRefreshToken(req.user.id);
-      await this.authService.setCurrentRefreshToken(req.user.id, refreshToken);
-      const redirectUrl = this.authService.getSafeRedirectUrl(
-        usuario.rol.nombre as Rol,
-      );
-      return {
-        accessToken,
-        refreshToken,
-        redirectUrl,
-      };
+      const accessToken = this.authService.getJwtAccessToken(usuario.id);
+      const refreshToken = this.authService.getJwtRefreshToken(usuario.id);
+      await this.authService.setCurrentRefreshToken(usuario.id, refreshToken);
+      const redirectUrl = this.authService.getSafeRedirectUrl(usuario.rol.nombre as Rol);
+      
+      return { accessToken, refreshToken, redirectUrl };
     } catch (err) {
       const redirectUrl = this.authService.getSafeRedirectUrl();
       const error = 'Error de autenticación';
-      return {
-        redirectUrl,
-        error,
-      };
+      return { redirectUrl, error };
     }
   }
 
@@ -103,18 +87,11 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @UseInterceptors(JwtCookieInterceptor)
-  async login(
-    @Req() req: RequestWithUser,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async login(@Req() req: RequestWithUser, @Res({ passthrough: true }) res: Response) {
     const accessToken = this.authService.getJwtAccessToken(req.user.id);
     const refreshToken = this.authService.getJwtRefreshToken(req.user.id);
     await this.authService.setCurrentRefreshToken(req.user.id, refreshToken);
-    return {
-      usuario: req.user,
-      accessToken,
-      refreshToken,
-    };
+    return { usuario: req.user, accessToken, refreshToken };
   }
 
   /**
@@ -132,15 +109,9 @@ export class AuthController {
   @Public()
   @UseGuards(JwtRefreshGuard)
   @UseInterceptors(JwtCookieInterceptor)
-  refresh(
-    @Req() req: RequestWithUser,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  refresh(@Req() req: RequestWithUser, @Res({ passthrough: true }) res: Response) {
     const accessToken = this.authService.getJwtAccessToken(req.user.id);
-    return {
-      usuario: req.user,
-      accessToken,
-    };
+    return { usuario: req.user, accessToken };
   }
 
   @HttpCode(200)

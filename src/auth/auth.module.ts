@@ -6,9 +6,10 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsuariosModule } from '../usuarios/usuarios.module';
 import { RolesModule } from 'src/roles/roles.module';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
-  imports: [PassportModule, UsuariosModule, JwtModule, RolesModule],
+  imports: [PassportModule, UsuariosModule, JwtModule, RolesModule, MailModule],
   controllers: [AuthController],
   providers: [
     AuthService,
