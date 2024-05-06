@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, DeleteDateColumn, OneToMany, Jo
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { Permiso } from 'src/permisos/entities/permiso.entity';
 import { Transform } from 'class-transformer';
+import { UsuarioRol } from 'src/usuario-rol/entities/usuario-rol.entity';
 
 @Entity()
 export class Rol {
@@ -22,8 +23,8 @@ export class Rol {
   fechaEliminacion?: Date;
 
   //Relaciones
-  @OneToMany(() => Usuario, (usuario) => usuario.rol)
-  usuarios: Usuario[];
+  @OneToMany(() => UsuarioRol, usuarioRol => usuarioRol.rol)
+  usuarios: UsuarioRol[];
 
   @ManyToMany(() => Permiso, { eager: true })
   @JoinTable()

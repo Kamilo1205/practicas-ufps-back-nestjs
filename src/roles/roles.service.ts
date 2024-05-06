@@ -20,11 +20,7 @@ export class RolesService {
     if (existingRol) throw new RolExistsException(nombre);
 
     const permisos = permisosIds ? await this.permisosService.findByIds(permisosIds) : [];
-    
-    const rol = this.rolesRepository.create({
-      ...createRoleDto,
-      permisos 
-    });
+    const rol = this.rolesRepository.create({ ...createRoleDto, permisos });
     return this.rolesRepository.save(rol);
   }
 
@@ -32,11 +28,8 @@ export class RolesService {
     return this.rolesRepository.find();
   }
 
-  async findOne(id: string) {
-    const rol = await this.rolesRepository.findOne({
-      where: { id },
-      relations: ['permisos', 'usuarios'],
-    });
+  async findOne(id: string, relations: string[] = ['permisos', 'usuarios']) {
+    const rol = await this.rolesRepository.findOne({ where: { id }, relations });
     if ( !rol ) throw new RolNotFoundException(id);
     return rol;
   }
