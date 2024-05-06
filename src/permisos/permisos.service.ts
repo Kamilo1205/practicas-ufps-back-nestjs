@@ -50,9 +50,7 @@ export class PermisosService {
     const permisos = await this.permisosRepository.findBy({ id: In(ids) });
     const foundIds = permisos.map((permiso) => permiso.id);
     const notFoundIds = ids.filter((id) => !foundIds.includes(id));
-    if (notFoundIds.length > 0) {
-      throw new PermisosNotFoundException(notFoundIds);
-    }
+    if (notFoundIds.length > 0) throw new PermisosNotFoundException(notFoundIds);
     return permisos;
   }
 }
