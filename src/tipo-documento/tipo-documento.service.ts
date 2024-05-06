@@ -1,8 +1,8 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateTipoDocumentoDto, UpdateTipoDocumentoDto } from './dto';
 import { TipoDocumento } from './entities/tipo-documento.entity';
+import { CreateTipoDocumentoDto, UpdateTipoDocumentoDto } from './dto';
 import { TipoDocumentoExistsException, TipoDocumentoNotFoundException } from './exceptions';
 
 @Injectable()
@@ -35,8 +35,8 @@ export class TipoDocumentoService {
 
     const { nombre } = updateTipoDocumentoDto;
     if (nombre && tipoDocumento.nombre != nombre) {
-      const existingTipoDocumento = await this.tipoDocumentoRepository.findOneBy({ nombre });
-      if (existingTipoDocumento) throw new TipoDocumentoExistsException(nombre);
+      const tipoDocumento = await this.tipoDocumentoRepository.findOneBy({ nombre });
+      if (tipoDocumento) throw new TipoDocumentoExistsException(nombre);
     }
     
     await this.tipoDocumentoRepository.update(id, updateTipoDocumentoDto);
