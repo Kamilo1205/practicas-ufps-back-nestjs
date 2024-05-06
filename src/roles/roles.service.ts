@@ -2,25 +2,22 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateRoleDto, UpdateRoleDto } from './dto';
-import { Rol } from './entities/rol.entity';
 import { RolExistsException, RolNombreNotFoundException, RolNotFoundException } from './exceptions';
-import { PermisosService } from 'src/permisos/permisos.service';
+import { Rol } from './entities/rol.entity';
 
 @Injectable()
 export class RolesService {
   constructor(
     @InjectRepository(Rol)
     private readonly rolesRepository: Repository<Rol>,
-    private readonly permisosService: PermisosService,
   ) {}
 
   async create(createRoleDto: CreateRoleDto) {
-    const { nombre, permisosIds } = createRoleDto;
+    const { nombre } = createRoleDto;
     const existingRol = await this.rolesRepository.findOneBy({ nombre });
     if (existingRol) throw new RolExistsException(nombre);
-
-    const permisos = permisosIds ? await this.permisosService.findByIds(permisosIds) : [];
-    const rol = this.rolesRepository.create({ ...createRoleDto, permisos });
+    
+    const rol = this.rolesRepository.create(createRoleDto);
     return this.rolesRepository.save(rol);
   }
 
@@ -44,20 +41,13 @@ export class RolesService {
     const rol = await this.rolesRepository.findOneBy({ id });
     if (!rol) throw new RolNotFoundException(id);
 
-    const { nombre, permisosIds } = updateRoleDto;
+    const { nombre } = updateRoleDto;
     if (nombre && rol.nombre != nombre) {
       const rol = await this.rolesRepository.findOneBy({ nombre });
       if (rol) throw new RolExistsException(nombre);
     }
 
-    if (permisosIds) {
-      const permisos = await this.permisosService.findByIds(permisosIds);
-      const rol = this.rolesRepository.create({ id, ...updateRoleDto, permisos }); 
-      await this.rolesRepository.save(rol);
-    }
-    else {
-      await this.rolesRepository.update(id, updateRoleDto);
-    }
+    await this.rolesRepository.update(id, updateRoleDto);
     return await this.rolesRepository.findOneBy({ id });
   }
 
