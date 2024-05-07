@@ -1,5 +1,5 @@
-import { EstudianteEps } from 'src/estudiante-eps/entities/estudiante-eps.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { EstudianteEps } from 'src/estudiante-eps/entities/estudiante-eps.entity';
 
 @Entity()
 export class TipoAfiliacionEps {
