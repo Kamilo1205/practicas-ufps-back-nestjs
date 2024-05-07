@@ -1,9 +1,9 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Exclude, Transform } from 'class-transformer';
-import { Rol } from 'src/roles/entities/rol.entity';
-import { Permiso } from 'src/permisos/entities/permiso.entity';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
+import { Rol } from 'src/roles/entities/rol.entity';
+
 
 @Entity() // Define que esta clase es una entidad de la base de datos.
 export class Usuario {
@@ -29,10 +29,6 @@ export class Usuario {
   @Column({ nullable: true })
   @Exclude()
   currentHashedRefreshToken?: string;
-  
-  @Column({ nullable: true })
-  @Exclude()
-  passwordResetTokens: string;
 
   @CreateDateColumn() // Columna para la fecha y hora de creación del registro de usuario.
   fechaCreacion: Date; // Fecha y hora de creación del registro de usuario.
@@ -45,12 +41,9 @@ export class Usuario {
   fechaEliminacion?: Date; // Fecha y hora de eliminación lógica del registro de usuario (si se aplica).
 
   // Relaciones
-  @ManyToOne(() => Rol, (rol) => rol.usuarios, { eager: true })
-  rol: Rol; // Rol del usuario.
-
-  @ManyToMany(() => Permiso)
+  @ManyToMany(() => Rol, rol => rol.usuarios)
   @JoinTable()
-  permisos: Permiso[];
+  roles: Rol[];
 
   @OneToOne(() => Empresa, (empresa) => empresa.usuario)
   @Transform(({ value }) => (value ? value : undefined))
