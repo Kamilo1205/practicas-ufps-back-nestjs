@@ -37,7 +37,7 @@ export class PermisosService {
   }
 
   findByIds(ids: string[]) {
-    return this.permisosRepository.findBy({ id: In(ids) });  ;  
+    return this.permisosRepository.findBy({ id: In(ids) }); 
   };
 
   async update(id: string, updatePermisoDto: UpdatePermisoDto) {
