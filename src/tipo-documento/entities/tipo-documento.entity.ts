@@ -19,8 +19,4 @@ export class TipoDocumento {
   @DeleteDateColumn()
   @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion: Date;
-
-  // Relaciones
-  @OneToMany(() => DocumentoIdentidad, (documentoIdentidad) => documentoIdentidad.tipoDocumento)
-  documentos: DocumentoIdentidad[];
 }
