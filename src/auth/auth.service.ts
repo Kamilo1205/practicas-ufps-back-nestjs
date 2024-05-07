@@ -32,13 +32,13 @@ export class AuthService {
 
   async crearUsuarioEmpresa(createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
     const { id: rolId } = await this.rolesService.findOneByNombre(Rol.Empresa);
-    return this.usuariosService.create({
-      ...createUsuarioEmpresaDto, 
-      rolId,
-      estaActivo: true,
-      emailConfirmado: undefined,
-      estaRegistrado: false
-    });
+    // return this.usuariosService.create({
+    //   ...createUsuarioEmpresaDto, 
+    //   rolId,
+    //   estaActivo: true,
+    //   emailConfirmado: undefined,
+    //   estaRegistrado: false
+    // });
   }
 
   async validateUser(email: string, password: string) {

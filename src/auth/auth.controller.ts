@@ -6,7 +6,6 @@ import { JwtCookieInterceptor } from './interceptors';
 import { RequestWithUser } from './interfaces';
 import { AuthService } from './auth.service';
 import { Public } from './decorators';
-import { Rol } from './enums';
 import { ResetPasswordTokenDto } from './dto/reset-password.dto';
 
 /**
@@ -58,17 +57,17 @@ export class AuthController {
     try {
       const usuario = await this.authService.getUsuario(req.user.email);
       if (!usuario) {
-        const redirectUrl = this.authService.getSafeRedirectUrl(usuario.rol.nombre as Rol);
+        //const redirectUrl = this.authService.getSafeRedirectUrl(usuario.rol.nombre as Rol);
         const error = 'Usuario no registrado';
-        return { redirectUrl, error };
+        //return { redirectUrl, error };
       }
 
       const accessToken = this.authService.getJwtAccessToken(usuario.id);
       const refreshToken = this.authService.getJwtRefreshToken(usuario.id);
       await this.authService.setCurrentRefreshToken(usuario.id, refreshToken);
-      const redirectUrl = this.authService.getSafeRedirectUrl(usuario.rol.nombre as Rol);
+      //const redirectUrl = this.authService.getSafeRedirectUrl(usuario.rol.nombre as Rol);
       
-      return { accessToken, refreshToken, redirectUrl };
+      //return { accessToken, refreshToken, redirectUrl };
     } catch (err) {
       const redirectUrl = this.authService.getSafeRedirectUrl();
       const error = 'Error de autenticación';

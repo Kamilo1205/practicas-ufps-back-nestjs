@@ -30,7 +30,8 @@ export class RolesGuard implements CanActivate {
     const { user } = context.switchToHttp().getRequest();
 
     // Comprueba si el usuario tiene al menos uno de los roles requeridos
-    const hasRole = requiredRoles.some((role) => user.rol.nombre == role);
+    // const hasRole = requiredRoles.some((role) => user.roles.nombre == role);
+    const hasRole = user.roles.some(userRole => requiredRoles.includes(userRole.nombre));
     if (!hasRole) {
       throw new UnauthorizedException('Accesso Denegado: Rol invalido');
     }
