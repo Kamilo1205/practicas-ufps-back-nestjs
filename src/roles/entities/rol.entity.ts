@@ -26,6 +26,6 @@ export class Rol {
   usuarios: Usuario[];
 
   @ManyToMany(() => Permiso, (permiso) => permiso.roles)
-  @JoinTable()
+  @JoinTable({ name: 'rol_permiso' })
   permisos: Permiso[];
 }
