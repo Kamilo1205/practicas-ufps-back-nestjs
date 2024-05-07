@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Transform } from 'class-transformer';
+import { Rol } from 'src/roles/entities/rol.entity';
 
 @Entity()
 export class Permiso {
@@ -18,4 +19,8 @@ export class Permiso {
   @DeleteDateColumn()
   @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion?: Date;
+
+  // Relaciones
+  @ManyToMany(() => Rol, (rol) => rol.permisos)
+  roles: Rol[];
 }
