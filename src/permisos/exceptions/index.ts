@@ -1,3 +1,3 @@
 export { PermisoExistsException } from './permisoExists.exception';
 export { PermisoNotFoundException } from './permisoNotFound.exception';
-export { PermisosNotFoundException } from './permisosNotFound.exception';
+export { PermisoNombreNotFoundException } from './permisoNombreNotFound.exception';

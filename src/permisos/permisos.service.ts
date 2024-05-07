@@ -1,9 +1,9 @@
 import { In, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreatePermisoDto, UpdatePermisoDto } from './dto';
 import { Permiso } from './entities/permiso.entity';
-import { PermisoExistsException, PermisoNotFoundException, PermisosNotFoundException } from './exceptions';
+import { CreatePermisoDto, UpdatePermisoDto } from './dto';
+import { PermisoExistsException, PermisoNombreNotFoundException, PermisoNotFoundException } from './exceptions';
 
 @Injectable()
 export class PermisosService {
@@ -14,18 +14,31 @@ export class PermisosService {
 
   async create(createPermisoDto: CreatePermisoDto) {
     const { nombre } = createPermisoDto;
-    const permiso = await this.permisosRepository.findOneBy({ nombre });
-    if (permiso) throw new PermisoExistsException(nombre);
+    const existingPermiso = await this.permisosRepository.findOneBy({ nombre });
+    if (existingPermiso) throw new PermisoExistsException(nombre); 
+    
     return this.permisosRepository.save(createPermisoDto);
   }
 
-  findAll() {
-    return this.permisosRepository.find();
+  findAll(relations: string[] = []) {
+    return this.permisosRepository.find({ relations });
   }
 
-  findOne(id: string) {
-    return this.permisosRepository.findOneBy({ id });
+  async findOne(id: string, relations: string[] = []) {
+    const permiso = await this.permisosRepository.findOne({ where: { id }, relations });
+    if (!permiso) throw new PermisoNotFoundException(id);
+    return permiso;
   }
+
+  async findOneByNombre(nombre: string, relations: string[] = []) {
+    const permiso = await this.permisosRepository.findOne({ where: { nombre }, relations });
+    if (!permiso) throw new PermisoNombreNotFoundException(nombre);
+    return permiso;
+  }
+
+  findByIds(ids: string[]) {
+    return this.permisosRepository.findBy({ id: In(ids) });  ;  
+  };
 
   async update(id: string, updatePermisoDto: UpdatePermisoDto) {
     const permiso = await this.permisosRepository.findOneBy({ id });
@@ -35,7 +48,7 @@ export class PermisosService {
     if (nombre && permiso.nombre != nombre) {
       const permiso = await this.permisosRepository.findOneBy({ nombre });
       if (permiso) throw new PermisoExistsException(nombre);
-    }
+    } 
     await this.permisosRepository.update(id, updatePermisoDto);
     return this.permisosRepository.findOneBy({ id });
   }
@@ -43,14 +56,6 @@ export class PermisosService {
   async remove(id: string) {
     const permiso = await this.permisosRepository.findOneBy({ id });
     if (!permiso) throw new PermisoNotFoundException(id);
-    return this.permisosRepository.softDelete({ id });
-  }
-
-  async findByIds(ids: string[]) {
-    const permisos = await this.permisosRepository.findBy({ id: In(ids) });
-    const foundIds = permisos.map((permiso) => permiso.id);
-    const notFoundIds = ids.filter((id) => !foundIds.includes(id));
-    if (notFoundIds.length > 0) throw new PermisosNotFoundException(notFoundIds);
-    return permisos;
+    return this.permisosRepository.softDelete(permiso);
   }
 }
