@@ -8,5 +8,6 @@ import { Eps } from './entities/eps.entity';
   imports: [TypeOrmModule.forFeature([Eps])],
   controllers: [EpsController],
   providers: [EpsService],
+  exports: [EpsService]
 })
 export class EpsModule {}

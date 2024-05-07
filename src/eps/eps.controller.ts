@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { EpsService } from './eps.service';
 import { CreateEpsDto, UpdateEpsDto } from './dto';
-import { Permisos, Roles } from 'src/auth/decorators';
+import { Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums/rol.enum';
 import { UuidDto } from 'src/common/dto';
 
@@ -11,7 +11,6 @@ export class EpsController {
 
   @Post()
   @Roles(Rol.Coordinador)
-  @Permisos('crear-eps')
   create(@Body() createEpDto: CreateEpsDto) {
     return this.epsService.create(createEpDto);
   }
@@ -23,21 +22,18 @@ export class EpsController {
 
   @Get(':id')
   @Roles(Rol.Coordinador)
-  @Permisos('obtener-eps')
   findOne(@Param() { id }: UuidDto) {
     return this.epsService.findOne(id);
   }
   
   @Patch(':id')
   @Roles(Rol.Coordinador)
-  @Permisos('actualizar-eps')
   update(@Param() { id }: UuidDto, @Body() updateEpDto: UpdateEpsDto) {
     return this.epsService.update(id, updateEpDto);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador)
-  @Permisos('remover-eps')
   remove(@Param() { id }: UuidDto) {
     return this.epsService.remove(id);
   }
