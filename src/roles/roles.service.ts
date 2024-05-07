@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateRoleDto, UpdateRoleDto } from './dto';
@@ -25,11 +25,15 @@ export class RolesService {
     return this.rolesRepository.find();
   }
 
-  async findOne(id: string, relations: string[] = ['permisos', 'usuarios']) {
+  async findOne(id: string, relations: string[] = ['usuarios']) {
     const rol = await this.rolesRepository.findOne({ where: { id }, relations });
     if ( !rol ) throw new RolNotFoundException(id);
     return rol;
   }
+
+  findByIds(ids: string[]) {
+    return this.rolesRepository.find({ where: { id: In(ids) } });  
+  };
 
   async findOneByNombre(nombre: string) {
     const rol = await this.rolesRepository.findOneBy({ nombre });

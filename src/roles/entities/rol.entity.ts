@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, DeleteDateColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, DeleteDateColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Transform } from 'class-transformer';
-import { UsuarioRol } from 'src/usuarios/entities/usuario-rol.entity';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Entity()
 export class Rol {
@@ -21,6 +21,6 @@ export class Rol {
   fechaEliminacion?: Date;
 
   //Relaciones
-  @OneToMany(() => UsuarioRol, usuarioRol => usuarioRol.rol)
-  usuarios: UsuarioRol[];
+  @ManyToMany(() => Usuario, usuario => usuario.roles)
+  usuarios: Usuario[];
 }
