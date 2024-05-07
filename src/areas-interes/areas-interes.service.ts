@@ -23,11 +23,8 @@ export class AreasInteresService {
     return this.areaInteresRepository.find();
   }
 
-  async findOne(id: string) {
-    const areaInteres = await this.areaInteresRepository.findOne({
-      where: { id },
-      relations: ['estudiantes'],
-    });
+  async findOne(id: string, relations: string[] = []) {
+    const areaInteres = await this.areaInteresRepository.findOne({ where: { id }, relations });
     if (!areaInteres) throw new AreaInteresNotFoundException(id);
     return areaInteres;
   }
