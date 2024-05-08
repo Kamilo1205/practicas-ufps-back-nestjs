@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Transform } from 'class-transformer';
 import { Rol } from 'src/roles/entities/rol.entity';
+import { UsuarioRol } from 'src/usuarios/entities/usuario-rol.entity';
 
 @Entity()
 export class Permiso {
@@ -23,4 +24,7 @@ export class Permiso {
   // Relaciones
   @ManyToMany(() => Rol, (rol) => rol.permisos)
   roles: Rol[];
+
+  @ManyToMany(() => UsuarioRol, (usuarioRol) => usuarioRol.permisos)
+  usuarios: UsuarioRol[];
 }
