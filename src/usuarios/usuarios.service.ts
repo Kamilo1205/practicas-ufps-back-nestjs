@@ -15,6 +15,7 @@ export class UsuariosService {
     private readonly rolesService: RolesService,
   ) {}
 
+  // TODO: Habra que agregar el usaurio con roles y sus permisos????
   async create(createUsuarioDto: CreateUsuarioDto) {
     const { email, password } = createUsuarioDto;
     const existingUsuario = await this.usuariosRepository.findOneBy({ email });
@@ -23,7 +24,7 @@ export class UsuariosService {
     const roles = await this.rolesService.findByIds(createUsuarioDto.rolesIds);
     const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
 
-    const usuario = this.usuariosRepository.create({ ...createUsuarioDto, password: hashedPassword, roles });
+    const usuario = this.usuariosRepository.create({ ...createUsuarioDto, password: hashedPassword });
     return this.usuariosRepository.save(usuario);
   }
 
@@ -35,7 +36,7 @@ export class UsuariosService {
       order: {
         fechaCreacion: 'DESC',
       },
-      relations
+      relations,
     });
     return { data, total };
   }
@@ -58,6 +59,7 @@ export class UsuariosService {
     return usuario;
   }
 
+  // TODO: Habra que actualizar el usaurio con roles y sus permisos????
   async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
     const usuario = await this.usuariosRepository.findOneBy({ id });
     if (!usuario) throw new UsuarioNotFoundException(id);
@@ -74,7 +76,6 @@ export class UsuariosService {
     const usuarioActualizar = this.usuariosRepository.create({ 
       ...usuario, 
       ...updateUsuarioDto,
-      ...(roles && { roles }),
       ...(hashedPassword && { password: hashedPassword }),  
     });
     await this.usuariosRepository.save(usuarioActualizar);

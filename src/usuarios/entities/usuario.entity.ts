@@ -3,6 +3,7 @@ import { Exclude, Transform } from 'class-transformer';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 import { Rol } from 'src/roles/entities/rol.entity';
+import { UsuarioRol } from './usuario-rol.entity';
 
 
 @Entity() // Define que esta clase es una entidad de la base de datos.
@@ -41,9 +42,8 @@ export class Usuario {
   fechaEliminacion?: Date; // Fecha y hora de eliminación lógica del registro de usuario (si se aplica).
 
   // Relaciones
-  @ManyToMany(() => Rol, rol => rol.usuarios)
-  @JoinTable()
-  roles: Rol[];
+  @OneToMany(() => UsuarioRol, (usuarioRol) => usuarioRol.usuario)
+  roles: UsuarioRol[];
 
   @OneToOne(() => Empresa, (empresa) => empresa.usuario)
   @Transform(({ value }) => (value ? value : undefined))
