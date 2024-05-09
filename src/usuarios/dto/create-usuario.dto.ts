@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsDate, IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateUsuarioDto {
   @IsNotEmpty()
@@ -8,11 +8,15 @@ export class CreateUsuarioDto {
   @IsOptional()
   @IsString()
   password: string;
+  
+  @IsOptional()
+  @IsString()
+  imagenUrl: string;
 
-  @IsNotEmpty()
-  @IsArray()
-  rolesIds: string[];
-
+  @IsOptional()
+  @IsString()
+  displayName: string;
+  
   @IsOptional()
   @IsBoolean()
   estaActivo: boolean;
@@ -24,4 +28,9 @@ export class CreateUsuarioDto {
   @IsOptional()
   @IsBoolean()
   estaRegistrado: boolean;
+
+  @IsNotEmpty()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  rolesIds: string[];
 }

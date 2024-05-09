@@ -3,7 +3,6 @@ import { Exclude, Transform } from 'class-transformer';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 import { Rol } from 'src/roles/entities/rol.entity';
-import { UsuarioRol } from './usuario-rol.entity';
 
 
 @Entity() // Define que esta clase es una entidad de la base de datos.
@@ -17,6 +16,12 @@ export class Usuario {
   @Column({ nullable: true })
   @Exclude({ toPlainOnly: true })
   password?: string | null; // Contraseña del usuario.
+
+  @Column({ nullable: true })
+  displayName: string;
+
+  @Column({ nullable: true })
+  imagenUrl: string;
 
   @Column({ default: true }) // Define una columna con valor predeterminado "true".
   estaActivo: boolean; // Indica si la cuenta del usuario está activa.
@@ -42,8 +47,9 @@ export class Usuario {
   fechaEliminacion?: Date; // Fecha y hora de eliminación lógica del registro de usuario (si se aplica).
 
   // Relaciones
-  @OneToMany(() => UsuarioRol, (usuarioRol) => usuarioRol.usuario)
-  roles: UsuarioRol[];
+  @ManyToMany(() => Rol, (rol) => rol.usuarios)
+  @JoinTable({ name: 'usuario_rol' })
+  roles: Rol[];
 
   @OneToOne(() => Empresa, (empresa) => empresa.usuario)
   @Transform(({ value }) => (value ? value : undefined))

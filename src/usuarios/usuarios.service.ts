@@ -12,10 +12,9 @@ export class UsuariosService {
   constructor(
     @InjectRepository(Usuario)
     private readonly usuariosRepository: Repository<Usuario>,
-    private readonly rolesService: RolesService,
+    private readonly rolesService: RolesService
   ) {}
 
-  // TODO: Habra que agregar el usaurio con roles y sus permisos????
   async create(createUsuarioDto: CreateUsuarioDto) {
     const { email, password } = createUsuarioDto;
     const existingUsuario = await this.usuariosRepository.findOneBy({ email });
@@ -23,9 +22,8 @@ export class UsuariosService {
 
     const roles = await this.rolesService.findByIds(createUsuarioDto.rolesIds);
     const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
-
-    const usuario = this.usuariosRepository.create({ ...createUsuarioDto, password: hashedPassword });
-    return this.usuariosRepository.save(usuario);
+    const usaurio = this.usuariosRepository.create({ ...createUsuarioDto, password: hashedPassword, roles });
+    return this.usuariosRepository.save(usaurio);
   }
 
   async findAll(page = 1, limit = 10, relations: string[] = ['roles']) {
@@ -55,11 +53,9 @@ export class UsuariosService {
   async getUserIfRefreshTokenMatches(id: string, refreshToken: string) {
     const usuario = await this.findOne(id);
     const isRefreshTokenMatching = await bcrypt.compare(refreshToken, usuario.currentHashedRefreshToken);
-    if (!isRefreshTokenMatching) return null;
-    return usuario;
+    return isRefreshTokenMatching ? usuario : null;
   }
 
-  // TODO: Habra que actualizar el usaurio con roles y sus permisos????
   async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
     const usuario = await this.usuariosRepository.findOneBy({ id });
     if (!usuario) throw new UsuarioNotFoundException(id);
@@ -71,11 +67,12 @@ export class UsuariosService {
     }
 
     const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
-    const roles = rolesIds ? await this.rolesService.findByIds(rolesIds) : undefined;
+    const roles = await this.rolesService.findByIds(rolesIds);
 
     const usuarioActualizar = this.usuariosRepository.create({ 
       ...usuario, 
       ...updateUsuarioDto,
+      roles,
       ...(hashedPassword && { password: hashedPassword }),  
     });
     await this.usuariosRepository.save(usuarioActualizar);
