@@ -4,14 +4,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateRoleDto, UpdateRoleDto } from './dto';
 import { RolExistsException, RolNombreNotFoundException, RolNotFoundException } from './exceptions';
 import { Rol } from './entities/rol.entity';
-import { PermisosService } from 'src/permisos/permisos.service';
 
 @Injectable()
 export class RolesService {
   constructor(
     @InjectRepository(Rol)
     private readonly rolesRepository: Repository<Rol>,
-    private readonly permisosService: PermisosService,
   ) {}
 
   async create(createRoleDto: CreateRoleDto) {
@@ -19,27 +17,10 @@ export class RolesService {
     const existingRol = await this.rolesRepository.findOneBy({ nombre });
     if (existingRol) throw new RolExistsException(nombre);
 
-    const permisos = await this.permisosService.findByIds(createRoleDto.permisosIds);
-    const rol = this.rolesRepository.create({ ...createRoleDto, permisos });
+    const rol = this.rolesRepository.create(createRoleDto);
     return this.rolesRepository.save(rol);
   }
 
-  async addPermisos(id: string, permisosIds: string[]) {
-    const existingRol = await this.rolesRepository.findOne({ where: { id }, relations: ['permisos'] });
-    if (!existingRol) throw new RolNotFoundException(id);
-    const permisosAgregar = await this.permisosService.findByIds(permisosIds);
-    const permisos = [...existingRol.permisos, ...permisosAgregar];
-    const rol = this.rolesRepository.create({ ...existingRol, permisos });
-    return this.rolesRepository.save(rol);
-  }
-
-  async removePermisos(id: string, permisosIds: string[]) {
-    const existingRol = await this.rolesRepository.findOne({ where: { id }, relations: ['permisos'] });
-    if (!existingRol) throw new RolNotFoundException(id);
-    const permisos = existingRol.permisos.filter(permiso => !permisosIds.includes(permiso.id));
-    const rol = this.rolesRepository.create({ ...existingRol, permisos });
-    return this.rolesRepository.save(rol);
-  }
 
   findAll(relations: string[] = ['permisos']) {
     return this.rolesRepository.find({ relations });
@@ -65,21 +46,13 @@ export class RolesService {
     const rol = await this.rolesRepository.findOneBy({ id });
     if (!rol) throw new RolNotFoundException(id);
 
-    const { nombre, permisosIds } = updateRoleDto;
+    const { nombre } = updateRoleDto;
     if (nombre && rol.nombre != nombre) {
       const rol = await this.rolesRepository.findOneBy({ nombre });
       if (rol) throw new RolExistsException(nombre);
     }
-
-    if (permisosIds) {
-      const permisos = await this.permisosService.findByIds(permisosIds);
-      const rolActualizar = this.rolesRepository.create({ ...rol, ...updateRoleDto, permisos });
-      await this.rolesRepository.save(rolActualizar);
-    } else {
-      await this.rolesRepository.update(id, updateRoleDto);
-    }
-
-    return await this.rolesRepository.findOneBy({ id });
+    await this.rolesRepository.update(id, updateRoleDto);
+    return this.rolesRepository.findOneBy({ id });
   }
 
   async remove(id: string) {
