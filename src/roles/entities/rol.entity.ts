@@ -10,13 +10,13 @@ export class Rol {
   @Column({ unique: true })
   nombre: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'date' })
   fechaCreacion: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'date' })
   fechaActualizacion: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ type: 'date' })
   @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion?: Date;
 
