@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Transform } from 'class-transformer';
 
 @Entity()
 export class Eps {
@@ -11,12 +12,13 @@ export class Eps {
   @Column({ unique: true })
   nit: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'date' })
   fechaCreacion: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'date' })
   fechaActualizacion: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ type: 'date' })
+  @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion: Date;
 }
