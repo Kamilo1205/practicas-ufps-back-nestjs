@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
 import { Transform } from 'class-transformer';
-import { DocumentoIdentidad } from 'src/documento-identidad/entities/documento-identidad.entity';
 
 @Entity()
 export class TipoDocumento {

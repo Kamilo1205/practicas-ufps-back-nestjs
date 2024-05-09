@@ -10,7 +10,7 @@ export class TipoDocumentoController {
   constructor(private readonly tipoDocumentoService: TipoDocumentoService) {}
 
   @Post()
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Administrador)
   create(@Body() createTipoDocumentoDto: CreateTipoDocumentoDto) {
     return this.tipoDocumentoService.create(createTipoDocumentoDto);
   }
@@ -22,19 +22,19 @@ export class TipoDocumentoController {
   }
 
   @Get(':id')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Administrador)
   findOne(@Param() { id }: UuidDto) {
     return this.tipoDocumentoService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Administrador)
   update(@Param() { id }: UuidDto, @Body() updateTipoDocumentoDto: UpdateTipoDocumentoDto) {
     return this.tipoDocumentoService.update(id, updateTipoDocumentoDto);
   }
 
   @Delete(':id')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Administrador)
   remove(@Param() { id }: UuidDto) {
     return this.tipoDocumentoService.remove(id);
   }
