@@ -1,5 +1,4 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { EstudianteEps } from 'src/estudiante-eps/entities/estudiante-eps.entity';
 
 @Entity()
 export class TipoAfiliacionEps {
@@ -8,8 +7,4 @@ export class TipoAfiliacionEps {
 
   @Column()
   nombre: string;
-
-  // Relaciones
-  @OneToMany(() => EstudianteEps, (estudianteEps) => estudianteEps.tipoAfiliacion)
-  estudiantes: EstudianteEps;
 }
