@@ -36,13 +36,13 @@ export class Usuario {
   @Exclude()
   currentHashedRefreshToken?: string;
 
-  @CreateDateColumn() // Columna para la fecha y hora de creación del registro de usuario.
+  @CreateDateColumn({ type: 'date' }) // Columna para la fecha y hora de creación del registro de usuario.
   fechaCreacion: Date; // Fecha y hora de creación del registro de usuario.
 
-  @UpdateDateColumn() // Columna para la fecha y hora de la última actualización del registro de usuario.
+  @UpdateDateColumn({ type: 'date' }) // Columna para la fecha y hora de la última actualización del registro de usuario.
   fechaActualizacion: Date; // Fecha y hora de la última actualización del registro de usuario.
 
-  @DeleteDateColumn() // Columna para la fecha y hora de eliminación lógica del registro de usuario (si se elimina).
+  @DeleteDateColumn({ type: 'date' }) // Columna para la fecha y hora de eliminación lógica del registro de usuario (si se elimina).
   @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion?: Date; // Fecha y hora de eliminación lógica del registro de usuario (si se aplica).
 
