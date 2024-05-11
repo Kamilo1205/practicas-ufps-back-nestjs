@@ -27,8 +27,6 @@ export class UsuariosService {
   }
 
   async findAll(page = 1, limit = 10, relations: string[] = ['roles']) {
-    console.log('Pages=', page);
-    console.log('Limit=', limit);
     const skip = (page - 1) * limit;
     console.log(skip);
     const [data, total] = await this.usuariosRepository.findAndCount({
