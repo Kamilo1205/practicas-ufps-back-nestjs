@@ -10,31 +10,33 @@ export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Post()
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Administrador)
   create(@Body() createUsuarioDto: CreateUsuarioDto) {
     return this.usuariosService.create(createUsuarioDto);
   }
 
   @Get()
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Administrador)
   findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    if (page === undefined || isNaN(page)) page = 1;
+    if (limit === undefined || isNaN(limit)) limit = 10;
     return this.usuariosService.findAll(page, limit);
   }
 
   @Get(':id')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Administrador)
   findOne(@Param() { id }: UuidDto) {
     return this.usuariosService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Administrador)
   update(@Param() { id }: UuidDto, @Body() updateUsuarioDto: UpdateUsuarioDto) {
     return this.usuariosService.update(id, updateUsuarioDto);
   }
 
   @Delete(':id')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Administrador)
   remove(@Param() { id }: UuidDto) {
     return this.usuariosService.remove(id);
   }
