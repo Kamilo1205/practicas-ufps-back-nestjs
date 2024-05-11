@@ -21,12 +21,11 @@ export class RolesService {
     return this.rolesRepository.save(rol);
   }
 
-
-  findAll(relations: string[] = ['permisos']) {
+  findAll(relations: string[] = []) {
     return this.rolesRepository.find({ relations });
   }
 
-  async findOne(id: string, relations: string[] = ['permisos']) {
+  async findOne(id: string, relations: string[] = []) {
     const rol = await this.rolesRepository.findOne({ where: { id }, relations });
     if (!rol) throw new RolNotFoundException(id);
     return rol;
@@ -36,7 +35,7 @@ export class RolesService {
     return this.rolesRepository.findBy({ id: In(ids) });  
   };
 
-  async findOneByNombre(nombre: string, relations: string[] = ['permisos']) {
+  async findOneByNombre(nombre: string, relations: string[] = []) {
     const rol = await this.rolesRepository.findOne({ where: { nombre }, relations });
     if (!rol) throw new RolNombreNotFoundException(nombre);
     return rol;
