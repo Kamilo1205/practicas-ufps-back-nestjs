@@ -1,48 +1,26 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RepresentanteLegal } from './entities/representante-legal.entity';
 import { CreateRepresentanteLegalDto, UpdateRepresentanteLegalDto } from './dto';
 import { RepresentanteLegalExistsException, RepresentanteLegalNotFoundException } from './exceptions';
-import { RepresentanteLegal } from './entities/representante-legal.entity';
-import { DocumentoIdentidadService } from 'src/documento-identidad/documento-identidad.service';
-import { CreateDocumentoIdentidadDto, UpdateDocumentoIdentidadDto } from 'src/documento-identidad/dto';
 
 @Injectable()
 export class RepresentanteLegalService {
   constructor(
     @InjectRepository(RepresentanteLegal)
-    private readonly representanteLegalRepository: Repository<RepresentanteLegal>,
-    private readonly documentoIdentidadService: DocumentoIdentidadService,
+    private readonly representanteLegalRepository: Repository<RepresentanteLegal>
   ) {}
 
-  async create(
-    createRepresentanteLegalDto: CreateRepresentanteLegalDto,
-    createDocumentoIdentidadDto: CreateDocumentoIdentidadDto,
-    documento: Express.Multer.File,
-    folderId: string,
-  ) {
-    const { email } = createRepresentanteLegalDto;
-    const existingRepresentanteLegal = await this.representanteLegalRepository.findOneBy({ email });
-    if (existingRepresentanteLegal) throw new RepresentanteLegalExistsException(email);
-    
-    const documentoIdentidad = await this.documentoIdentidadService.create(createDocumentoIdentidadDto, documento, folderId);
-    const representanteLegal = this.representanteLegalRepository.create({
-      ...createRepresentanteLegalDto,
-      documentoIdentidad,
-    });
-    return this.representanteLegalRepository.save(representanteLegal);
+  async create(createRepresentanteLegalDto: CreateRepresentanteLegalDto) {
+    const { numeroDocumento } = createRepresentanteLegalDto;
+    const representanteLegal = await this.representanteLegalRepository.findOneBy({ numeroDocumento });
+    if (representanteLegal) throw new RepresentanteLegalExistsException(numeroDocumento);
+    return this.representanteLegalRepository.save(createRepresentanteLegalDto);
   }
 
-  async findAll(page = 1, limit = 10) {
-    const skip = (page - 1) * limit;
-    const [data, total] = await this.representanteLegalRepository.findAndCount({
-      take: limit,
-      skip: skip,
-      order: {
-        fechaCreacion: 'DESC',
-      }
-    });
-    return { data, total };
+  findAll() {
+    return this.representanteLegalRepository.find();
   }
 
   async findOne(id: string) {
@@ -51,33 +29,19 @@ export class RepresentanteLegalService {
     return representanteLegal;
   }
 
-  async update(
-    id: string, 
-    updateRepresentanteLegalDto: UpdateRepresentanteLegalDto, 
-    updateDocumentoIdentidadDto: UpdateDocumentoIdentidadDto,
-    documento: Express.Multer.File,
-    folderId: string,
-  ) {
+  findOneByNumeroDocumento(numeroDocumento: string) {
+    return this.representanteLegalRepository.findOneBy({ numeroDocumento });  
+  }
+
+  async update(id: string, updateRepresentanteLegalDto: UpdateRepresentanteLegalDto) {
     const representanteLegal = await this.representanteLegalRepository.findOneBy({ id });
     if (!representanteLegal) throw new RepresentanteLegalNotFoundException(id);
-
-    const { email } = updateRepresentanteLegalDto;
-    if (email && representanteLegal.email != email) {
-      const existingRepresentanteLegal = await this.representanteLegalRepository.findOneBy({ email });
-      if (existingRepresentanteLegal) throw new RepresentanteLegalExistsException(email);
-    }
-
-    if (updateDocumentoIdentidadDto) {
-      const documentoIdentidadId = representanteLegal.documentoIdentidad.id;
-      await this.documentoIdentidadService.update(documentoIdentidadId, updateDocumentoIdentidadDto, documento, folderId);
-    }
-    await this.representanteLegalRepository.update(id, updateRepresentanteLegalDto);
-    return this.representanteLegalRepository.findOneBy({ id });
+    return this.representanteLegalRepository.update(id, updateRepresentanteLegalDto);
   }
 
   async remove(id: string) {
     const representanteLegal = await this.representanteLegalRepository.findOneBy({ id });
     if (!representanteLegal) throw new RepresentanteLegalNotFoundException(id);
-    return this.representanteLegalRepository.softDelete({ id });
+    return this.representanteLegalRepository.softDelete(representanteLegal);
   }
 }
