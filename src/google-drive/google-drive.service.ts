@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { google, drive_v3 } from 'googleapis';
+import { Readable } from 'stream';
 
 @Injectable()
 export class GoogleDriveService {
@@ -8,30 +9,15 @@ export class GoogleDriveService {
 
   constructor(private configService: ConfigService) {
     const GOOGLE_CLIENT_ID: string = this.configService.get('GOOGLE_CLIENT_ID');
-    const GOOGLE_CLIENT_SECRET: string = this.configService.get(
-      'GOOGLE_CLIENT_SECRET',
-    );
-    const GOOGLE_REDIRECT_URI: string = this.configService.get(
-      'GOOGLE_REDIRECT_URI',
-    );
-    const GOOGLE_REFRESH_TOKEN: string = this.configService.get(
-      'GOOGLE_REFRESH_TOKEN',
-    );
+    const GOOGLE_CLIENT_SECRET: string = this.configService.get('GOOGLE_CLIENT_SECRET');
+    const GOOGLE_REDIRECT_URI: string = this.configService.get('GOOGLE_REDIRECT_URI');
+    const GOOGLE_REFRESH_TOKEN: string = this.configService.get('GOOGLE_REFRESH_TOKEN');
 
-    if (
-      !GOOGLE_CLIENT_ID ||
-      !GOOGLE_CLIENT_SECRET ||
-      !GOOGLE_REDIRECT_URI ||
-      !GOOGLE_REFRESH_TOKEN
-    ) {
+    if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REDIRECT_URI || !GOOGLE_REFRESH_TOKEN) {
       throw new Error('Google API credentials are not configured properly.');
     }
 
-    const auth = new google.auth.OAuth2(
-      GOOGLE_CLIENT_ID,
-      GOOGLE_CLIENT_SECRET,
-      GOOGLE_REDIRECT_URI,
-    );
+    const auth = new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI);
     auth.setCredentials({ refresh_token: GOOGLE_REFRESH_TOKEN });
     this.drive = google.drive({ version: 'v3', auth });
   }
@@ -42,18 +28,13 @@ export class GoogleDriveService {
    * @param media Contenido del archivo.
    * @returns ID del archivo creado.
    */
-  async uploadFile(fileMetadata: any, media: any): Promise<string> {
+  async uploadFile(name: string, parents: string[], file: Express.Multer.File, options?: any): Promise<string> {
     try {
-      const response = await this.drive.files.create({
-        requestBody: fileMetadata,
-        media: media,
-      });
-
+      const requestBody = { name, parents };
+      const media = { mimeType: file.mimetype, body: Readable.from(file.buffer)}
+      const response = await this.drive.files.create({ requestBody, media });
       return response.data.id;
     } catch (error) {
-      console.error(
-        `Error al crear el archivo en Google Drive: ${error.message}`,
-      );
       throw new Error('No se pudo crear el archivo en Google Drive.');
     }
   }
@@ -71,9 +52,6 @@ export class GoogleDriveService {
 
       return response.data.files;
     } catch (error) {
-      console.error(
-        `Error al buscar archivos en Google Drive: ${error.message}`,
-      );
       throw new Error('No se pudo realizar la búsqueda en Google Drive.');
     }
   }
@@ -88,9 +66,6 @@ export class GoogleDriveService {
         fileId: fileId,
       });
     } catch (error) {
-      console.error(
-        `Error al eliminar el archivo en Google Drive: ${error.message}`,
-      );
       throw new Error('No se pudo eliminar el archivo en Google Drive.');
     }
   }
@@ -101,10 +76,7 @@ export class GoogleDriveService {
    * @param parentFolderId ID de la carpeta principal.
    * @returns ID de la carpeta creada.
    */
-  async createFolder(
-    folderName: string,
-    parentFolderId: string,
-  ): Promise<string> {
+  async createFolder(folderName: string, parentFolderId: string): Promise<string> {
     try {
       const folderMetadata = {
         name: folderName,
@@ -118,9 +90,6 @@ export class GoogleDriveService {
 
       return response.data.id;
     } catch (error) {
-      console.error(
-        `Error al crear la carpeta en Google Drive: ${error.message}`,
-      );
       throw new Error('No se pudo crear la carpeta en Google Drive.');
     }
   }
@@ -131,22 +100,40 @@ export class GoogleDriveService {
    * @param parentFolderId ID de la carpeta principal.
    * @returns Lista de carpetas que coinciden con la búsqueda.
    */
-  async searchFolders(
-    folderName: string,
-    parentFolderId: string,
-  ): Promise<any[]> {
+  async searchFolders(folderName: string, parentFolderId: string): Promise<any[]> {
     try {
       const response = await this.drive.files.list({
         q: `'${parentFolderId}' in parents and name='${folderName}' and mimeType='application/vnd.google-apps.folder'`,
       });
       return response.data.files;
     } catch (error) {
-      console.error(
-        `Error al buscar carpetas en Google Drive: ${error.message}`,
-      );
       throw new Error(
         'No se pudo realizar la búsqueda de carpetas en Google Drive.',
       );
+    }
+  }
+
+  async renameFolder(folderId: string, newName: string): Promise<void> {
+    try {
+      const folderMetadata = { name: newName };
+      await this.drive.files.update({
+        fileId: folderId,
+        requestBody: folderMetadata,
+      });
+    } catch (error) {
+      throw new Error('No se pudo cambiar el nombre de la carpeta en Google Drive.');
+    }
+  }
+  
+  async renameFile(fileId: string, newName: string): Promise<void> {
+    try {
+      const fileMetadata = { name: newName };
+      await this.drive.files.update({
+        fileId: fileId,
+        requestBody: fileMetadata,
+      });
+    } catch (error) {
+      throw new Error('No se pudo cambiar el nombre del archivo en Google Drive.');
     }
   }
 
@@ -155,23 +142,27 @@ export class GoogleDriveService {
    * @param fileId ID del archivo a recuperar.
    * @returns Contenido del archivo como un flujo de datos.
    */
-  /*
-  async getFileFromDrive(fileId: string): Promise<Buffer> {
+  async getFileFromDrive(fileId: string): Promise<any> {
     try {
+      const { data: { name } } = await this.drive.files.get({
+        fileId: fileId,
+        fields: 'name',
+      });
+
       const response = await this.drive.files.get({
         fileId: fileId,
         alt: 'media',
-      });
+      }, { responseType: 'stream' });
 
-      // El archivo se descarga como un flujo de datos
-      const fileStream = response.data;
-      return fileStream;
+      console.log(response)
+      const filename = name;
+      const mimeType = response.headers['content-type'];
+      const stream = response.data as Readable;
+      
+      return { stream, filename, mimeType };
     } catch (error) {
-      console.error(
-        `Error al recuperar el archivo desde Google Drive: ${error.message}`,
-      );
+      console.error(`Error al recuperar el archivo desde Google Drive: ${error.message}`);
       throw new Error('No se pudo recuperar el archivo desde Google Drive.');
     }
   }
-  */
 }
