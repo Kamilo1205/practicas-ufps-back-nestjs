@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-} from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ConfigService } from '@nestjs/config';
@@ -38,19 +33,12 @@ export class JwtCookieInterceptor implements NestInterceptor {
     );
   }
 
-  private attachCookies(
-    res: Response,
-    accessToken: string,
-    refreshToken?: string,
-  ) {
-    const accessTokenExpiry = this.configService.get<number>(
-      'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
-    );
-    const refreshTokenExpiry = this.configService.get<number>(
-      'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
-    );
+  private attachCookies(res: Response, accessToken: string, refreshToken?: string) {
+    const accessTokenExpiry = this.configService.get<number>('JWT_ACCESS_TOKEN_EXPIRATION_TIME');
+    const refreshTokenExpiry = this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION_TIME');
+    
     res.cookie('access_token', accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: false, // Asegura la cookie en producción
       maxAge: accessTokenExpiry * 1000,
       path: '/',

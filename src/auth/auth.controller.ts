@@ -1,12 +1,11 @@
 import { Response } from 'express';
 import { Controller, Get, UseGuards, Req, Res, Post, HttpCode, UseInterceptors, Body } from '@nestjs/common';
 import { GoogleOauthGuard, JwtAuthGuard, JwtRefreshGuard, LocalAuthGuard } from './guards';
-import { CreateUsuarioEmpresaDto, FrogotPasswordDto } from './dto';
+import { CreateUsuarioEmpresaDto, FrogotPasswordDto, ResetPasswordTokenDto } from './dto';
 import { JwtCookieInterceptor } from './interceptors';
-import { RequestWithUser } from './interfaces';
+import { RequestWithUser, RequestWithUserGoogle } from './interfaces';
 import { AuthService } from './auth.service';
 import { Public } from './decorators';
-import { ResetPasswordTokenDto } from './dto/reset-password.dto';
 
 /**
  * Controlador para manejar la autenticación de usuarios.
@@ -53,21 +52,29 @@ export class AuthController {
   @Public()
   @UseGuards(GoogleOauthGuard)
   @UseInterceptors(JwtCookieInterceptor)
-  async googleLoginCallback(@Req() req: RequestWithUser, @Res() res: Response) {
+  async googleLoginCallback(@Req() req: RequestWithUserGoogle, @Res() res: Response) {
     try {
       const usuario = await this.authService.getUsuario(req.user.email);
       if (!usuario) {
-        //const redirectUrl = this.authService.getSafeRedirectUrl(usuario.rol.nombre as Rol);
+        const redirectUrl = this.authService.getSafeRedirectUrl();
         const error = 'Usuario no registrado';
-        //return { redirectUrl, error };
+        return { redirectUrl, error };
+      }
+
+      if (!usuario.imagenUrl || usuario.imagenUrl != req.user.picture) {
+        this.authService.updateImagenUsuario(usuario.id, req.user.picture);
+      }
+
+      if (!usuario.emailConfirmado) {
+        this.authService.confirmarEmail(usuario.id);
       }
 
       const accessToken = this.authService.getJwtAccessToken(usuario.id);
       const refreshToken = this.authService.getJwtRefreshToken(usuario.id);
       await this.authService.setCurrentRefreshToken(usuario.id, refreshToken);
-      //const redirectUrl = this.authService.getSafeRedirectUrl(usuario.rol.nombre as Rol);
+      const redirectUrl = 'http://localhost:5173/';
       
-      //return { accessToken, refreshToken, redirectUrl };
+      return { accessToken, refreshToken, redirectUrl };
     } catch (err) {
       const redirectUrl = this.authService.getSafeRedirectUrl();
       const error = 'Error de autenticación';

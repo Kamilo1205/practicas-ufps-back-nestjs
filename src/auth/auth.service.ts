@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
+
 import { CreateUsuarioEmpresaDto } from './dto';
 import { IncorrectPasswordException, NullPasswordException, UserNotFoundException } from './exceptions';
 import { TokenPayload } from './interfaces';
@@ -32,27 +33,29 @@ export class AuthService {
 
   async crearUsuarioEmpresa(createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
     const { id: rolId } = await this.rolesService.findOneByNombre(Rol.Empresa);
-    // return this.usuariosService.create({
-    //   ...createUsuarioEmpresaDto, 
-    //   rolId,
-    //   estaActivo: true,
-    //   emailConfirmado: undefined,
-    //   estaRegistrado: false
-    // });
+    return this.usuariosService.create({
+      ...createUsuarioEmpresaDto, rolesIds: [rolId], 
+      imagenUrl: null, displayName: null, 
+      estaActivo: false, emailConfirmado: null, 
+      estaRegistrado: false
+    });
+  }
+
+  async updateImagenUsuario(usuarioId: string, imagenUrl: string) {
+    this.usuariosService.update(usuarioId, { imagenUrl });
+  }
+
+  async confirmarEmail(usuarioId: string) {
+    this.usuariosService.update(usuarioId, { emailConfirmado: new Date() });
   }
 
   async validateUser(email: string, password: string) {
     const usuario = await this.usuariosService.findOneByEmail(email);
 
-    // Caso cuando el usuario no existe
     if (!usuario) throw new UserNotFoundException();
-
-    // Caso cuando el usuario tiene `password` como null (posiblemente porque se registró mediante Google)
     if (usuario.password === null) throw new NullPasswordException();
-
-    // Caso cuando la contraseña no coincide
     if (!bcrypt.compareSync(password, usuario.password)) throw new IncorrectPasswordException();
-
+    
     return usuario;
   }
 
@@ -98,7 +101,6 @@ export class AuthService {
       secret: this.configService.get('JWT_RESET_PASSWORD_TOKEN_SECRET'),
       expiresIn: `${this.configService.get('JWT_RESET_PASSWORD_TOKEN_EXPIRATION_TIME')}s`,
     });
-
     await this.mailService.sedForgotPasswordEmail(email, token);
   }
 
@@ -107,7 +109,7 @@ export class AuthService {
       const decodedToken = this.jwtService.verify(resetPasswordTokenDto.token, {
         secret: this.configService.get('JWT_RESET_PASSWORD_TOKEN_SECRET'),
       });
-      await this.usuariosService.updatePassword(decodedToken.email, resetPasswordTokenDto.newPassword);
+      await this.usuariosService.updatePassword(decodedToken.email, resetPasswordTokenDto.password);
     } catch (error) {
       throw new NotFoundException('Token no válido');
     }
