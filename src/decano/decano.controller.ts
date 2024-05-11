@@ -14,13 +14,18 @@ export class DecanoController {
   }
 
   @Get()
+  findOne() {
+    return this.decanoService.findOne();
+  }
+
+  @Get('/all')
   findAll() {
     return this.decanoService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param() { id }: UuidDto) {
-    return this.decanoService.findOne(id);
+  findOneById(@Param() { id }: UuidDto) {
+    return this.decanoService.findOneById(id);
   }
 
   @Patch(':id')

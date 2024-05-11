@@ -20,7 +20,12 @@ export class DecanoService {
     return this.decanosRepository.find();
   }
 
-  findOne(id: string) {
+  async findOne() {
+    const decanos = await this.decanosRepository.find();
+    return decanos.length > 0 ? decanos[0] : undefined;
+  }
+
+  findOneById(id: string) {
     return this.decanosRepository.findOneBy({ id });
   }
 

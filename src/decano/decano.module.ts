@@ -8,5 +8,6 @@ import { Decano } from './entities/decano.entity';
   imports: [TypeOrmModule.forFeature([Decano])],
   controllers: [DecanoController],
   providers: [DecanoService],
+  exports: [DecanoService]
 })
 export class DecanoModule {}

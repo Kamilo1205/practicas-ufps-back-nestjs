@@ -9,9 +9,6 @@ export class Decano {
   @Column()
   nombre: string;
 
-  @Column()
-  apellido: string;
-
   @Column({
     type: 'enum',
     enum: Genero,
