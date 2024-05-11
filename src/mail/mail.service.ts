@@ -22,6 +22,7 @@ export class MailService {
 
   async sedForgotPasswordEmail(to: string, token: string) {
     try {
+      const resetUrl = `${this.configService.get('URL_RESET_PASSWORD')}?token=${token}`;
       const response = await this.mailerService.sendMail({ 
         to: to, // Destinatario
         from: this.configService.get<string>('GOOGLE_USER'), // Remitente
@@ -29,7 +30,7 @@ export class MailService {
         template: './forgot-password',
         context: {
           name: to,
-          resetUrl: token
+          resetUrl
         }
       });
       return response;
