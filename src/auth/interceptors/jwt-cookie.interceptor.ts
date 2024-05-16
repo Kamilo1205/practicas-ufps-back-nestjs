@@ -37,6 +37,9 @@ export class JwtCookieInterceptor implements NestInterceptor {
     const accessTokenExpiry = this.configService.get<number>('JWT_ACCESS_TOKEN_EXPIRATION_TIME');
     const refreshTokenExpiry = this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION_TIME');
     
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     res.cookie('access_token', accessToken, {
       httpOnly: false,
       secure: false, // Asegura la cookie en producción

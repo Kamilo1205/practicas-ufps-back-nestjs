@@ -121,6 +121,9 @@ export class AuthController {
   @UseGuards(JwtRefreshGuard)
   @UseInterceptors(JwtCookieInterceptor)
   refresh(@Req() req: RequestWithUser, @Res({ passthrough: true }) res: Response) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     const accessToken = this.authService.getJwtAccessToken(req.user.id);
     return { usuario: req.user, accessToken };
   }
