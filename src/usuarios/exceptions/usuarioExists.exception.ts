@@ -1,7 +1,17 @@
 import { ConflictException } from '@nestjs/common';
 
+interface ErrorMessages {
+  [key: string]: string;
+}
+
 export class UsuairoExistsException extends ConflictException {
-  constructor(email: string) {
-    super(`El usuario con el email "${email}" ya esta registrado`);
+  constructor(message?: string | object | any, errors?: ErrorMessages) {
+    const defaultMessage = 'Email ya se encuentra registrado.';
+    super({
+      message: message || defaultMessage,
+      errors: errors || {
+        email: 'El correo electrónico ya esta registrado.',
+      },
+    });
   }
 }

@@ -12,9 +12,11 @@ async function bootstrap() {
     origin: configService.get<string>('URL_FRONTEND'), // Reemplaza con el origen de tu aplicación Angular
     credentials: true, // Permitir el intercambio de cookies
   });
+
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalPipes(
     new ValidationPipe({
+      transform: true,
       whitelist: true,
     }),
   );

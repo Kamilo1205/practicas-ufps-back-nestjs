@@ -7,19 +7,23 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { TypeOrmConfigService } from './config/database.config';
-import { JwtAuthGuard, RolesGuard, PermisosGuard } from './auth/guards';
+import { JwtAuthGuard, RolesGuard } from './auth/guards';
 
 import { AuthModule } from './auth/auth.module';
-import { DocumentoIdentidadModule } from './documento-identidad/documento-identidad.module';
 import { EmpresasModule } from './empresas/empresas.module';
 import { EstudiantesModule } from './estudiantes/estudiantes.module';
 import { GoogleDriveModule } from './google-drive/google-drive.module';
 import { MailModule } from './mail/mail.module';
-import { PermisosModule } from './permisos/permisos.module';
-import { RepresentanteLegalModule } from './representante-legal/representante-legal.module';
 import { RolesModule } from './roles/roles.module';
 import { TipoDocumentoModule } from './tipo-documento/tipo-documento.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
+import { EpsModule } from './eps/eps.module';
+import { AreasInteresModule } from './areas-interes/areas-interes.module';
+import { DocumentosModule } from './documentos/documentos.module';
+import { TipoAfiliacionEpsModule } from './tipo-afiliacion-eps/tipo-afiliacion-eps.module';
+import { DecanoModule } from './decano/decano.module';
+import { RepresentanteLegalModule } from './representante-legal/representante-legal.module';
+import { TutoresModule } from './tutores/tutores.module';
 
 @Module({
   imports: [
@@ -32,16 +36,20 @@ import { UsuariosModule } from './usuarios/usuarios.module';
     }),
     // Modulos
     AuthModule,
-    DocumentoIdentidadModule,
     EmpresasModule,
     EstudiantesModule,
     GoogleDriveModule,
     MailModule,
-    PermisosModule,
-    RepresentanteLegalModule,
     RolesModule,
     TipoDocumentoModule,
     UsuariosModule,
+    EpsModule,
+    AreasInteresModule,
+    DocumentosModule,
+    TipoAfiliacionEpsModule,
+    DecanoModule,
+    RepresentanteLegalModule,
+    TutoresModule,
   ],
   controllers: [AppController],
   providers: [
@@ -53,10 +61,6 @@ import { UsuariosModule } from './usuarios/usuarios.module';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: PermisosGuard,
     },
   ],
 })

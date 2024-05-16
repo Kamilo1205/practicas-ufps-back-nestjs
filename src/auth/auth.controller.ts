@@ -18,8 +18,13 @@ export class AuthController {
 
   @Post('register')
   @Public()
-  register(@Body() createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
-    return this.authService.crearUsuarioEmpresa(createUsuarioEmpresaDto);
+  @UseInterceptors(JwtCookieInterceptor)
+  async register(@Body() createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
+    const usuario = await this.authService.crearUsuarioEmpresa(createUsuarioEmpresaDto);
+    const accessToken = this.authService.getJwtAccessToken(usuario.id);
+    const refreshToken = this.authService.getJwtRefreshToken(usuario.id);
+    await this.authService.setCurrentRefreshToken(usuario.id, refreshToken);
+    return { usuario, accessToken, refreshToken };
   }
 
   @Post('forgot-password')
@@ -122,7 +127,10 @@ export class AuthController {
 
   @HttpCode(200)
   @Post('logout')
-  async logout(@Req() req: RequestWithUser, @Res() res: Response) {
+  async logout(@Req() req: RequestWithUser, @Res({ passthrough: true }) res: Response) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     res.cookie('access_token', '', { path: '/', maxAge: 0 });
     res.cookie('refresh_token', '', { path: '/', maxAge: 0 });
     await this.authService.removeCurrentRefreshToken(req.user.id);

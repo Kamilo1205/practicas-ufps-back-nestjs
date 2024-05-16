@@ -10,7 +10,6 @@ export class DocumentosController {
   async generarConvenio(@Res() res: Response) {
     try {
       const documentoBuffer = await this.documentosService.generateConveioDocument();
-    
       res.set({
         'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'Content-Disposition': 'attachment; filename="convenio.docx"',

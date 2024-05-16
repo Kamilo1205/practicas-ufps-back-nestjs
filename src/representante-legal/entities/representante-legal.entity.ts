@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { TipoDocumento } from 'src/tipo-documento/entities/tipo-documento.entity';
 import { Transform } from 'class-transformer';
+import { Empresa } from 'src/empresas/entities/empresa.entity';
 
 @Entity()
 export class RepresentanteLegal {
@@ -26,7 +27,7 @@ export class RepresentanteLegal {
   lugarExpedicionDocumento: string;
 
   @Column()
-  documentoUrl: string;
+  documentoIdentidadUrl: string;
 
   @CreateDateColumn({ type: 'date' })
   fechaCreacion: Date;
@@ -40,4 +41,7 @@ export class RepresentanteLegal {
 
   @ManyToOne(() => TipoDocumento, (tipoDocumento) => tipoDocumento.representantesLegales, { eager: true })
   TipoDocumento: TipoDocumento;
+
+  @OneToMany(() => Empresa, (empresa) => empresa.representanteLegal)
+  empresas: Empresa[];
 }

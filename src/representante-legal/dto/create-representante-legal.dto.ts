@@ -27,7 +27,7 @@ export class CreateRepresentanteLegalDto {
   
   @IsOptional()
   @IsString()
-  documentoUrl: string;
+  documentoIdentidadUrl: string;
 
   @IsNotEmpty()
   @IsUUID('4')

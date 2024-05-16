@@ -36,7 +36,7 @@ export class AuthService {
     return this.usuariosService.create({
       ...createUsuarioEmpresaDto, rolesIds: [rolId], 
       imagenUrl: null, displayName: null, 
-      estaActivo: false, emailConfirmado: null, 
+      estaActivo: true, emailConfirmado: null, 
       estaRegistrado: false
     });
   }

@@ -1,0 +1,1 @@
+export { Genero } from './genero.enum';

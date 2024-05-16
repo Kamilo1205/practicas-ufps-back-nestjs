@@ -1,14 +1,6 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToOne, JoinColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { Eps } from 'src/eps/entities/eps.entity';
 
 @Entity()
 export class Estudiante {
@@ -36,6 +28,9 @@ export class Estudiante {
   @Column()
   municipio: string;
 
+  @Column()
+  fechaNacimiento: Date;
+
   @CreateDateColumn()
   fechaCreacion: Date;
 
@@ -49,4 +44,8 @@ export class Estudiante {
   @OneToOne(() => Usuario, (usuario) => usuario.estudiante)
   @JoinColumn()
   usuario: Usuario;
+
+  //@ManyToOne(() => EstudianteEps)
+  //@JoinColumn()
+  //eps: EstudianteEps;
 }

@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
-import { RepresentanteLegal } from 'src/empresas/entities/representante-legal.entity';
+import { RepresentanteLegal } from 'src/representante-legal/entities/representante-legal.entity';
 import { Transform } from 'class-transformer';
 
 @Entity()
@@ -21,6 +21,6 @@ export class TipoDocumento {
   fechaEliminacion: Date;
 
   // Relaciones
-  @OneToMany(() => RepresentanteLegal, representanteLegal => representanteLegal.tipoDocumento)
+  @OneToMany(() => RepresentanteLegal, representanteLegal => representanteLegal.TipoDocumento)
   representantesLegales: RepresentanteLegal[];
 }

@@ -1,0 +1,1 @@
+export { UploadedFiles } from './uploaded-files.interface';

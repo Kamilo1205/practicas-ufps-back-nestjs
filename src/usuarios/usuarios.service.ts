@@ -28,7 +28,6 @@ export class UsuariosService {
 
   async findAll(page = 1, limit = 10, relations: string[] = ['roles']) {
     const skip = (page - 1) * limit;
-    console.log(skip);
     const [data, total] = await this.usuariosRepository.findAndCount({
       take: limit,
       skip: skip,
@@ -68,7 +67,7 @@ export class UsuariosService {
     }
 
     const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
-    const roles = await this.rolesService.findByIds(rolesIds);
+    const roles = rolesIds ? await this.rolesService.findByIds(rolesIds) : usuario.roles;
 
     const usuarioActualizar = this.usuariosRepository.create({ 
       ...usuario, 
