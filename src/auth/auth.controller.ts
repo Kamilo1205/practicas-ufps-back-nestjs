@@ -30,13 +30,13 @@ export class AuthController {
   @Post('forgot-password')
   @Public()
   async forgotPassword(@Body() frogotPasswordDto: FrogotPasswordDto) {
-    await this.authService.sendPasswordResetEmail(frogotPasswordDto.email);
+    return await this.authService.sendPasswordResetEmail(frogotPasswordDto.email);
   }
 
   @Post('reset-password')
   @Public()
   async resetPassword(@Body() resetPasswordTokenDto: ResetPasswordTokenDto) {
-    await this.authService.resetPassword(resetPasswordTokenDto);
+    return await this.authService.resetPassword(resetPasswordTokenDto);
   }
 
   /**

@@ -101,7 +101,7 @@ export class AuthService {
       secret: this.configService.get('JWT_RESET_PASSWORD_TOKEN_SECRET'),
       expiresIn: `${this.configService.get('JWT_RESET_PASSWORD_TOKEN_EXPIRATION_TIME')}s`,
     });
-    await this.mailService.sedForgotPasswordEmail(email, token);
+    return await this.mailService.sedForgotPasswordEmail(email, token);
   }
 
   async resetPassword(resetPasswordTokenDto: ResetPasswordTokenDto) {

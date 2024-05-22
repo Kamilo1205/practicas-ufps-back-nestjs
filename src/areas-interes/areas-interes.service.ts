@@ -46,6 +46,6 @@ export class AreasInteresService {
   async remove(id: string) {
     const areaInteres = await this.areaInteresRepository.findOneBy({ id });
     if (!areaInteres) throw new AreaInteresNotFoundException(id);
-    return this.areaInteresRepository.remove(areaInteres);
+    return this.areaInteresRepository.softDelete(areaInteres);
   }
 }

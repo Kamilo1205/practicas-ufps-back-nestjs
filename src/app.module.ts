@@ -2,6 +2,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -24,6 +25,9 @@ import { TipoAfiliacionEpsModule } from './tipo-afiliacion-eps/tipo-afiliacion-e
 import { DecanoModule } from './decano/decano.module';
 import { RepresentanteLegalModule } from './representante-legal/representante-legal.module';
 import { TutoresModule } from './tutores/tutores.module';
+import { AnioModule } from './anio/anio.module';
+import { SemestreModule } from './semestre/semestre.module';
+import { SeederModule } from './seeder/seeder.module';
 
 @Module({
   imports: [
@@ -34,6 +38,7 @@ import { TutoresModule } from './tutores/tutores.module';
       imports: [ConfigModule],
       useClass: TypeOrmConfigService,
     }),
+    ScheduleModule.forRoot(),
     // Modulos
     AuthModule,
     EmpresasModule,
@@ -50,6 +55,9 @@ import { TutoresModule } from './tutores/tutores.module';
     DecanoModule,
     RepresentanteLegalModule,
     TutoresModule,
+    AnioModule,
+    SemestreModule,
+    SeederModule,
   ],
   controllers: [AppController],
   providers: [
