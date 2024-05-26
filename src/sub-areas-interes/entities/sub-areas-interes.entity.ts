@@ -3,23 +3,23 @@ import { Transform } from 'class-transformer';
 import { AreaSubAreaInteres } from 'src/area-sub-area-interes/entities/area-sub-area-interes.entity';
 
 @Entity()
-export class AreaInteres {
+export class SubAreasInteres {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ unique: true })
   nombre: string;
 
-  @OneToMany(() => AreaSubAreaInteres, (areaSubAreaInteres) => areaSubAreaInteres.areaInteres, { eager: true })
+  @OneToMany(() => AreaSubAreaInteres, (areaSubAreaInteres) => areaSubAreaInteres.subAreasInteres)
   areaSubArea: AreaSubAreaInteres[];
 
-  @CreateDateColumn({ type: 'date' })
+  @CreateDateColumn()
   fechaCreacion: Date;
 
-  @UpdateDateColumn({ type: 'date' })
+  @UpdateDateColumn()
   fechaActualizacion: Date;
 
-  @DeleteDateColumn({ type: 'date' })
+  @DeleteDateColumn()
   @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion: Date;
 }
