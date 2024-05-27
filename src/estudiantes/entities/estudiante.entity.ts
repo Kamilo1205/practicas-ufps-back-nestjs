@@ -3,6 +3,7 @@ import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { TipoDocumento } from 'src/tipo-documento/entities/tipo-documento.entity';
 import { Eps } from 'src/eps/entities/eps.entity';
 import { TipoAfiliacionEps } from 'src/tipo-afiliacion-eps/entities/tipo-afiliacion-eps.entity';
+import { Semestre } from 'src/semestre/entities/semestre.entity';
 
 @Entity()
 export class Estudiante {
@@ -57,16 +58,6 @@ export class Estudiante {
   @Column()
   codigo: number;
 
-  @CreateDateColumn()
-  fechaCreacion: Date;
-
-  @UpdateDateColumn()
-  fechaActualizacion: Date;
-
-  @DeleteDateColumn()
-  fechaEliminacion: Date;
-
-  // Relaciones
   @OneToOne(() => Usuario, (usuario) => usuario.estudiante)
   @JoinColumn()
   usuario: Usuario;
@@ -81,5 +72,18 @@ export class Estudiante {
 
   @ManyToOne(() => TipoAfiliacionEps, (tipoAfiliacionEps) => tipoAfiliacionEps.estudiantes)
   @JoinColumn()
-  tipoAfiliacionEps: TipoAfiliacionEps
+  tipoAfiliacionEps: TipoAfiliacionEps;
+
+  @ManyToMany(() => Semestre, (semestre) => semestre.estudiantes)
+  @JoinTable({ name: 'estudiante_semestre' })
+  semestres: Semestre[];
+
+  @CreateDateColumn()
+  fechaCreacion: Date;
+
+  @UpdateDateColumn()
+  fechaActualizacion: Date;
+
+  @DeleteDateColumn()
+  fechaEliminacion: Date;
 }

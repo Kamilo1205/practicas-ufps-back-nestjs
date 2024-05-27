@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Anio } from 'src/anio/entities/anio.entity';
 import { Transform } from 'class-transformer';
+import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 
 @Entity()
 export class Semestre {
@@ -21,6 +22,27 @@ export class Semestre {
 
   @Column({ type: 'date', nullable: true })
   fechaFin: Date;
+
+  @Column({ nullable: true })
+  fechaInicioPlanDeTrabajo: Date;
+
+  @Column({ nullable: true })
+  fechaFinPlanDeTrabajo: Date;
+
+  @Column({ nullable: true })
+  fechaInicioPrimerInforme: Date;
+
+  @Column({ nullable: true })
+  fechaFinPrimerInforme: Date;
+
+  @Column({ nullable: true })
+  fechaInicioInformeFinal: Date;
+
+  @Column({ nullable: true })
+  fechaFinInformeFinal: Date;
+
+  @ManyToMany(() => Estudiante, (estudiante) => estudiante.semestres)
+  estudiantes: Estudiante[];
 
   @CreateDateColumn()
   fechaCreacion: Date;
