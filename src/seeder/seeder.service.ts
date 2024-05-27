@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { AreaSubAreaInteresService } from 'src/area-sub-area-interes/area-sub-area-interes.service';
+import { AreasInteresService } from 'src/areas-interes/areas-interes.service';
+import { HerramientasService } from 'src/herramientas/herramientas.service';
 import { RolesService } from 'src/roles/roles.service';
+import { SubAreasInteresService } from 'src/sub-areas-interes/sub-areas-interes.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 
@@ -8,11 +12,16 @@ export class SeederService {
   constructor(
     private readonly usuariosService: UsuariosService,
     private readonly rolesService: RolesService,
+    private readonly areaInteresService: AreasInteresService,
+    private readonly subAreasInteresService: SubAreasInteresService,
+    private readonly herramientasService: HerramientasService,
+    private readonly areaSubAreaService: AreaSubAreaInteresService
   ) {}
 
   async seed() {
     await this.createRoles();
     await this.createUsuarios();
+    await this.createAreasInteres();
   }
 
   private async createRoles() {
@@ -54,4 +63,24 @@ export class SeederService {
       }
     }
   }
+
+  private async createAreasInteres() {
+    const areasInteres = await this.areaInteresService.findAll();
+    if (areasInteres.length === 0) {
+      const areasToCreate = [
+        { nombre: 'Mantenimiento de hardware y software' },
+        { nombre: 'Mantenimiento y administracion de redes de computadora' },
+        { nombre: 'Capacitación' },
+        { nombre: 'Desarrollo de sofware (escritorio, movil, web)' },
+        { nombre: 'Servidores y computacion en la nube' },
+        { nombre: 'Direccion y evaluacion de proyectos' },
+        { nombre: 'Inteligencia artificial' }
+      ];
+
+      for (const areasData of areasToCreate) {
+        await this.areaInteresService.create(areasData);
+      }
+    }
+  }
+
 }
