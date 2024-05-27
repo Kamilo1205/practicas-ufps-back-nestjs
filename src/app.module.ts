@@ -31,6 +31,7 @@ import { SeederModule } from './seeder/seeder.module';
 import { SubAreasInteresModule } from './sub-areas-interes/sub-areas-interes.module';
 import { HerramientasModule } from './herramientas/herramientas.module';
 import { AreaSubAreaInteresModule } from './area-sub-area-interes/area-sub-area-interes.module';
+import { CsvModule } from './csv/csv.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { AreaSubAreaInteresModule } from './area-sub-area-interes/area-sub-area-
     SubAreasInteresModule,
     HerramientasModule,
     AreaSubAreaInteresModule,
+    CsvModule,
   ],
   controllers: [AppController],
   providers: [

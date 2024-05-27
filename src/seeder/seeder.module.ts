@@ -6,10 +6,17 @@ import { SeederController } from './seeder.controller';
 import { AreasInteresModule } from 'src/areas-interes/areas-interes.module';
 import { SubAreasInteresModule } from 'src/sub-areas-interes/sub-areas-interes.module';
 import { HerramientasModule } from 'src/herramientas/herramientas.module';
-import { AreaSubAreaInteres } from 'src/area-sub-area-interes/entities/area-sub-area-interes.entity';
+import { AreaSubAreaInteresModule } from 'src/area-sub-area-interes/area-sub-area-interes.module';
 
 @Module({
-  imports: [UsuariosModule, RolesModule, AreasInteresModule, SubAreasInteresModule, HerramientasModule, AreaSubAreaInteres],
+  imports: [
+    UsuariosModule, 
+    RolesModule, 
+    AreasInteresModule, 
+    SubAreasInteresModule, 
+    HerramientasModule, 
+    AreaSubAreaInteresModule
+  ],
   providers: [SeederService],
   controllers: [SeederController]
 })

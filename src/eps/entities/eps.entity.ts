@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Transform } from 'class-transformer';
+import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 
 @Entity()
 export class Eps {
@@ -12,13 +13,17 @@ export class Eps {
   @Column({ unique: true })
   nit: string;
 
-  @CreateDateColumn({ type: 'date' })
+  @CreateDateColumn()
   fechaCreacion: Date;
 
-  @UpdateDateColumn({ type: 'date' })
+  @UpdateDateColumn()
   fechaActualizacion: Date;
 
-  @DeleteDateColumn({ type: 'date' })
+  @DeleteDateColumn()
   @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion: Date;
+
+  //Relaciones
+  @OneToMany(() => Estudiante, (estudiante) => estudiante.eps)
+  estudiantes: Estudiante[];
 }

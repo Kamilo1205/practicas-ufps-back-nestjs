@@ -11,7 +11,7 @@ export class GoogleDriveController {
   @Public()
   @UseInterceptors(FileInterceptor('file'))
   async uploadFileToDrive(@UploadedFile() file: Express.Multer.File) {
-    this.googleDriveService.uploadFile(file.filename, [], file);
+    await this.googleDriveService.uploadFile(file.filename, [], file);
   }
 
   @Get(':fileId')

@@ -8,5 +8,6 @@ import { HerramientasController } from './herramientas.controller';
   imports: [TypeOrmModule.forFeature([Herramienta])],
   controllers: [HerramientasController],
   providers: [HerramientasService],
+  exports: [HerramientasService]
 })
 export class HerramientasModule {}

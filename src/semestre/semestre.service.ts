@@ -1,11 +1,11 @@
 import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cron } from '@nestjs/schedule';
 import { CreateSemestreDto, UpdateSemestreDto } from './dto';
 import { Semestre } from './entities/semestre.entity';
 import { GoogleDriveService } from 'src/google-drive/google-drive.service';
 import { AnioService } from 'src/anio/anio.service';
-import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class SemestreService {
@@ -18,6 +18,11 @@ export class SemestreService {
 
   async create(createSemestreDto: CreateSemestreDto) {
     const anio = await this.anioService.findOne(createSemestreDto.anioId);
+    
+    const { semestre } = createSemestreDto;
+    const semestreExiste = await this.semestreRepository.findOne({ where: { anio, semestre } });
+    if( semestreExiste ) throw new BadRequestException({ semestre: `El semestre ${ semestre } del año ${anio} ya existe` });
+    
     const googleDriveFolderId = await this.googleDriveService.createFolder(`Semestre ${createSemestreDto.semestre}`, anio.googleDriveFolderId);
     const nuevoSemestre = this.semestreRepository.create({ ...createSemestreDto, googleDriveFolderId });
     return this.semestreRepository.save(nuevoSemestre);
@@ -27,15 +32,22 @@ export class SemestreService {
     return this.semestreRepository.find();
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
+    const semestre = await this.semestreRepository.findOne({ where: { id } });
+    if (semestre) throw new NotFoundException(`El semestre con id ${ id } no fue encontrado`);
+    return semestre;
+  }
+
+  async update(id: string, updateSemestreDto: UpdateSemestreDto) {
+    const semestre = await this.semestreRepository.findOne({ where: { id } });
+    if (semestre) throw new NotFoundException(`El semestre con id ${ id } no fue encontrado`);
+    await this.semestreRepository.update(id, updateSemestreDto);
     return this.semestreRepository.findOne({ where: { id } });
   }
 
-  update(id: string, updateSemestreDto: UpdateSemestreDto) {
-    return this.semestreRepository.update(id, updateSemestreDto);
-  }
-
-  remove(id: string) {
+  async remove(id: string) {
+    const semestre = await this.semestreRepository.findOne({ where: { id } });
+    if (semestre) throw new NotFoundException(`El semestre con id ${ id } no fue encontrado`);
     return this.semestreRepository.softRemove({ id });
   }
 
@@ -47,9 +59,16 @@ export class SemestreService {
     if (!anioActual) throw new Error('No hay año actual disponible');
     const numeroSemestre = mesActual >= 1 && mesActual <= 6 ? 1: 2;
 
-    return this.semestreRepository.findOne({
-      where: { anio: anioActual, semestre: numeroSemestre },
+    const semestreActual = await this.semestreRepository.findOne({
+      where: {
+        semestre: numeroSemestre,
+        anio: { id: anioActual.id },
+      },
+      relations: ['anio'],
     });
+    
+    if (!semestreActual) throw new NotFoundException('No se escontro el semestre actual');
+    return semestreActual;
   }
 
   @Cron('0 0 0 1 1,7 *')

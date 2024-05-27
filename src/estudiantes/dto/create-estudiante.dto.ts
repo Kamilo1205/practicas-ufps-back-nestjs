@@ -1,13 +1,21 @@
-import { IsDateString, IsMobilePhone, IsNotEmpty, IsString } from 'class-validator';
+import { IsDateString, IsMobilePhone, IsNotEmpty, IsNumberString, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateEstudianteDto {
   @IsNotEmpty()
   @IsString()
-  nombre: string;
+  primerNombre: string;
+
+  @IsOptional()
+  @IsString()
+  segundoNombre: string;
 
   @IsNotEmpty()
   @IsString()
-  apellido: string;
+  primerApellido: string;
+
+  @IsNotEmpty()
+  @IsString()
+  segundoApellido: string;
   
   @IsNotEmpty()
   @IsString()
@@ -18,18 +26,50 @@ export class CreateEstudianteDto {
   direccion: string;
   
   @IsNotEmpty()
-  @IsMobilePhone()
+  @IsString()
   telefono: string;
   
   @IsNotEmpty()
   @IsString()
-  departamento: string;
+  departamentoResidencia: string;
   
   @IsNotEmpty()
   @IsString()
-  municipio: string;
+  municipioResidencia: string;
   
   @IsNotEmpty()
   @IsDateString()  
   fechaNacimiento: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  numeroDocumento: string;
+
+  @IsNotEmpty()
+  @IsUUID('4')
+  tipoDocumentoId: string;  
+
+  @IsNotEmpty()
+  @IsString()
+  lugarExpedicionDocumento: string;
+
+  @IsNotEmpty()
+  @IsDateString()
+  fechaExpedicionDocumento: Date;
+
+  @IsNotEmpty()
+  @IsUUID()
+  epsId: string;
+
+  @IsNotEmpty()
+  @IsUUID()
+  fechaAfiliacionEpsId: string;
+    
+  @IsNotEmpty()
+  @IsNumberString()
+  semestreMatriculado: number;
+  
+  @IsNotEmpty()
+  @IsNumberString()
+  codigo: number; 
 }

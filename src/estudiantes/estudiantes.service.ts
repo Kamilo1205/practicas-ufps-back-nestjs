@@ -14,8 +14,10 @@ export class EstudiantesService {
   ) {}
 
   create(createEstudianteDto: CreateEstudianteDto, usuario: Usuario) {
-    const estudiante = this.estudianteRepository.create({ ...createEstudianteDto, usuario });
-    return this.estudianteRepository.save(estudiante);
+    console.log(createEstudianteDto);
+    console.log(usuario);
+    // const estudiante = this.estudianteRepository.create({ ...createEstudianteDto, usuario });
+    // return this.estudianteRepository.save(estudiante);
   }
 
   findAll() {

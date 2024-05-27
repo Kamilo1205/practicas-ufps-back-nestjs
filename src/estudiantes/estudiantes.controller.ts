@@ -10,8 +10,8 @@ import { Usuario } from 'src/usuarios/entities/usuario.entity';
 export class EstudiantesController {
   constructor(private readonly estudiantesService: EstudiantesService) {}
 
+  @Post('/registro')
   @Roles(Rol.Estudiante)
-  @Post()
   create(@GetUser() usuario: Usuario, @Body() createEstudianteDto: CreateEstudianteDto) {
     return this.estudiantesService.create(createEstudianteDto, usuario);
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { google, drive_v3 } from 'googleapis';
 import { Readable } from 'stream';
@@ -14,7 +14,7 @@ export class GoogleDriveService {
     const GOOGLE_REFRESH_TOKEN: string = this.configService.get('GOOGLE_REFRESH_TOKEN');
 
     if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REDIRECT_URI || !GOOGLE_REFRESH_TOKEN) {
-      throw new Error('Google API credentials are not configured properly.');
+      throw new InternalServerErrorException('Google API credentials are not configured properly.');
     }
 
     const auth = new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI);
@@ -35,7 +35,8 @@ export class GoogleDriveService {
       const response = await this.drive.files.create({ requestBody, media });
       return response.data.id;
     } catch (error) {
-      throw new Error('No se pudo crear el archivo en Google Drive.');
+      console.log(error);
+      throw new InternalServerErrorException('No se pudo crear el archivo en Google Drive.');
     }
   }
 
@@ -52,7 +53,7 @@ export class GoogleDriveService {
 
       return response.data.files;
     } catch (error) {
-      throw new Error('No se pudo realizar la búsqueda en Google Drive.');
+      throw new InternalServerErrorException('No se pudo realizar la búsqueda en Google Drive.');
     }
   }
 
@@ -66,7 +67,7 @@ export class GoogleDriveService {
         fileId: fileId,
       });
     } catch (error) {
-      throw new Error('No se pudo eliminar el archivo en Google Drive.');
+      throw new InternalServerErrorException('No se pudo eliminar el archivo en Google Drive.');
     }
   }
 
@@ -90,7 +91,7 @@ export class GoogleDriveService {
 
       return response.data.id;
     } catch (error) {
-      throw new Error('No se pudo crear la carpeta en Google Drive.');
+      throw new InternalServerErrorException('No se pudo crear la carpeta en Google Drive.');
     }
   }
 
@@ -107,9 +108,7 @@ export class GoogleDriveService {
       });
       return response.data.files;
     } catch (error) {
-      throw new Error(
-        'No se pudo realizar la búsqueda de carpetas en Google Drive.',
-      );
+      throw new InternalServerErrorException('No se pudo realizar la búsqueda de carpetas en Google Drive.');
     }
   }
 
@@ -121,7 +120,7 @@ export class GoogleDriveService {
         requestBody: folderMetadata,
       });
     } catch (error) {
-      throw new Error('No se pudo cambiar el nombre de la carpeta en Google Drive.');
+      throw new InternalServerErrorException('No se pudo cambiar el nombre de la carpeta en Google Drive.');
     }
   }
   
@@ -133,7 +132,7 @@ export class GoogleDriveService {
         requestBody: fileMetadata,
       });
     } catch (error) {
-      throw new Error('No se pudo cambiar el nombre del archivo en Google Drive.');
+      throw new InternalServerErrorException('No se pudo cambiar el nombre del archivo en Google Drive.');
     }
   }
 
@@ -154,15 +153,13 @@ export class GoogleDriveService {
         alt: 'media',
       }, { responseType: 'stream' });
 
-      console.log(response)
       const filename = name;
       const mimeType = response.headers['content-type'];
       const stream = response.data as Readable;
       
       return { stream, filename, mimeType };
     } catch (error) {
-      console.error(`Error al recuperar el archivo desde Google Drive: ${error.message}`);
-      throw new Error('No se pudo recuperar el archivo desde Google Drive.');
+      throw new InternalServerErrorException('No se pudo recuperar el archivo desde Google Drive.');
     }
   }
 }

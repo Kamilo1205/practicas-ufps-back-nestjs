@@ -8,5 +8,6 @@ import { AreaSubAreaInteresController } from './area-sub-area-interes.controller
   imports: [TypeOrmModule.forFeature([AreaSubAreaInteres])],
   controllers: [AreaSubAreaInteresController],
   providers: [AreaSubAreaInteresService],
+  exports: [AreaSubAreaInteresService]
 })
 export class AreaSubAreaInteresModule {}

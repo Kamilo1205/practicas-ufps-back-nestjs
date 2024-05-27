@@ -16,6 +16,11 @@ export class SemestreController {
     return this.semestreService.findAll();
   }
 
+  @Get('actual')
+  findSemestreActual() {
+    return this.semestreService.getSemestreActual();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.semestreService.findOne(id);

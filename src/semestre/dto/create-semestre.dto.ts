@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty, IsNumberString, IsUUID } from "class-validator"
+import { IsDateString, IsNotEmpty, IsNumberString, IsOptional, IsUUID } from "class-validator"
 
 export class CreateSemestreDto {
   @IsNotEmpty()
@@ -9,11 +9,11 @@ export class CreateSemestreDto {
   @IsNumberString()
   semestre: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
-  fechaInicio: string;
+  fechaInicio?: Date;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
-  fechaFin: string;
+  fechaFin?: Date;
 }

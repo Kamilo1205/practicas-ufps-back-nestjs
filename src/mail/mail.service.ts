@@ -16,7 +16,8 @@ export class MailService {
       });
       return response;
     } catch (error) {
-      throw new InternalServerErrorException('Erro al enviar el correo');
+      console.log(error);
+      throw new InternalServerErrorException('Error al enviar el correo');
     }
   }
 
