@@ -21,11 +21,13 @@ export class EstudiantesService {
   }
 
   findAll() {
-    return this.estudianteRepository.find();
+    return this.estudianteRepository.find({
+      relations: ['usuario']
+    });
   }
 
   findOne(id: string) {
-    return this.estudianteRepository.findBy({ id });
+    return this.estudianteRepository.findOne({ where: { id }, relations: ['usuario'] });
   }
 
   update(id: string, updateEstudianteDto: UpdateEstudianteDto) {

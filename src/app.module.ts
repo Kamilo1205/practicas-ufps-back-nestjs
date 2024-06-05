@@ -32,6 +32,10 @@ import { SubAreasInteresModule } from './sub-areas-interes/sub-areas-interes.mod
 import { HerramientasModule } from './herramientas/herramientas.module';
 import { AreaSubAreaInteresModule } from './area-sub-area-interes/area-sub-area-interes.module';
 import { CsvModule } from './csv/csv.module';
+import { IndustriasModule } from './industrias/industrias.module';
+import { PaisesModule } from './paises/paises.module';
+import { DepartamentosModule } from './departamentos/departamentos.module';
+import { CiudadesModule } from './ciudades/ciudades.module';
 
 @Module({
   imports: [
@@ -66,6 +70,10 @@ import { CsvModule } from './csv/csv.module';
     HerramientasModule,
     AreaSubAreaInteresModule,
     CsvModule,
+    IndustriasModule,
+    PaisesModule,
+    DepartamentosModule,
+    CiudadesModule,
   ],
   controllers: [AppController],
   providers: [

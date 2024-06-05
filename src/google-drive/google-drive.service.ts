@@ -35,8 +35,39 @@ export class GoogleDriveService {
       const response = await this.drive.files.create({ requestBody, media });
       return response.data.id;
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException('No se pudo crear el archivo en Google Drive.');
+    }
+  }
+
+  /**
+   * Subir y reemplazar un archivo en Google Drive.
+   * @param name Nombre del archivo.
+   * @param parents ID de la(s) carpeta(s) principal(es).
+   * @param file Archivo a subir.
+   * @param options Opciones adicionales.
+   * @returns ID del archivo creado.
+   */
+  async uploadAndReplaceFile(name: string, parents: string[], file: Express.Multer.File, options?: any): Promise<string> {
+    try {
+      // Buscar archivo existente
+      const existingFiles = await this.drive.files.list({
+        q: `name='${name}' and '${parents[0]}' in parents and trashed=false`,
+        fields: 'files(id, name)',
+      });
+
+      // Si existe el archivo, eliminarlo
+      if (existingFiles.data.files.length > 0) {
+        await Promise.all(existingFiles.data.files.map(file => this.deleteFile(file.id)));
+      }
+
+      // Subir el nuevo archivo
+      const requestBody = { name, parents };
+      const media = { mimeType: file.mimetype, body: Readable.from(file.buffer) };
+      const response = await this.drive.files.create({ requestBody, media });
+
+      return response.data.id;
+    } catch (error) {
+      throw new InternalServerErrorException('No se pudo crear o reemplazar el archivo en Google Drive.');
     }
   }
 
@@ -45,7 +76,7 @@ export class GoogleDriveService {
    * @param query Consulta de búsqueda.
    * @returns Lista de archivos que coinciden con la consulta.
    */
-  async searchFiles(query: string): Promise<any[]> {
+  async searchFiles(query: string): Promise<drive_v3.Schema$File[]> {
     try {
       const response = await this.drive.files.list({
         q: query,
@@ -77,12 +108,12 @@ export class GoogleDriveService {
    * @param parentFolderId ID de la carpeta principal.
    * @returns ID de la carpeta creada.
    */
-  async createFolder(folderName: string, parentFolderId: string): Promise<string> {
+  async createFolder(folderName: string, parentFolderId?: string): Promise<string> {
     try {
       const folderMetadata = {
         name: folderName,
         mimeType: 'application/vnd.google-apps.folder',
-        parents: [parentFolderId],
+        parents: parentFolderId ? [parentFolderId] : [],
       };
 
       const response = await this.drive.files.create({
@@ -95,13 +126,39 @@ export class GoogleDriveService {
     }
   }
 
+  async findFolder(folderName: string, parentFolderId?: string) {
+    const query = `name='${folderName}' and mimeType='application/vnd.google-apps.folder'`;
+    try {
+      const res = await this.drive.files.list({
+        q: parentFolderId ? `${query} and '${parentFolderId}' in parents` : query,
+        fields: 'files(id, name)',
+        spaces: 'drive',
+      });
+      return res.data.files.length > 0 ? res.data.files[0].id : null;
+    } catch (error) {
+      throw new InternalServerErrorException('No se pudo buscar la carpeta en Google Drive.');
+    }
+  }
+
+  /**
+   * Crea una carpeta en Google Drive.
+   * @param folderName Nombre de la carpeta a crear.
+   * @param parentFolderId ID de la carpeta principal.
+   * @returns ID de la carpeta creada.
+   */
+  async createFolderIfNotExist(folderName: string, parentFolderId?: string) {
+    const folderId = await this.findFolder(folderName, parentFolderId);
+    if (folderId) return folderId;
+    return this.createFolder(folderName, parentFolderId);
+  }
+
   /**
    * Busca carpetas en Google Drive.
    * @param folderName Nombre de la carpeta a buscar.
    * @param parentFolderId ID de la carpeta principal.
    * @returns Lista de carpetas que coinciden con la búsqueda.
    */
-  async searchFolders(folderName: string, parentFolderId: string): Promise<any[]> {
+  async searchFolders(folderName: string, parentFolderId: string): Promise<drive_v3.Schema$File[]> {
     try {
       const response = await this.drive.files.list({
         q: `'${parentFolderId}' in parents and name='${folderName}' and mimeType='application/vnd.google-apps.folder'`,

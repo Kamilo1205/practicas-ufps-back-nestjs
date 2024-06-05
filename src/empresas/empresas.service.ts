@@ -10,6 +10,10 @@ import { UploadedFiles as UploadedFilesInterfaz } from './interfaces';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { RepresentanteLegalService } from 'src/representante-legal/representante-legal.service';
+import { PaisesService } from 'src/paises/paises.service';
+import { DepartamentosService } from 'src/departamentos/departamentos.service';
+import { CiudadesService } from 'src/ciudades/ciudades.service';
+import { IndustriasService } from 'src/industrias/industrias.service';
 
 @Injectable()
 export class EmpresasService {
@@ -20,7 +24,9 @@ export class EmpresasService {
     private readonly googleDriveService: GoogleDriveService,
     private readonly usuariosService: UsuariosService,
     private readonly configService: ConfigService,
-    private readonly representanteLegalService: RepresentanteLegalService
+    private readonly representanteLegalService: RepresentanteLegalService,
+    private readonly ciudadesService: CiudadesService,
+    private readonly industriasService: IndustriasService,
   ) {}
 
   async create(createEmpresaDto: CreateEmpresaDto, usuario: Usuario, files: UploadedFilesInterfaz) {
@@ -31,38 +37,38 @@ export class EmpresasService {
 
     const { camara, rut, documentoIdentidad, convenio } = files;
     const folderNombre = `${nit}-${nombre}`;
-    const folderEmpresaId = await this.googleDriveService.createFolder(folderNombre, this.folderEmpresasId);
+    const folderEmpresaId = await this.googleDriveService.createFolderIfNotExist(folderNombre, this.folderEmpresasId);
     const [camaraComercioUrl, rutUrl, documentoIdentidadUrl, soilicitudConvenioUrl] = await Promise.all([
-      this.googleDriveService.uploadFile(`Camara_Comercio`, [folderEmpresaId], camara[0]),
-      this.googleDriveService.uploadFile(`Rut`, [folderEmpresaId], rut[0]),
-      this.googleDriveService.uploadFile(`Documento_Identidad`, [folderEmpresaId], documentoIdentidad[0]),
-      this.googleDriveService.uploadFile(`Solicitud_Convenio`, [folderEmpresaId], convenio[0])
+      this.googleDriveService.uploadAndReplaceFile(`Camara_Comercio`, [folderEmpresaId], camara[0]),
+      this.googleDriveService.uploadAndReplaceFile(`Rut`, [folderEmpresaId], rut[0]),
+      this.googleDriveService.uploadAndReplaceFile(`Documento_Identidad`, [folderEmpresaId], documentoIdentidad[0]),
+      this.googleDriveService.uploadAndReplaceFile(`Solicitud_Convenio`, [folderEmpresaId], convenio[0])
     ]); 
    
-    let representanteLegal = await this.representanteLegalService.findOneByNumeroDocumento(createEmpresaDto.representanteNumeroIdentidad);
+    let representanteLegal = await this.representanteLegalService.findOneByNumeroDocumento(createEmpresaDto.representante.numeroDocumento);
     if (!representanteLegal) {
       representanteLegal = await this.representanteLegalService.create({
-        nombre: createEmpresaDto.representanteNombre,
-        email: createEmpresaDto.representanteEmail,
-        documentoIdentidadUrl,
-        numeroDocumento: createEmpresaDto.representanteNumeroIdentidad,
-        telefono: createEmpresaDto.representanteTelefono,
-        fechaExpedicionDocumento: createEmpresaDto.representanteFechaExpedicion,
-        lugarExpedicionDocumento: createEmpresaDto.representanteLugarExpedicion,
-        tipoDocumentoId: createEmpresaDto.representanteTipoDocumentoId
+        ...createEmpresaDto.representante,
+        documentoIdentidadUrl
       });
     }
     
+    const ciudad = await this.ciudadesService.findOne(createEmpresaDto.ciudadId);
+    const industria = await this.industriasService.findOne(createEmpresaDto.industriaId);
+
     const empresa = this.empresasRepository.create({
       id: usuario.id,
       ...createEmpresaDto,
       usuario, 
+      industria, 
+      ciudad,
       googleDriveFolderId: folderEmpresaId, 
       representanteLegal, 
       camaraComercioUrl, 
       rutUrl,
       soilicitudConvenioUrl
     });
+    
     await this.empresasRepository.save(empresa);
     await this.usuariosService.update(usuario.id, { displayName: empresa.nombre, estaRegistrado: true });
     return this.empresasRepository.findOne({ where: { id: usuario.id }, relations: ['representanteLegal', 'usuario'] });

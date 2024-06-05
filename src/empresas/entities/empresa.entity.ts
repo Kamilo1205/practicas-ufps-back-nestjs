@@ -1,6 +1,8 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { RepresentanteLegal } from 'src/representante-legal/entities/representante-legal.entity';
+import { Ciudad } from 'src/ciudades/entities/ciudad.entity';
+import { Industria } from 'src/industrias/entities/industria.entity';
 
 @Entity()
 export class Empresa {
@@ -18,18 +20,6 @@ export class Empresa {
 
   @Column()
   telefono: string;
-
-  @Column()
-  pais: string;
-
-  @Column()
-  departamento: string;
-
-  @Column()
-  ciudad: string;
-
-  @Column()
-  industria: string;
 
   @Column({ nullable: true })
   descripcion: string;
@@ -49,6 +39,22 @@ export class Empresa {
   @Column()
   googleDriveFolderId: string;
 
+  @OneToOne(() => Usuario, (usuario) => usuario.empresa)
+  @JoinColumn()
+  usuario: Usuario;
+
+  @ManyToOne(() => RepresentanteLegal, (representanteLegal) => representanteLegal.empresas, { eager: true })
+  @JoinColumn()
+  representanteLegal: RepresentanteLegal;
+
+  @ManyToOne(() => Ciudad, (ciudad) => ciudad.empresas, { eager: true })
+  @JoinColumn()
+  ciudad: Ciudad;
+
+  @ManyToOne(() => Industria, (industria) => industria.empresas, { eager: true })
+  @JoinColumn()
+  industria: Industria;
+
   @CreateDateColumn({ type: 'date' })
   fechaCreacion: Date;
 
@@ -57,13 +63,4 @@ export class Empresa {
 
   @DeleteDateColumn({ type: 'date' })
   fechaEliminacion: Date;
-
-  // Relaciones
-  @OneToOne(() => Usuario, (usuario) => usuario.empresa)
-  @JoinColumn()
-  usuario: Usuario;
-
-  @ManyToOne(() => RepresentanteLegal, (representanteLegal) => representanteLegal.empresas, { eager: true })
-  @JoinColumn()
-  representanteLegal: RepresentanteLegal;
 }

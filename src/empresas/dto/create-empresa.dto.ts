@@ -1,4 +1,6 @@
-import { IsDateString, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { CreateRepresentanteLegalDto } from 'src/representante-legal/dto';
 
 export class CreateEmpresaDto {
   @IsNotEmpty()
@@ -16,57 +18,53 @@ export class CreateEmpresaDto {
   @IsNotEmpty()
   @IsString()
   telefono: string;
-
-  @IsNotEmpty()
-  @IsString()
-  pais: string;
-
-  @IsNotEmpty()
-  @IsString()
-  departamento: string;
   
   @IsNotEmpty()
-  @IsString()
-  ciudad: string;
+  @IsUUID('4')
+  ciudadId: string;
 
   @IsNotEmpty()
-  @IsString()
-  industria: string;
+  @IsUUID('4')
+  industriaId: string;
 
   @IsOptional()
   @IsString()
   descripcion: string;
 
-  
   @IsNotEmpty()
-  @IsString()
-  representanteNombre: string;
+  @ValidateNested()
+  @Type(() => CreateRepresentanteLegalDto)
+  representante: CreateRepresentanteLegalDto;
+
+  // @IsNotEmpty()
+  // @IsString()
+  // representanteNombre: string;
   
   // @IsNotEmpty()
   // @IsString()
   // representanteApellido: string;
   
-  @IsNotEmpty()
-  @IsString()
-  representanteEmail: string;
-  
-  @IsNotEmpty()
-  @IsString()
-  representanteTelefono: string;
-  
-  @IsNotEmpty()
-  @IsUUID()
-  representanteTipoDocumentoId: string;
-  
-  @IsNotEmpty()
-  @IsString()
-  representanteNumeroIdentidad: string;
-  
-  @IsNotEmpty()
-  @IsDateString()
-  representanteFechaExpedicion: Date;
-  
-  @IsNotEmpty()
-  @IsString()
-  representanteLugarExpedicion: string;
+  // @IsNotEmpty()
+  // @IsString()
+  // representanteEmail: string;
+  // 
+  // @IsNotEmpty()
+  // @IsString()
+  // representanteTelefono: string;
+  // 
+  // @IsNotEmpty()
+  // @IsUUID()
+  // representanteTipoDocumentoId: string;
+  // 
+  // @IsNotEmpty()
+  // @IsString()
+  // representanteNumeroIdentidad: string;
+  // 
+  // @IsNotEmpty()
+  // @IsDateString()
+  // representanteFechaExpedicion: Date;
+  // 
+  // @IsNotEmpty()
+  // @IsString()
+  // representanteLugarExpedicion: string;
 }

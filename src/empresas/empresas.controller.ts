@@ -28,7 +28,10 @@ export class EmpresasController {
     @Body() createEmpresaDto: CreateEmpresaDto, 
     @UploadedFiles() files: UploadedFilesInterfaz,
    ) {
+    console.log('Registro empresa');
+    console.log(files);
     if (!files.camara[0] && !files.rut[0] && !files.camara[0] && !files.convenio[0]) throw new FilesNotFoundException();
+    console.log(createEmpresaDto);
     return this.empresasService.create(createEmpresaDto, usuario, files);
   }
 

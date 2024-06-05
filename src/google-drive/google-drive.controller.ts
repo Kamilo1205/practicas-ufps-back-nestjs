@@ -27,4 +27,18 @@ export class GoogleDriveController {
       throw new NotFoundException('Archivo no encontrado');
     }
   }
+
+  @Get('files')
+  async getFiles(@Param('fileId') fileId: string, @Res() res): Promise<any> {
+    try {
+      const { stream, filename, mimeType } = await this.googleDriveService.getFileFromDrive(fileId);
+      res.setHeader('Content-Type', mimeType);
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      stream.pipe(res);
+    } catch (error) {
+      console.log('Ocurrio un error');
+      console.log(error);
+      throw new NotFoundException('Archivo no encontrado');
+    }
+  }
 }

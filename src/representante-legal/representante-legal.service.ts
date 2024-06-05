@@ -4,19 +4,24 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RepresentanteLegal } from './entities/representante-legal.entity';
 import { CreateRepresentanteLegalDto, UpdateRepresentanteLegalDto } from './dto';
 import { RepresentanteLegalExistsException, RepresentanteLegalNotFoundException } from './exceptions';
+import { CiudadesService } from 'src/ciudades/ciudades.service';
 
 @Injectable()
 export class RepresentanteLegalService {
   constructor(
     @InjectRepository(RepresentanteLegal)
-    private readonly representanteLegalRepository: Repository<RepresentanteLegal>
+    private readonly representanteLegalRepository: Repository<RepresentanteLegal>,
+    private readonly ciudadesService: CiudadesService
   ) {}
 
   async create(createRepresentanteLegalDto: CreateRepresentanteLegalDto) {
-    const { numeroDocumento } = createRepresentanteLegalDto;
-    const representanteLegal = await this.representanteLegalRepository.findOneBy({ numeroDocumento });
-    if (representanteLegal) throw new RepresentanteLegalExistsException(numeroDocumento);
-    return this.representanteLegalRepository.save(createRepresentanteLegalDto);
+    const { numeroDocumento, lugarExpedicionDocumentoId } = createRepresentanteLegalDto;
+    const representanteLegalExiste = await this.representanteLegalRepository.findOneBy({ numeroDocumento });
+    if (representanteLegalExiste) throw new RepresentanteLegalExistsException(numeroDocumento);
+
+    const lugarExpedicionDocumento = await this.ciudadesService.findOne(lugarExpedicionDocumentoId);
+    const representanteLegal = this.representanteLegalRepository.create({ ...createRepresentanteLegalDto, lugarExpedicionDocumento });
+    return this.representanteLegalRepository.save(representanteLegal);
   }
 
   findAll() {

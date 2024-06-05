@@ -23,7 +23,7 @@ export class CreateRepresentanteLegalDto {
   
   @IsNotEmpty()
   @IsString()
-  lugarExpedicionDocumento: string;
+  lugarExpedicionDocumentoId: string;
   
   @IsOptional()
   @IsString()
