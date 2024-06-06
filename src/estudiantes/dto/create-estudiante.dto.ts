@@ -31,11 +31,7 @@ export class CreateEstudianteDto {
   
   @IsNotEmpty()
   @IsString()
-  departamentoResidencia: string;
-  
-  @IsNotEmpty()
-  @IsString()
-  municipioResidencia: string;
+  ciudadResidenciaId: string;
   
   @IsNotEmpty()
   @IsDateString()  

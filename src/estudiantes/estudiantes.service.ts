@@ -5,16 +5,19 @@ import { Estudiante } from './entities/estudiante.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { CiudadesService } from 'src/ciudades/ciudades.service';
 
 @Injectable()
 export class EstudiantesService {
   constructor(
     @InjectRepository(Estudiante)
     private readonly estudianteRepository: Repository<Estudiante>,
+    private readonly ciudadesService: CiudadesService
   ) {}
 
-  create(createEstudianteDto: CreateEstudianteDto, usuario: Usuario) {
-    const estudiante = this.estudianteRepository.create({ ...createEstudianteDto, usuario });
+  async create(createEstudianteDto: CreateEstudianteDto, usuario: Usuario) {
+    const ciudad = await this.ciudadesService.findOne(createEstudianteDto.ciudadResidenciaId);
+    const estudiante = this.estudianteRepository.create({ ...createEstudianteDto, ciudadResidencia: ciudad, usuario });
     return this.estudianteRepository.save(estudiante);
   }
 
@@ -22,7 +25,7 @@ export class EstudiantesService {
     const whereCondition = grupo ? { grupo } : {};
     
     return this.estudianteRepository.find({
-      relations: ['usuario'],
+      relations: ['usuario', 'ciudadResidencia', 'ciudadResidencia.departamento'],
       where: whereCondition
     });
   }

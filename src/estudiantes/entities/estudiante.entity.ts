@@ -4,6 +4,7 @@ import { TipoDocumento } from 'src/tipo-documento/entities/tipo-documento.entity
 import { Eps } from 'src/eps/entities/eps.entity';
 import { TipoAfiliacionEps } from 'src/tipo-afiliacion-eps/entities/tipo-afiliacion-eps.entity';
 import { Semestre } from 'src/semestre/entities/semestre.entity';
+import { Ciudad } from 'src/ciudades/entities/ciudad.entity';
 
 @Entity()
 export class Estudiante {
@@ -32,13 +33,11 @@ export class Estudiante {
   telefono: string;
 
   @Column()
-  departamentoResidencia: string;
-
-  @Column()
   grupo: string;
 
-  @Column()
-  municipioResidencia: string;
+  @ManyToOne(() => Ciudad)
+  @JoinTable()
+  ciudadResidencia: Ciudad;
 
   @Column({ type: 'date'})
   fechaNacimiento: Date;

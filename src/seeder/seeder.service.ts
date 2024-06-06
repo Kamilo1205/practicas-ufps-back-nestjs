@@ -96,9 +96,11 @@ export class SeederService {
     const estudiantes = await this.estudiantesService.findAll('');
     const usuarios = await this.usuariosService.findAll();
     
+    console.log(usuarios);
     const usuario = usuarios.data.find((usuario) => 
-      usuario.roles.some(rol => rol.nombre === 'estudiante')
+      usuario.roles.some(rol => rol.nombre == 'estudiante')
     );
+    console.log(usuario);
 
     const paises = await this.paisesService.findAll();
     let pais = null;
@@ -124,10 +126,9 @@ export class SeederService {
       ciudad = ciudades[0];
     }
 
-    if (estudiantes.length === 0) {
+    //if (estudiantes.length === 0) {
       await this.estudiantesService.create({ 
         codigo: 147852,
-        departamentoResidencia: departamento.id,
         direccion: 'Av 8 # 28 - 107',
         epsId: 'a7sd-8wf5s-dw85df',
         fechaAfiliacionEps: new Date(),
@@ -135,7 +136,7 @@ export class SeederService {
         fechaNacimiento: new Date(),
         genero: 'masculino',
         lugarExpedicionDocumento: '1485-845s-sdf',
-        municipioResidencia: ciudad.id,
+        ciudadResidenciaId: ciudad.id,
         numeroDocumento: '1478523690',
         primerApellido: 'Leal',
         segundoApellido: 'Diaz',
@@ -146,7 +147,7 @@ export class SeederService {
         tipoDocumentoId: '147852369',
         grupo: 'Grupo A'
       }, usuario);
-    }
+    //}
   }
 
 }
