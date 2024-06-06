@@ -18,12 +18,12 @@ export class EstudiantesService {
     return this.estudianteRepository.save(estudiante);
   }
 
-  findAll(grupo: string) {
+  findAll(grupo?: string) {
+    const whereCondition = grupo ? { grupo } : {};
+    
     return this.estudianteRepository.find({
       relations: ['usuario'],
-      where: {
-        grupo
-      }
+      where: whereCondition
     });
   }
 
