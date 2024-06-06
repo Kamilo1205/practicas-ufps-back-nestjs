@@ -62,8 +62,8 @@ export class CreateEstudianteDto {
   epsId: string;
 
   @IsNotEmpty()
-  @IsUUID()
-  fechaAfiliacionEpsId: string;
+  @IsDateString()
+  fechaAfiliacionEps: Date;
     
   @IsNotEmpty()
   @IsNumberString()
@@ -72,4 +72,8 @@ export class CreateEstudianteDto {
   @IsNotEmpty()
   @IsNumberString()
   codigo: number; 
+
+  @IsNotEmpty()
+  @IsString()
+  grupo: string;
 }

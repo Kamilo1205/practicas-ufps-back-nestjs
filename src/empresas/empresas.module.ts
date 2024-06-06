@@ -8,6 +8,7 @@ import { UsuariosModule } from 'src/usuarios/usuarios.module';
 import { RepresentanteLegalModule } from 'src/representante-legal/representante-legal.module';
 import { CiudadesModule } from 'src/ciudades/ciudades.module';
 import { IndustriasModule } from 'src/industrias/industrias.module';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { IndustriasModule } from 'src/industrias/industrias.module';
     UsuariosModule,
     RepresentanteLegalModule,
     IndustriasModule,
-    CiudadesModule
+    CiudadesModule,
+    MailModule
   ],
   controllers: [EmpresasController],
   providers: [EmpresasService],

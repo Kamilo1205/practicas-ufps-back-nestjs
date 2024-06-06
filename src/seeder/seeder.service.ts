@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { AreaSubAreaInteresService } from 'src/area-sub-area-interes/area-sub-area-interes.service';
 import { AreasInteresService } from 'src/areas-interes/areas-interes.service';
+import { CiudadesService } from 'src/ciudades/ciudades.service';
+import { DepartamentosService } from 'src/departamentos/departamentos.service';
+import { CreateEstudianteDto } from 'src/estudiantes/dto';
+import { EstudiantesService } from 'src/estudiantes/estudiantes.service';
 import { HerramientasService } from 'src/herramientas/herramientas.service';
+import { PaisesService } from 'src/paises/paises.service';
 import { RolesService } from 'src/roles/roles.service';
 import { SubAreasInteresService } from 'src/sub-areas-interes/sub-areas-interes.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
@@ -15,13 +20,17 @@ export class SeederService {
     private readonly areaInteresService: AreasInteresService,
     private readonly subAreasInteresService: SubAreasInteresService,
     private readonly herramientasService: HerramientasService,
-    private readonly areaSubAreaService: AreaSubAreaInteresService
+    private readonly estudiantesService: EstudiantesService,
+    private readonly paisesService: PaisesService,
+    private readonly departamentoService: DepartamentosService,
+    private readonly ciudadesService: CiudadesService
   ) {}
 
   async seed() {
     await this.createRoles();
     await this.createUsuarios();
     await this.createAreasInteres();
+    await this.createEstudiante();
   }
 
   private async createRoles() {
@@ -80,6 +89,63 @@ export class SeederService {
       for (const areasData of areasToCreate) {
         await this.areaInteresService.create(areasData);
       }
+    }
+  }
+
+  private async createEstudiante() {
+    const estudiantes = await this.estudiantesService.findAll('');
+    const usuarios = await this.usuariosService.findAll();
+    
+    const usuario = usuarios.data.find((usuario) => 
+      usuario.roles.some(rol => rol.nombre === 'estudiante')
+    );
+
+    const paises = await this.paisesService.findAll();
+    let pais = null;
+    if (paises.length == 0) {
+      pais = await this.paisesService.create({ nombre: 'Colombia '});
+    } else {
+      pais = paises[0];
+    }
+
+    const departamentos = await this.departamentoService.findAll();
+    let departamento = null;
+    if (departamentos.length == 0) {
+      departamento = await this.departamentoService.create({ nombre: 'Norte de Santander', paisId: pais.id });
+    } else {
+      departamento = departamentos[0];
+    }
+ 
+    const ciudades = await this.ciudadesService.findAll();
+    let ciudad = null;
+    if (ciudades.length == 0) {
+      await this.ciudadesService.create({ nombre: 'Cucuta', departamentoId: departamento.id });
+    } else {
+      ciudad = ciudades[0];
+    }
+
+    if (estudiantes.length === 0) {
+      await this.estudiantesService.create({ 
+        codigo: 147852,
+        departamentoResidencia: departamento.id,
+        direccion: 'Av 8 # 28 - 107',
+        epsId: 'a7sd-8wf5s-dw85df',
+        fechaAfiliacionEps: new Date(),
+        fechaExpedicionDocumento: new Date(),
+        fechaNacimiento: new Date(),
+        genero: 'masculino',
+        lugarExpedicionDocumento: '1485-845s-sdf',
+        municipioResidencia: ciudad.id,
+        numeroDocumento: '1478523690',
+        primerApellido: 'Leal',
+        segundoApellido: 'Diaz',
+        primerNombre: 'Guillermo',
+        segundoNombre: '',
+        semestreMatriculado: 9,
+        telefono: '+573012859624',
+        tipoDocumentoId: '147852369',
+        grupo: 'Grupo A'
+      }, usuario);
     }
   }
 

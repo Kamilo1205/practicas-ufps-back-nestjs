@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { EstudiantesService } from './estudiantes.service';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
@@ -17,8 +17,10 @@ export class EstudiantesController {
   }
 
   @Get()
-  findAll() {
-    return this.estudiantesService.findAll();
+  findAll(@Query('activos') activos: boolean = true, @Query('grupo') grupo: string = 'all') {
+    // TODO: activo: usuario activo o inactivo
+    // TODO: grupo: 
+    return this.estudiantesService.findAll(grupo);
   }
 
   @Get(':id')

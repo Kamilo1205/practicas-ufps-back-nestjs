@@ -16,8 +16,40 @@ export class MailService {
       });
       return response;
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException('Error al enviar el correo');
+    }
+  }
+
+  async sendEmailWithAttachments(to: string, subject: string, text: string, template: string, context: any, files: Express.Multer.File[]) {
+    try {
+      const attachments = files.map(file => ({
+        filename: file.originalname,
+        content: file.buffer,
+        contentType: file.mimetype,
+      }));
+
+      console.log(attachments);
+      console.log({
+        to, // Destinatario
+        from: this.configService.get<string>('GOOGLE_USER'), // Remitente
+        subject,
+        attachments, // Múltiples archivos adjuntos
+        ...(template ? { template, context } : { text })
+      });
+
+      const mailOptions: any = {
+        to, // Destinatario
+        from: this.configService.get<string>('GOOGLE_USER'), // Remitente
+        subject,
+        attachments, // Múltiples archivos adjuntos
+        text
+      };
+
+      const response = await this.mailerService.sendMail(mailOptions);
+      return response;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error al enviar el correo con los archivos adjuntos');
     }
   }
 

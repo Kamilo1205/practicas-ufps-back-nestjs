@@ -14,15 +14,16 @@ export class EstudiantesService {
   ) {}
 
   create(createEstudianteDto: CreateEstudianteDto, usuario: Usuario) {
-    console.log(createEstudianteDto);
-    console.log(usuario);
-    // const estudiante = this.estudianteRepository.create({ ...createEstudianteDto, usuario });
-    // return this.estudianteRepository.save(estudiante);
+    const estudiante = this.estudianteRepository.create({ ...createEstudianteDto, usuario });
+    return this.estudianteRepository.save(estudiante);
   }
 
-  findAll() {
+  findAll(grupo: string) {
     return this.estudianteRepository.find({
-      relations: ['usuario']
+      relations: ['usuario'],
+      where: {
+        grupo
+      }
     });
   }
 

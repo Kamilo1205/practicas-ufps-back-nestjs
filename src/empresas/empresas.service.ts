@@ -14,6 +14,7 @@ import { PaisesService } from 'src/paises/paises.service';
 import { DepartamentosService } from 'src/departamentos/departamentos.service';
 import { CiudadesService } from 'src/ciudades/ciudades.service';
 import { IndustriasService } from 'src/industrias/industrias.service';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class EmpresasService {
@@ -27,6 +28,7 @@ export class EmpresasService {
     private readonly representanteLegalService: RepresentanteLegalService,
     private readonly ciudadesService: CiudadesService,
     private readonly industriasService: IndustriasService,
+    private readonly mailService: MailService
   ) {}
 
   async create(createEmpresaDto: CreateEmpresaDto, usuario: Usuario, files: UploadedFilesInterfaz) {
@@ -71,6 +73,23 @@ export class EmpresasService {
     
     await this.empresasRepository.save(empresa);
     await this.usuariosService.update(usuario.id, { displayName: empresa.nombre, estaRegistrado: true });
+
+    const emailAttachments = [
+      camara[0],
+      rut[0],
+      documentoIdentidad[0],
+      convenio[0],
+    ];
+
+    await this.mailService.sendEmailWithAttachments(
+      'angieestefaniajave@ufps.edu.co', 
+      'Solicitud de convenio', 
+      'Solicitud de convenio a Angie Pelusa', 
+      null, 
+      null, 
+      emailAttachments
+    );
+
     return this.empresasRepository.findOne({ where: { id: usuario.id }, relations: ['representanteLegal', 'usuario'] });
   }
 

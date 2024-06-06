@@ -7,6 +7,10 @@ import { AreasInteresModule } from 'src/areas-interes/areas-interes.module';
 import { SubAreasInteresModule } from 'src/sub-areas-interes/sub-areas-interes.module';
 import { HerramientasModule } from 'src/herramientas/herramientas.module';
 import { AreaSubAreaInteresModule } from 'src/area-sub-area-interes/area-sub-area-interes.module';
+import { EstudiantesModule } from 'src/estudiantes/estudiantes.module';
+import { PaisesModule } from 'src/paises/paises.module';
+import { DepartamentosModule } from 'src/departamentos/departamentos.module';
+import { CiudadesModule } from 'src/ciudades/ciudades.module';
 
 @Module({
   imports: [
@@ -15,7 +19,11 @@ import { AreaSubAreaInteresModule } from 'src/area-sub-area-interes/area-sub-are
     AreasInteresModule, 
     SubAreasInteresModule, 
     HerramientasModule, 
-    AreaSubAreaInteresModule
+    AreaSubAreaInteresModule,
+    EstudiantesModule,
+    PaisesModule,
+    DepartamentosModule,
+    CiudadesModule
   ],
   providers: [SeederService],
   controllers: [SeederController]

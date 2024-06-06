@@ -35,6 +35,9 @@ export class Estudiante {
   departamentoResidencia: string;
 
   @Column()
+  grupo: string;
+
+  @Column()
   municipioResidencia: string;
 
   @Column({ type: 'date'})

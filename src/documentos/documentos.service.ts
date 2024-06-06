@@ -27,11 +27,10 @@ export class DocumentosService {
       };
       
       // Cargar la plantilla del documento
-      const templatePath = path.resolve(
-        __dirname,
-        'templates',
-        'template_convenio.docx',
-      );
+      const templatePath = process.env.NODE_ENV === 'production'
+      ? path.resolve(__dirname, '..', 'documentos', 'templates', 'template_convenio.docx')
+      : path.resolve(__dirname, '..', '..', 'src', 'documentos', 'templates', 'template_convenio.docx');
+
       const content = fs.readFileSync(templatePath, 'binary');
       const zip = new PizZip(content);
       const doc = new Docxtemplater(zip);
