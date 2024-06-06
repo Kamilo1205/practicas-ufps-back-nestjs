@@ -17,7 +17,7 @@ export class EstudiantesController {
   }
 
   @Get()
-  findAll(@Query('activos') activos: boolean = true, @Query('grupo') grupo: string = 'all') {
+  findAll(@Query('activos') activos: boolean = true, @Query('grupo') grupo?: string) {
     // TODO: activo: usuario activo o inactivo
     // TODO: grupo: 
     return this.estudiantesService.findAll(grupo);
