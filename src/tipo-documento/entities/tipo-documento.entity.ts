@@ -11,13 +11,13 @@ export class TipoDocumento {
   @Column({ unique: true })
   nombre: string;
 
-  @CreateDateColumn({ type: 'date' })
+  @CreateDateColumn()
   fechaCreacion: Date;
 
-  @UpdateDateColumn({ type: 'date' })
+  @UpdateDateColumn()
   fechaActualizacion: Date;
 
-  @DeleteDateColumn({ type: 'date' })
+  @DeleteDateColumn()
   @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion: Date;
 

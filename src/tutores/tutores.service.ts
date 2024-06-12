@@ -1,26 +1,61 @@
-import { Injectable } from '@nestjs/common';
-import { CreateTutoreDto } from './dto/create-tutor.dto';
-import { UpdateTutoreDto } from './dto/update-tutor.dto';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateTutorDto, UpdateTutorDto } from './dto';
+import { Tutor } from './entities/tutor.entity';
+import { UsuariosService } from 'src/usuarios/usuarios.service';
 
 @Injectable()
 export class TutoresService {
-  create(createTutoreDto: CreateTutoreDto) {
-    return 'This action adds a new tutore';
+  constructor(
+    @InjectRepository(Tutor)
+    private readonly tutorRepository: Repository<Tutor>,
+    private readonly usuariosService: UsuariosService,
+  ) {}
+
+  async create(createTutorDto: CreateTutorDto) {
+    const { email, nombre, apellidos } = createTutorDto;
+    const displayName = `${nombre} ${apellidos}`;
+    const usuario = await this.usuariosService.createTutor(email, displayName);
+    
+    const tutor = this.tutorRepository.create({ ...createTutorDto, usuario });
+    return this.tutorRepository.save(tutor);
   }
 
-  findAll() {
-    return `This action returns all tutores`;
+  async findAll() {
+    return this.tutorRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tutore`;
+  async findOne(id: string) {
+    const tutor = await this.tutorRepository.findOne({ where: { id } });
+    if (!tutor) throw new NotFoundException(`El tutor con el ID ${id} no fue encontrado`);
+    return tutor;
   }
 
-  update(id: number, updateTutoreDto: UpdateTutoreDto) {
-    return `This action updates a #${id} tutore`;
+  async update(id: string, updateTutorDto: UpdateTutorDto) {
+    const tutor = await this.tutorRepository.findOne({ where: { id } });
+    if (!tutor) throw new NotFoundException(`El tutor con el ID ${id} no fue encontrado`);
+    const { email, nombre, apellidos } = updateTutorDto;
+
+    if (email && email !== tutor.usuario.email) {
+      const existingUser = await this.usuariosService.findOneByEmail(email);
+      if (existingUser && existingUser.id !== tutor.usuario.id) throw new ConflictException(`El tutor con el email ${email} ya existe`);  
+      await this.usuariosService.update(tutor.usuario.id, { email });
+    }
+
+    if (nombre !== tutor.nombre || apellidos !== tutor.apellidos) {
+      const displayName = `${nombre || tutor.nombre} ${apellidos || tutor.apellidos}`;
+      await this.usuariosService.update(tutor.usuario.id, { displayName });
+    }
+
+    const updatedTutor = await this.tutorRepository.preload({ id, ...updateTutorDto });
+    if (!updatedTutor) throw new NotFoundException(`El tutor con el ID ${id} no fue encontrado`);
+    return this.tutorRepository.save(updatedTutor);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tutore`;
+  async remove(id: string) {
+    const tutor = await this.tutorRepository.findOne({ where: { id } });
+    if (!tutor) throw new NotFoundException(`El tutor con el ID ${id} no fue encontrado`);
+    await this.tutorRepository.softRemove(tutor);
   }
 }

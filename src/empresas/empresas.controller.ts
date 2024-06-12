@@ -8,6 +8,7 @@ import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { UuidDto } from 'src/common/dto';
 import { UploadedFiles as UploadedFilesInterfaz } from './interfaces';
 import { FilesNotFoundException } from './exceptions';
+import { CreateTutorDto } from 'src/tutores/dto';
 
 @Controller('empresas')
 export class EmpresasController {
@@ -28,10 +29,7 @@ export class EmpresasController {
     @Body() createEmpresaDto: CreateEmpresaDto, 
     @UploadedFiles() files: UploadedFilesInterfaz,
    ) {
-    console.log('Registro empresa');
-    console.log(files);
     if (!files.camara[0] && !files.rut[0] && !files.camara[0] && !files.convenio[0]) throw new FilesNotFoundException();
-    console.log(createEmpresaDto);
     return this.empresasService.create(createEmpresaDto, usuario, files);
   }
 
@@ -41,14 +39,26 @@ export class EmpresasController {
     return this.empresasService.findOne(usuario?.empresa?.id);
   }
 
+  @Post('/tutores')
+  @Roles(Rol.Empresa)
+  createTutor(@Body() createTutorDto: CreateTutorDto, @GetUser() usuario: Usuario) {
+    return this.empresasService.createTutor(usuario?.empresa?.id, createTutorDto);
+  }
+
+  @Get('/tutores')
+  @Roles(Rol.Empresa)
+  findTutoresByEmpresaId(@GetUser() usuario: Usuario) {
+    return this.empresasService.findTutoresByEmpresaId(usuario?.empresa?.id);
+  }
+
   @Patch()
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   update(@Param() { id }: UuidDto, @Body() updateEmpresaDto: UpdateEmpresaDto) {
     //return this.empresasService.update(id, updateEmpresaDto);
   }
 
   @Get()
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
     if (page === undefined || isNaN(page) || page < 0) page = 1;
     if (limit === undefined || isNaN(limit) || limit < 0) limit = 10;
@@ -56,13 +66,13 @@ export class EmpresasController {
   }
 
   @Get(':id')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   findOne(@Param() { id }: UuidDto) {
     return this.empresasService.findOne(id);
   }
 
-  @Roles(Rol.Coordinador)
   @Delete(':id')
+  @Roles(Rol.Coordinador, Rol.Administrador)
   remove(@Param() { id }: UuidDto) {
     return this.empresasService.remove(id);
   }

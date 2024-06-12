@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFiles, BadRequestException } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { EstudiantesService } from './estudiantes.service';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
@@ -12,9 +13,36 @@ export class EstudiantesController {
 
   @Post('/registro')
   @Roles(Rol.Estudiante)
-  create(@GetUser() usuario: Usuario, @Body() createEstudianteDto: CreateEstudianteDto) {
-    return this.estudiantesService.create(createEstudianteDto, usuario);
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'certificadoAfiliacionEps', maxCount: 1 },
+      { name: 'documentoIdentidad', maxCount: 1 },
+      { name: 'hojaDeVida', maxCount: 1 },
+      { name: 'horarioClase', maxCount: 1 }
+    ]),
+  )
+  create(
+    @GetUser() usuario: Usuario, 
+    @Body() createEstudianteDto: CreateEstudianteDto, 
+    @UploadedFiles() files: {
+      certificadoAfiliacionEps?: Express.Multer.File[];
+      documentoIdentidad?: Express.Multer.File[];
+      hojaDeVida?: Express.Multer.File[];
+      horarioClase?: Express.Multer.File[];
+    }
+  ) {
+    if (!files?.certificadoAfiliacionEps || !files?.documentoIdentidad || !files?.hojaDeVida || !files?.horarioClase) {
+      throw new BadRequestException('Todos los archivos son requeridos');
+    }
+    return this.estudiantesService.create(createEstudianteDto, usuario, files);
   }
+
+  @Get('/perfil')
+  @Roles(Rol.Estudiante)
+  getPerfil(@GetUser() usuario: Usuario) {
+    return this.estudiantesService.findOne(usuario.estudiante.id);
+  }
+
 
   @Get()
   findAll(@Query('activos') activos: boolean = true, @Query('grupo') grupo?: string) {

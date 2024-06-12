@@ -1,8 +1,9 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { RepresentanteLegal } from 'src/representante-legal/entities/representante-legal.entity';
 import { Ciudad } from 'src/ciudades/entities/ciudad.entity';
 import { Industria } from 'src/industrias/entities/industria.entity';
+import { Tutor } from 'src/tutores/entities/tutor.entity';
 
 @Entity()
 export class Empresa {
@@ -10,7 +11,10 @@ export class Empresa {
   id: string;
 
   @Column()
-  nombre: string;
+  nombreLegal: string;
+
+  @Column()
+  nombreComercial: string;
 
   @Column()
   direccion: string;
@@ -54,6 +58,10 @@ export class Empresa {
   @ManyToOne(() => Industria, (industria) => industria.empresas, { eager: true })
   @JoinColumn()
   industria: Industria;
+
+  @OneToMany(() => Tutor, (tutor) => tutor.empresa)
+  @JoinColumn()
+  tutores: Tutor[];
 
   @CreateDateColumn({ type: 'date' })
   fechaCreacion: Date;

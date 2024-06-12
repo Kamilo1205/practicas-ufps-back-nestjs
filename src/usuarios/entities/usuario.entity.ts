@@ -3,6 +3,7 @@ import { Exclude, Transform } from 'class-transformer';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 import { Rol } from 'src/roles/entities/rol.entity';
+import { Tutor } from 'src/tutores/entities/tutor.entity';
 
 
 @Entity() // Define que esta clase es una entidad de la base de datos.
@@ -58,4 +59,8 @@ export class Usuario {
   @OneToOne(() => Estudiante, (estudiante) => estudiante.usuario)
   @Transform(({ value }) => (value ? value : undefined))
   estudiante: Estudiante;
+
+  @OneToOne(() => Tutor, (tutor) => tutor.usuario)
+  @Transform(({ value }) => (value ? value : undefined))
+  tutor: Tutor;
 }

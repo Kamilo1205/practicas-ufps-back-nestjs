@@ -6,9 +6,10 @@ import { CreateUsuarioDto, UpdateUsuarioDto } from './dto';
 import { RolesService } from 'src/roles/roles.service';
 import { UsuairoExistsException, UsuarioNotFoundException } from './exceptions';
 import { Usuario } from './entities/usuario.entity';
-import { FetchParamsDto } from 'src/common/dto';
 import { Filtering, Pagination, Sorting } from 'src/common/decorators';
 import { getOrder, getWhere } from 'src/common/helpers/typeorm-helper';
+import { Rol } from 'src/auth/enums';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class UsuariosService {
@@ -27,6 +28,24 @@ export class UsuariosService {
     const roles = await this.rolesService.findByIds(createUsuarioDto.rolesIds);
     const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
     const usaurio = this.usuariosRepository.create({ ...createUsuarioDto, email: normalizedEmail, password: hashedPassword, roles });
+    return this.usuariosRepository.save(usaurio);
+  }
+
+  async createTutor(email: string, displayName: string) {
+    const normalizedEmail = email.toLowerCase();
+    const existingUsuario = await this.usuariosRepository.findOneBy({ email });
+    if (existingUsuario) throw new UsuairoExistsException(normalizedEmail);
+
+    const rol = await this.rolesService.findOneByNombre(Rol.Tutor);
+    const hashedPassword = await bcrypt.hash(crypto.randomBytes(8).toString('hex'), 10);
+    const usaurio = this.usuariosRepository.create({ 
+      email: normalizedEmail, 
+      password: hashedPassword, 
+      roles: [rol],
+      displayName,
+      estaActivo: true,
+      estaRegistrado: true,    
+    });
     return this.usuariosRepository.save(usaurio);
   }
 

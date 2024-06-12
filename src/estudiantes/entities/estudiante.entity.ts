@@ -5,6 +5,8 @@ import { Eps } from 'src/eps/entities/eps.entity';
 import { TipoAfiliacionEps } from 'src/tipo-afiliacion-eps/entities/tipo-afiliacion-eps.entity';
 import { Semestre } from 'src/semestre/entities/semestre.entity';
 import { Ciudad } from 'src/ciudades/entities/ciudad.entity';
+import { EstudianteAreaInteres } from 'src/estudiante-area-interes/entities/estudiante-area-interes.entity';
+import { Herramienta } from 'src/herramientas/entities/herramienta.entity';
 
 @Entity()
 export class Estudiante {
@@ -26,14 +28,14 @@ export class Estudiante {
   @Column()
   genero: string;
 
-  @Column()
-  direccion: string;
+  @Column({ default: '' })
+  direccionResidencia: string;
 
   @Column()
   telefono: string;
 
-  @Column()
-  grupo: string;
+  @Column({ default: 'GrupoA' })
+  grupoMatriculado: string;
 
   @ManyToOne(() => Ciudad)
   @JoinTable()
@@ -45,8 +47,9 @@ export class Estudiante {
   @Column()
   numeroDocumento: string;
   
-  @Column()
-  lugarExpedicionDocumento: string;
+  @ManyToOne(() => Ciudad)
+  @JoinTable()
+  lugarExpedicionDocumento: Ciudad;
 
   @Column({ type: 'date' })
   fechaExpedicionDocumento: Date;
@@ -56,6 +59,18 @@ export class Estudiante {
 
   @Column()
   semestreMatriculado: number;
+
+  @Column({ default: null })
+  certificadoAfiliacionEpsUrl: string;
+  
+  @Column({ default: null })
+  documentoIdentidadUrl: string;
+  
+  @Column({ default: null })
+  hojaDeVidaUrl: string;
+  
+  @Column({ default: null })
+  horarioClaseUrl: string;
 
   @Column()
   codigo: number;
@@ -79,6 +94,13 @@ export class Estudiante {
   @ManyToMany(() => Semestre, (semestre) => semestre.estudiantes)
   @JoinTable({ name: 'estudiante_semestre' })
   semestres: Semestre[];
+
+  @OneToMany(() => EstudianteAreaInteres, (estudianteAreaInteres) => estudianteAreaInteres.estudiante)
+  estudianteAreaInteres: EstudianteAreaInteres[];
+
+  @ManyToMany(() => Herramienta, (herramienta) => herramienta.estudiantes)
+  @JoinTable({ name: 'estudiante_herramienta' })
+  herramientas: Herramienta[];
 
   @CreateDateColumn()
   fechaCreacion: Date;

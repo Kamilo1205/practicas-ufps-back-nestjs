@@ -1,29 +1,23 @@
-import { IsDateString, IsMobilePhone, IsNotEmpty, IsNumberString, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsDateString, IsNotEmpty, IsNumberString, IsString, IsUUID, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { EstudianteAreaInteresDto } from './create-estudiante-area-interes.dto';
 
 export class CreateEstudianteDto {
   @IsNotEmpty()
   @IsString()
-  primerNombre: string;
-
-  @IsOptional()
-  @IsString()
-  segundoNombre: string;
-
-  @IsNotEmpty()
-  @IsString()
-  primerApellido: string;
-
-  @IsNotEmpty()
-  @IsString()
-  segundoApellido: string;
+  nombre: string;
   
+  @IsNotEmpty()
+  @IsString()
+  apellidos: string;
+
   @IsNotEmpty()
   @IsString()
   genero: string;
   
   @IsNotEmpty()
   @IsString()
-  direccion: string;
+  direccionResidencia: string;
   
   @IsNotEmpty()
   @IsString()
@@ -47,7 +41,11 @@ export class CreateEstudianteDto {
 
   @IsNotEmpty()
   @IsString()
-  lugarExpedicionDocumento: string;
+  lugarExpedicionDocumentoId: string;
+
+  @IsNotEmpty()
+  @IsUUID('4')
+  tipoAfiliacionEpsId: string;
 
   @IsNotEmpty()
   @IsDateString()
@@ -71,5 +69,16 @@ export class CreateEstudianteDto {
 
   @IsNotEmpty()
   @IsString()
-  grupo: string;
+  grupoMatriculado: string;
+
+  @ValidateNested({ each: true })
+  @Type(() => EstudianteAreaInteresDto)
+  @IsArray()
+  @IsNotEmpty()
+  areasInteres: EstudianteAreaInteresDto[];
+
+  @IsArray()
+  @IsUUID('4', { each: true })
+  @IsNotEmpty({ each: true })
+  herramientas: string[];
 }

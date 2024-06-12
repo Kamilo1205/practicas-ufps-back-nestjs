@@ -28,14 +28,14 @@ import { TutoresModule } from './tutores/tutores.module';
 import { AnioModule } from './anio/anio.module';
 import { SemestreModule } from './semestre/semestre.module';
 import { SeederModule } from './seeder/seeder.module';
-import { SubAreasInteresModule } from './sub-areas-interes/sub-areas-interes.module';
 import { HerramientasModule } from './herramientas/herramientas.module';
-import { AreaSubAreaInteresModule } from './area-sub-area-interes/area-sub-area-interes.module';
 import { CsvModule } from './csv/csv.module';
 import { IndustriasModule } from './industrias/industrias.module';
 import { PaisesModule } from './paises/paises.module';
 import { DepartamentosModule } from './departamentos/departamentos.module';
 import { CiudadesModule } from './ciudades/ciudades.module';
+import { EstudianteAreaInteresModule } from './estudiante-area-interes/estudiante-area-interes.module';
+import { AreaInteresHerramientasModule } from './area-interes-herramientas/area-interes-herramientas.module';
 
 @Module({
   imports: [
@@ -66,14 +66,14 @@ import { CiudadesModule } from './ciudades/ciudades.module';
     AnioModule,
     SemestreModule,
     SeederModule,
-    SubAreasInteresModule,
     HerramientasModule,
-    AreaSubAreaInteresModule,
     CsvModule,
     IndustriasModule,
     PaisesModule,
     DepartamentosModule,
     CiudadesModule,
+    EstudianteAreaInteresModule,
+    AreaInteresHerramientasModule,
   ],
   controllers: [AppController],
   providers: [

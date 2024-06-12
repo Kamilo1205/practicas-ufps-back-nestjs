@@ -5,7 +5,11 @@ import { CreateRepresentanteLegalDto } from 'src/representante-legal/dto';
 export class CreateEmpresaDto {
   @IsNotEmpty()
   @IsString()
-  nombre: string;
+  nombreLegal: string;
+
+  @IsNotEmpty()
+  @IsString()
+  nombreComercial: string;
 
   @IsNotEmpty()
   @IsString()

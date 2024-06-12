@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
-import { CreateHerramientaDto } from './dto/create-herramienta.dto';
-import { UpdateHerramientaDto } from './dto/update-herramienta.dto';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateHerramientaDto, UpdateHerramientaDto } from './dto';
+import { Herramienta } from './entities/herramienta.entity';
 
 @Injectable()
 export class HerramientasService {
-  create(createHerramientaDto: CreateHerramientaDto) {
-    return 'This action adds a new herramienta';
+  constructor(
+    @InjectRepository(Herramienta)
+    private readonly herramientaRepository: Repository<Herramienta>,
+  ) {}
+
+  async create(createHerramientaDto: CreateHerramientaDto) {
+    const herramientaExistente = await this.herramientaRepository.findOne({ where: { nombre: createHerramientaDto.nombre } });
+    if (herramientaExistente) throw new ConflictException(`Ya existe una herramienta con el nombre ${createHerramientaDto.nombre}`);
+
+    const herramienta = this.herramientaRepository.create(createHerramientaDto);
+    return this.herramientaRepository.save(herramienta);
   }
 
-  findAll() {
-    return `This action returns all herramientas`;
+  async findAll() {
+    return this.herramientaRepository.find();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} herramienta`;
+  async findOne(id: string) {
+    const herramienta = await this.herramientaRepository.findOne({ where: { id } });
+    if (!herramienta) throw new NotFoundException(`Herramienta con ID ${id} no encontrada`);
+    return herramienta;
   }
 
-  update(id: string, updateHerramientaDto: UpdateHerramientaDto) {
-    return `This action updates a #${id} herramienta`;
+  async update(id: string, updateHerramientaDto: UpdateHerramientaDto) {
+    const herramientaExistente = await this.herramientaRepository.findOne({ where: { id } });
+    if (!herramientaExistente) throw new NotFoundException(`Herramienta con ID ${id} no encontrada`);
+
+    const herramientaDuplicada = await this.herramientaRepository.findOne({ where: { nombre: updateHerramientaDto.nombre } });
+    if (herramientaDuplicada && herramientaDuplicada.id !== id) throw new ConflictException(`Ya existe una herramienta con el nombre ${updateHerramientaDto.nombre}`);
+
+    const herramienta = await this.herramientaRepository.preload({
+      id,
+      ...updateHerramientaDto,
+    });
+
+    return this.herramientaRepository.save(herramienta);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} herramienta`;
+  async remove(id: string) {
+    const herramienta = await this.herramientaRepository.findOne({ where: { id } });
+    if (!herramienta) throw new NotFoundException(`Herramienta con ID ${id} no encontrada`);
+    await this.herramientaRepository.softRemove(herramienta);
   }
 }
