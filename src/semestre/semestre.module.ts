@@ -10,6 +10,6 @@ import { GoogleDriveModule } from 'src/google-drive/google-drive.module';
   imports: [TypeOrmModule.forFeature([Semestre]), AnioModule, GoogleDriveModule],
   controllers: [SemestreController],
   providers: [SemestreService],
-  exports: [SemestreModule]
+  exports: [SemestreService]
 })
 export class SemestreModule {}
