@@ -47,7 +47,7 @@ export class Usuario {
   fechaEliminacion?: Date; // Fecha y hora de eliminación lógica del registro de usuario (si se aplica).
 
   // Relaciones
-  @ManyToMany(() => Rol, (rol) => rol.usuarios)
+  @ManyToMany(() => Rol, (rol) => rol.usuarios, {eager: true})
   @JoinTable({ name: 'usuario_rol' })
   roles: Rol[];
 
