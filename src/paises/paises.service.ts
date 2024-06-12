@@ -29,6 +29,12 @@ export class PaisesService {
     return pais;
   }
 
+  async findOneByNombre(nombre: string) {
+    const pais = await this.paisRepository.findOne({ where: { nombre } });
+    if (!pais) throw new NotFoundException(`El pais ${ nombre } no fue encontrado`);
+    return pais;
+  }
+
   async update(id: string, updatePaiseDto: UpdatePaiseDto) {
     const pais = await this.paisRepository.findOne({ where: { id } });
     if (!pais) throw new NotFoundException(`El pais con el id ${ id } no fue encontrado`);
