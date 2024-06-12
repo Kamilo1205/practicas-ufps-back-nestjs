@@ -38,6 +38,11 @@ export class DepartamentosService {
     return this.departamentoRepository.find({ where: { pais: { id: pais.id } } });
   }
 
+  async findByPaisNombre(paisNombre: string) {
+    const pais = await this.paisesService.findOneByNombre(paisNombre);
+    return this.departamentoRepository.find({ where: { pais: { id: pais.id } } });
+  }
+
   async update(id: string, updateDepartamentoDto: UpdateDepartamentoDto) {
     const departamento = await this.departamentoRepository.findOne({ where: { id } });
     if (!departamento) throw new NotFoundException(`El departamento con el id ${ id } no fue encontrado`);
