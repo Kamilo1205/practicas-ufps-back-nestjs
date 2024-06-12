@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Transform } from 'class-transformer';
+import { AreaInteresHerramienta } from 'src/area-interes-herramientas/entities/area-interes-herramienta.entity';
 
 @Entity()
 export class Herramienta {
@@ -8,6 +9,9 @@ export class Herramienta {
 
   @Column({ unique: true })
   nombre: string;
+
+  @OneToMany(() => AreaInteresHerramienta, (areaInteresHerramienta) => areaInteresHerramienta.herramienta)
+  areainteresHerramientas: AreaInteresHerramienta[];
 
   @CreateDateColumn()
   fechaCreacion: Date;
