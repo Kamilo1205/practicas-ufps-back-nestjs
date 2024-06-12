@@ -10,7 +10,7 @@ export class TipoAfiliacionEpsController {
   constructor(private readonly tipoAfiliacionEpsService: TipoAfiliacionEpsService) {}
 
   @Post()
-  @Roles(Rol.Administrador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   create(@Body() createTipoAfiliacionEpsDto: CreateTipoAfiliacionEpsDto) {
     return this.tipoAfiliacionEpsService.create(createTipoAfiliacionEpsDto);
   }
@@ -22,19 +22,19 @@ export class TipoAfiliacionEpsController {
   }
 
   @Get(':id')
-  @Roles(Rol.Administrador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   findOne(@Param() { id }: UuidDto) {
     return this.tipoAfiliacionEpsService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles(Rol.Administrador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   update(@Param() { id }: UuidDto, @Body() updateTipoAfiliacionEpDto: UpdateTipoAfiliacionEpsDto) {
     return this.tipoAfiliacionEpsService.update(id, updateTipoAfiliacionEpDto);
   }
 
   @Delete(':id')
-  @Roles(Rol.Administrador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   remove(@Param() { id }: UuidDto) {
     return this.tipoAfiliacionEpsService.remove(id);
   }
