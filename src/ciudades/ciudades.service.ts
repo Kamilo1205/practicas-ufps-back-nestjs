@@ -29,7 +29,7 @@ export class CiudadesService {
   }
 
   async findOne(id: string) {
-    const ciudad = await this.ciudadRepository.findOne({ where: { id }, relations: ['departamento'] });
+    const ciudad = await this.ciudadRepository.findOne({ where: { id }, relations: ['departamento', 'departamento.pais'] });
     if (!ciudad) throw new NotFoundException(`La ciudad con el id ${id} no fue encontrada`);
     return ciudad;
   }
