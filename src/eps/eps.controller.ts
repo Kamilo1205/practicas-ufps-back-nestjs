@@ -10,7 +10,7 @@ export class EpsController {
   constructor(private readonly epsService: EpsService) {}
 
   @Post()
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   create(@Body() createEpDto: CreateEpsDto) {
     return this.epsService.create(createEpDto);
   }
@@ -21,19 +21,19 @@ export class EpsController {
   }
 
   @Get(':id')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   findOne(@Param() { id }: UuidDto) {
     return this.epsService.findOne(id);
   }
   
   @Patch(':id')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   update(@Param() { id }: UuidDto, @Body() updateEpDto: UpdateEpsDto) {
     return this.epsService.update(id, updateEpDto);
   }
 
   @Delete(':id')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   remove(@Param() { id }: UuidDto) {
     return this.epsService.remove(id);
   }
