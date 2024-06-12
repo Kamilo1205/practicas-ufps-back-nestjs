@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Solicitud de Prácticas Empresariales</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <div class="text-center">
+            <h2 class="text-2xl font-bold mb-4">Solicitud de Prácticas Empresariales</h2>
+        </div>
+        <div class="text-gray-700 bg-red-100">
+            <p class="mb-4">Estimados miembros del Departamento de Prácticas,</p>
+            <p class="mb-4">Mi nombre es {{senderName}}, y me gustaría informarles sobre el registro reciente de una nueva empresa en nuestra plataforma de prácticas empresariales. A continuación, se proporcionan los detalles de la empresa:</p>
+            <div class="mb-4">
+                <p><strong>Nombre de la Empresa:</strong> {{companyName}}</p>
+                <p><strong>Representante:</strong> {{representativeName}}</p>
+                <p><strong>Dirección:</strong> {{companyAddress}}</p>
+                <p><strong>Teléfono:</strong> {{companyPhone}}</p>
+                <p><strong>Correo Electrónico:</strong> {{companyEmail}}</p>
+                <p><strong>Sector:</strong> {{companySector}}</p>
+            </div>
+            <p class="mb-4">La empresa {{companyName}} ha expresado su interés en colaborar con nuestra universidad para ofrecer oportunidades de prácticas a nuestros estudiantes. Creemos que esta colaboración será de gran beneficio tanto para nuestros estudiantes como para la empresa.</p>
+            <p class="mb-4">Les agradeceríamos que se pongan en contacto con el representante de la empresa para discutir los detalles de la colaboración y coordinar las oportunidades de prácticas disponibles.</p>
+            <p class="mb-4">Quedamos atentos a su respuesta y agradecemos de antemano su colaboración.</p>
+            <p>Saludos cordiales,</p>
+            <p class="mb-4">{{senderName}}<br>
+                {{senderPosition}}<br>
+                {{senderEmail}}<br>
+                {{senderPhone}}</p>
+        </div>
+        <div class="text-center text-gray-500 text-sm mt-6">
+            <p>Universidad Francisco de Paula Santander</p>
+        </div>
+    </div>
+</body>
+</html>

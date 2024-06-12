@@ -9,13 +9,13 @@ export class MailController {
   constructor(private readonly mailService: MailService) {}
 
   @Post()
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   async sendMail(@Body() sendEmailDto: SendEmailDto) {
     return await this.mailService.sendEmail(sendEmailDto.to, sendEmailDto.subject, sendEmailDto.text);
   }
 
   @Post('/reset-password')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   async sendMailResetPassword(@Body('to') to: string, @Body('token') token: string) {
     return await this.mailService.sedForgotPasswordEmail(to, token);
   }

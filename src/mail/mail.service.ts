@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MailerService } from '@nestjs-modules/mailer';
+import { Empresa } from 'src/empresas/entities/empresa.entity';
 
 @Injectable()
 export class MailService {
@@ -20,35 +21,26 @@ export class MailService {
     }
   }
 
-  async sendEmailWithAttachments(to: string, subject: string, text: string, template: string, context: any, files: Express.Multer.File[]) {
+  async sendEmailWithAttachments(to: string, subject: string, template: string, context: any, files: Express.Multer.File[]) {
     try {
-      const attachments = files.map(file => ({
+      const attachments = files?.map(file => ({
         filename: file.originalname,
         content: file.buffer,
         contentType: file.mimetype,
-      }));
-
-      console.log(attachments);
-      console.log({
-        to, // Destinatario
-        from: this.configService.get<string>('GOOGLE_USER'), // Remitente
-        subject,
-        attachments, // Múltiples archivos adjuntos
-        ...(template ? { template, context } : { text })
-      });
+      })) || [];
 
       const mailOptions: any = {
         to, // Destinatario
         from: this.configService.get<string>('GOOGLE_USER'), // Remitente
         subject,
-        attachments, // Múltiples archivos adjuntos
-        text
+        template, 
+        context, 
+        attachments
       };
-
+  
       const response = await this.mailerService.sendMail(mailOptions);
       return response;
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException('Error al enviar el correo con los archivos adjuntos');
     }
   }
@@ -69,6 +61,29 @@ export class MailService {
       return response;
     } catch (error) {
       throw new InternalServerErrorException('Erro al enviar el correo de recuperación de contraseña');
+    }
+  }
+
+  async sendSolicitudConvenioEmail(empresa: Empresa, files?: Express.Multer.File[]) {
+    try {
+      const context = {
+        senderName: 'Administrador Practicas Ingieneria de Sistemas',
+        senderPosition: 'Tu Puesto',
+        senderEmail: 'tu_email@example.com',
+        senderPhone: 'tu_numero_de_telefono',
+        companyName: empresa.nombreLegal,
+        representativeName: empresa.representanteLegal.nombre,
+        companyAddress: `${empresa.direccion}, ${empresa.ciudad.departamento.pais.nombre}, ${empresa.ciudad.departamento.nombre}, ${empresa.ciudad.nombre} `,
+        companyPhone: empresa.telefono,
+        companyEmail: empresa.usuario.email,
+        companySector: empresa.industria.nombre
+      }
+  
+      const response = await this.sendEmailWithAttachments('angieestefaniajave@ufps.edu.co', 'Solicitud de convenio', './solicitud-convenio', context, files);
+      return response;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error al enviar el correo con los archivos adjuntos');
     }
   }
 }
