@@ -10,7 +10,7 @@ export class AreasInteresController {
   constructor(private readonly areasInteresService: AreasInteresService) {}
 
   @Post()
-  @Roles(Rol.Administrador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   create(@Body() createAreaInteresDto: CreateAreaInteresDto) {
     return this.areasInteresService.create(createAreaInteresDto);
   }
@@ -20,20 +20,25 @@ export class AreasInteresController {
     return this.areasInteresService.findAll();
   }
 
+  @Get(':id/subareas')
+  findSubAreasByAreaId(@Param() { id }: UuidDto) {
+    return this.areasInteresService.findSubAreasByAreaId(id);
+  }
+
   @Get(':id')
-  @Roles(Rol.Administrador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   findOne(@Param() { id }: UuidDto) {
     return this.areasInteresService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles(Rol.Administrador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   update(@Param() { id }: UuidDto, @Body() updateAreaInteresDto: UpdateAreaInteresDto) {
     return this.areasInteresService.update(id, updateAreaInteresDto);
   }
 
   @Delete(':id')
-  @Roles(Rol.Administrador)
+  @Roles(Rol.Coordinador, Rol.Administrador)
   remove(@Param() { id }: UuidDto) {
     return this.areasInteresService.remove(id);
   }

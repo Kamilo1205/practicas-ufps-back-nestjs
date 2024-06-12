@@ -1,6 +1,6 @@
-import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { CreateAreaInteresDto, UpdateAreaInteresDto } from './dto';
 import { AreaInteres } from './entities/area-interes.entity';
 import { AreaInteresExistsException, AreaInteresNotFoundException } from './exceptions';
@@ -20,13 +20,26 @@ export class AreasInteresService {
   }
 
   findAll() {
-    return this.areaInteresRepository.find();
+    return this.areaInteresRepository.find({ relations: ['areaPadre', 'subAreas', 'subAreas.areaInteresHerramientas.herramienta', 'areaInteresHerramientas.herramienta'] });
   }
 
   async findOne(id: string, relations: string[] = []) {
     const areaInteres = await this.areaInteresRepository.findOne({ where: { id }, relations });
     if (!areaInteres) throw new AreaInteresNotFoundException(id);
     return areaInteres;
+  }
+
+  async findSubAreasByAreaId(id: string) {
+    const areaInteres = await this.areaInteresRepository.findOne({ where: { id }, relations: ['areaSubArea', 'areaSubArea.subAreasInteres'] });
+    if (!areaInteres) throw new AreaInteresNotFoundException(id);
+    return areaInteres?.subAreas || [];
+  }
+
+  async findAreasSinSubAreas() {
+    return this.areaInteresRepository.find({
+      where: { subAreas: IsNull() },
+      relations: ['subAreas'],
+    });
   }
 
   async update(id: string, updateAreaInteresDto: UpdateAreaInteresDto) {

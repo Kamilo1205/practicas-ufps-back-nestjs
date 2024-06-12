@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Transform } from 'class-transformer';
-import { AreaSubAreaInteres } from 'src/area-sub-area-interes/entities/area-sub-area-interes.entity';
+import { EstudianteAreaInteres } from 'src/estudiante-area-interes/entities/estudiante-area-interes.entity';
+import { AreaInteresHerramienta } from 'src/area-interes-herramientas/entities/area-interes-herramienta.entity';
 
 @Entity()
 export class AreaInteres {
@@ -10,16 +11,25 @@ export class AreaInteres {
   @Column({ unique: true })
   nombre: string;
 
-  @OneToMany(() => AreaSubAreaInteres, (areaSubAreaInteres) => areaSubAreaInteres.areaInteres, { eager: true })
-  areaSubArea: AreaSubAreaInteres[];
+  @OneToMany(() => EstudianteAreaInteres, (estudianteAreaInteres) => estudianteAreaInteres.areaInteres)
+  estudianteAreaInteres: EstudianteAreaInteres[];
 
-  @CreateDateColumn({ type: 'date' })
+  @ManyToOne(() => AreaInteres, (areaInteres) => areaInteres.subAreas)
+  areaPadre: AreaInteres;
+
+  @OneToMany(() => AreaInteres, (areaInteres) => areaInteres.areaPadre)
+  subAreas: AreaInteres[];
+
+  @OneToMany(() => AreaInteresHerramienta, (areaInteresHerramienta) => areaInteresHerramienta.areaInteres)
+  areaInteresHerramientas: AreaInteresHerramienta[];
+
+  @CreateDateColumn()
   fechaCreacion: Date;
 
-  @UpdateDateColumn({ type: 'date' })
+  @UpdateDateColumn()
   fechaActualizacion: Date;
 
-  @DeleteDateColumn({ type: 'date' })
+  @DeleteDateColumn()
   @Transform(({ value }) => (value ? value : undefined))
   fechaEliminacion: Date;
 }
