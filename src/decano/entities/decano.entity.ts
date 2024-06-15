@@ -1,11 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { Genero } from 'src/common/enums';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class Decano {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-  
+export class Decano extends BaseEntity {
   @Column()
   nombre: string;
 

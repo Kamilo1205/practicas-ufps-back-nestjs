@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, IsUUID } from 'class-validator';
 
 export class CreateTutorDto {
   @IsString()
@@ -20,4 +20,8 @@ export class CreateTutorDto {
   @IsString()
   @IsNotEmpty()
   direccionTrabajo: string;
+
+  @IsUUID('4')
+  @IsNotEmpty()
+  empresaId: string;
 }

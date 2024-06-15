@@ -1,25 +1,12 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Transform } from 'class-transformer';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class Industria {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-  
+export class Industria extends BaseEntity {
   @Column({ unique: true })
   nombre: string;
 
   @OneToMany(() => Empresa, (empresa) => empresa.industria)
   empresas: Empresa[];
-
-  @CreateDateColumn()
-  fechaCreacion: Date;
-  
-  @UpdateDateColumn()
-  fechaActualizacion: Date;
-  
-  @DeleteDateColumn()
-  @Transform(({ value }) => (value ? value : undefined))
-  fechaEliminacion: Date;
 }

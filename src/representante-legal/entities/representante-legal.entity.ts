@@ -1,14 +1,11 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { TipoDocumento } from 'src/tipo-documento/entities/tipo-documento.entity';
-import { Transform } from 'class-transformer';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { Ciudad } from 'src/ciudades/entities/ciudad.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class RepresentanteLegal {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-  
+export class RepresentanteLegal extends BaseEntity {
   @Column()
   nombre: string;
 
@@ -36,14 +33,4 @@ export class RepresentanteLegal {
 
   @OneToMany(() => Empresa, (empresa) => empresa.representanteLegal)
   empresas: Empresa[];
-
-  @CreateDateColumn()
-  fechaCreacion: Date;
-
-  @UpdateDateColumn()
-  fechaActualizacion: Date;
-
-  @DeleteDateColumn()
-  @Transform(({ value }) => (value ? value : undefined))
-  fechaEliminacion: Date;
 }

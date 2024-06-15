@@ -1,15 +1,13 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { RepresentanteLegal } from 'src/representante-legal/entities/representante-legal.entity';
 import { Ciudad } from 'src/ciudades/entities/ciudad.entity';
 import { Industria } from 'src/industrias/entities/industria.entity';
 import { Tutor } from 'src/tutores/entities/tutor.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class Empresa {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Empresa extends BaseEntity {
   @Column()
   nombreLegal: string;
 
@@ -62,13 +60,4 @@ export class Empresa {
   @OneToMany(() => Tutor, (tutor) => tutor.empresa)
   @JoinColumn()
   tutores: Tutor[];
-
-  @CreateDateColumn({ type: 'date' })
-  fechaCreacion: Date;
-
-  @UpdateDateColumn({ type: 'date' })
-  fechaActualizacion: Date;
-
-  @DeleteDateColumn({ type: 'date' })
-  fechaEliminacion: Date;
 }

@@ -1,13 +1,10 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Transform } from 'class-transformer';
+import { Column, Entity, JoinTable, ManyToOne, OneToOne } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class Tutor {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Tutor extends BaseEntity {
   @Column()
   nombre: string;
 
@@ -26,14 +23,4 @@ export class Tutor {
 
   @ManyToOne(() => Empresa, (empresa) => empresa.tutores)
   empresa: Empresa;
-
-  @CreateDateColumn()
-  fechaCreacion: Date;
-
-  @UpdateDateColumn()
-  fechaActualizacion: Date;
-
-  @DeleteDateColumn()
-  @Transform(({ value }) => (value ? value : undefined))
-  fechaEliminacion: Date;
 }

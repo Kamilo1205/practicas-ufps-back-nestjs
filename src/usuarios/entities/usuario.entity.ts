@@ -1,16 +1,14 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToOne } from 'typeorm';
 import { Exclude, Transform } from 'class-transformer';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 import { Rol } from 'src/roles/entities/rol.entity';
 import { Tutor } from 'src/tutores/entities/tutor.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 
 @Entity() // Define que esta clase es una entidad de la base de datos.
-export class Usuario {
-  @PrimaryGeneratedColumn('uuid')
-  id: string; // Identificador único generado automáticamente para el usuario.
-
+export class Usuario extends BaseEntity {
   @Column({ unique: true }) // Define una columna única para el correo electrónico del usuario.
   email: string; // Correo electrónico del usuario (debe ser único).
 
@@ -37,17 +35,6 @@ export class Usuario {
   @Exclude()
   currentHashedRefreshToken?: string;
 
-  @CreateDateColumn({ type: 'date' }) // Columna para la fecha y hora de creación del registro de usuario.
-  fechaCreacion: Date; // Fecha y hora de creación del registro de usuario.
-
-  @UpdateDateColumn({ type: 'date' }) // Columna para la fecha y hora de la última actualización del registro de usuario.
-  fechaActualizacion: Date; // Fecha y hora de la última actualización del registro de usuario.
-
-  @DeleteDateColumn({ type: 'date' }) // Columna para la fecha y hora de eliminación lógica del registro de usuario (si se elimina).
-  @Transform(({ value }) => (value ? value : undefined))
-  fechaEliminacion?: Date; // Fecha y hora de eliminación lógica del registro de usuario (si se aplica).
-
-  // Relaciones
   @ManyToMany(() => Rol, (rol) => rol.usuarios, {eager: true})
   @JoinTable({ name: 'usuario_rol' })
   roles: Rol[];

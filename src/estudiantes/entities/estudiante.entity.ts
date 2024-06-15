@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToOne, JoinColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { TipoDocumento } from 'src/tipo-documento/entities/tipo-documento.entity';
 import { Eps } from 'src/eps/entities/eps.entity';
@@ -7,12 +7,10 @@ import { Semestre } from 'src/semestre/entities/semestre.entity';
 import { Ciudad } from 'src/ciudades/entities/ciudad.entity';
 import { EstudianteAreaInteres } from 'src/estudiante-area-interes/entities/estudiante-area-interes.entity';
 import { Herramienta } from 'src/herramientas/entities/herramienta.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class Estudiante {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Estudiante extends BaseEntity {
   @Column()
   primerNombre: string;
 
@@ -28,7 +26,7 @@ export class Estudiante {
   @Column()
   genero: string;
 
-  @Column({ default: '' })
+  @Column()
   direccionResidencia: string;
 
   @Column()
@@ -101,13 +99,4 @@ export class Estudiante {
   @ManyToMany(() => Herramienta, (herramienta) => herramienta.estudiantes)
   @JoinTable({ name: 'estudiante_herramienta' })
   herramientas: Herramienta[];
-
-  @CreateDateColumn()
-  fechaCreacion: Date;
-
-  @UpdateDateColumn()
-  fechaActualizacion: Date;
-
-  @DeleteDateColumn()
-  fechaEliminacion: Date;
 }

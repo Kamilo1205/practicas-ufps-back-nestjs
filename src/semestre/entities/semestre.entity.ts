@@ -1,13 +1,11 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 import { Anio } from 'src/anio/entities/anio.entity';
-import { Transform } from 'class-transformer';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
+import { EmpresaSolicitud } from 'src/empresas-solicitudes/entities/empresas-solicitud.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class Semestre {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-  
+export class Semestre extends BaseEntity{
   @ManyToOne(() => Anio, (anio) => anio.semestres)
   anio: Anio;
   
@@ -44,13 +42,6 @@ export class Semestre {
   @ManyToMany(() => Estudiante, (estudiante) => estudiante.semestres)
   estudiantes: Estudiante[];
 
-  @CreateDateColumn()
-  fechaCreacion: Date;
-  
-  @UpdateDateColumn()
-  fechaActualizacion: Date;
-  
-  @DeleteDateColumn()
-  @Transform(({ value }) => (value ? value : undefined))
-  fechaEliminacion: Date;
+  @OneToMany(() => EmpresaSolicitud, (empresaSolicitud) => empresaSolicitud.semestre)
+  empresaSolicitudes: EmpresaSolicitud[];
 }

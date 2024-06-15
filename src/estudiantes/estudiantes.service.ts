@@ -135,6 +135,7 @@ export class EstudiantesService {
     });
   }
 
+  //TODO: Actualizar areas interes
   update(id: string, updateEstudianteDto: UpdateEstudianteDto) {
     //return this.estudianteRepository.update(id, updateEstudianteDto);
   }

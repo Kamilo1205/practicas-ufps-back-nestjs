@@ -18,7 +18,7 @@ export class SemestreService {
 
   async create(createSemestreDto: CreateSemestreDto) {
     const anio = await this.anioService.findOne(createSemestreDto.anioId);
-    
+
     const { semestre } = createSemestreDto;
     const semestreExiste = await this.semestreRepository.findOne({ where: { anio, semestre } });
     if( semestreExiste ) throw new BadRequestException({ semestre: `El semestre ${ semestre } del año ${anio} ya existe` });

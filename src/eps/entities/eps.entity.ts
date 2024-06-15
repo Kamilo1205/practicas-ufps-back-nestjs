@@ -1,29 +1,15 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Transform } from 'class-transformer';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class Eps {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Eps extends BaseEntity{
   @Column({ unique: true })
   nombre: string;
 
   @Column({ unique: true })
   nit: string;
 
-  @CreateDateColumn()
-  fechaCreacion: Date;
-
-  @UpdateDateColumn()
-  fechaActualizacion: Date;
-
-  @DeleteDateColumn()
-  @Transform(({ value }) => (value ? value : undefined))
-  fechaEliminacion: Date;
-
-  //Relaciones
   @OneToMany(() => Estudiante, (estudiante) => estudiante.eps)
   estudiantes: Estudiante[];
 }

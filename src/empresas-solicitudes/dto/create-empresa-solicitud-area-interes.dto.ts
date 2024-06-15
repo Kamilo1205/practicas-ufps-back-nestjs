@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumberString, IsUUID } from 'class-validator';
 
-export class CreateEstudianteAreaInteresDto {
+export class CreateEmpresaSolicitudAreaInteresDto {
   @IsUUID()
   @IsNotEmpty()
   areaInteresId: string;

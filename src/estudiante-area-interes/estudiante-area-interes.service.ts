@@ -42,9 +42,7 @@ export class EstudianteAreaInteresService {
 
   async update(id: string, updateEstudianteAreaInteresDto: UpdateEstudianteAreaInteresDto) {
     const estudianteAreaInteres = await this.estudianteAreaInteresRepository.findOne({ where: { id } });
-    if (!estudianteAreaInteres) {
-      throw new NotFoundException(`El interés con el id ${id} no fue encontrado`);
-    }
+    if (!estudianteAreaInteres) throw new NotFoundException(`El interés con el id ${id} no fue encontrado`);
 
     const { estudiante, areaInteres } = updateEstudianteAreaInteresDto;
     if (
@@ -66,9 +64,7 @@ export class EstudianteAreaInteresService {
 
   async remove(id: string) {
     const estudianteAreaInteres = await this.estudianteAreaInteresRepository.findOne({ where: { id } });
-    if (!estudianteAreaInteres) {
-      throw new NotFoundException(`El interés con el id ${id} no fue encontrado`);
-    }
+    if (!estudianteAreaInteres) throw new NotFoundException(`El interés con el id ${id} no fue encontrado`);
     return this.estudianteAreaInteresRepository.softRemove(estudianteAreaInteres);
   }
 }

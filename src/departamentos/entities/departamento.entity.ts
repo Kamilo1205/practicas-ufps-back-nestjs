@@ -1,13 +1,10 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Transform } from 'class-transformer';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Pais } from 'src/paises/entities/pais.entity';
 import { Ciudad } from 'src/ciudades/entities/ciudad.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class Departamento {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-  
+export class Departamento extends BaseEntity {
   @Column({ unique: true })
   nombre: string;
   
@@ -16,14 +13,4 @@ export class Departamento {
 
   @OneToMany(() => Ciudad, (ciudad) => ciudad.departamento)
   ciudades: Ciudad[];
-
-  @CreateDateColumn()
-  fechaCreacion: Date;
-  
-  @UpdateDateColumn()
-  fechaActualizacion: Date;
-  
-  @DeleteDateColumn()
-  @Transform(({ value }) => (value ? value : undefined))
-  fechaEliminacion: Date;
 }

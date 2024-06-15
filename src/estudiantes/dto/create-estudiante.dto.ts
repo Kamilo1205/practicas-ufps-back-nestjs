@@ -1,6 +1,6 @@
 import { IsArray, IsDateString, IsNotEmpty, IsNumberString, IsString, IsUUID, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { EstudianteAreaInteresDto } from './create-estudiante-area-interes.dto';
+import { CreateEstudianteAreaInteresDto } from './create-estudiante-area-interes.dto';
 
 export class CreateEstudianteDto {
   @IsNotEmpty()
@@ -72,10 +72,10 @@ export class CreateEstudianteDto {
   grupoMatriculado: string;
 
   @ValidateNested({ each: true })
-  @Type(() => EstudianteAreaInteresDto)
+  @Type(() => CreateEstudianteAreaInteresDto)
   @IsArray()
   @IsNotEmpty()
-  areasInteres: EstudianteAreaInteresDto[];
+  areasInteres: CreateEstudianteAreaInteresDto[];
 
   @IsArray()
   @IsUUID('4', { each: true })

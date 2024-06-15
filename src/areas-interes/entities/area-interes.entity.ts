@@ -1,13 +1,11 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Transform } from 'class-transformer';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { EstudianteAreaInteres } from 'src/estudiante-area-interes/entities/estudiante-area-interes.entity';
 import { AreaInteresHerramienta } from 'src/area-interes-herramientas/entities/area-interes-herramienta.entity';
+import { EmpresaSolicitudesAreaInteres } from 'src/empresas-solicitudes-areas-interes/entities/empresas-solicitudes-areas-intere.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class AreaInteres {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class AreaInteres extends BaseEntity {
   @Column({ unique: true })
   nombre: string;
 
@@ -23,13 +21,6 @@ export class AreaInteres {
   @OneToMany(() => AreaInteresHerramienta, (areaInteresHerramienta) => areaInteresHerramienta.areaInteres)
   areaInteresHerramientas: AreaInteresHerramienta[];
 
-  @CreateDateColumn()
-  fechaCreacion: Date;
-
-  @UpdateDateColumn()
-  fechaActualizacion: Date;
-
-  @DeleteDateColumn()
-  @Transform(({ value }) => (value ? value : undefined))
-  fechaEliminacion: Date;
+  @OneToMany(() => EmpresaSolicitudesAreaInteres, (empresaSolicitudesAreaInteres) => empresaSolicitudesAreaInteres.areaInteres)
+  empresaSolicitudAreaInteres: EmpresaSolicitudesAreaInteres;
 }

@@ -1,34 +1,39 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { AreaInteresHerramientasService } from './area-interes-herramientas.service';
-import { CreateAreaInteresHerramientaDto } from './dto/create-area-interes-herramienta.dto';
-import { UpdateAreaInteresHerramientaDto } from './dto/update-area-interes-herramienta.dto';
+import { Roles } from 'src/auth/decorators';
+import { Rol } from 'src/auth/enums';
+import { CreateAreaInteresHerramientaDto, UpdateAreaInteresHerramientaDto } from './dto';
 
 @Controller('area-interes-herramientas')
 export class AreaInteresHerramientasController {
   constructor(private readonly areaInteresHerramientasService: AreaInteresHerramientasService) {}
 
   @Post()
+  @Roles(Rol.Coordinador, Rol.Administrador)
   create(@Body() createAreaInteresHerramientaDto: CreateAreaInteresHerramientaDto) {
     return this.areaInteresHerramientasService.create(createAreaInteresHerramientaDto);
   }
 
   @Get()
+  @Roles(Rol.Coordinador, Rol.Administrador)
   findAll() {
     return this.areaInteresHerramientasService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.areaInteresHerramientasService.findOne(+id);
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.areaInteresHerramientasService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAreaInteresHerramientaDto: UpdateAreaInteresHerramientaDto) {
-    return this.areaInteresHerramientasService.update(+id, updateAreaInteresHerramientaDto);
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateAreaInteresHerramientaDto: UpdateAreaInteresHerramientaDto) {
+    return this.areaInteresHerramientasService.update(id, updateAreaInteresHerramientaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.areaInteresHerramientasService.remove(+id);
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.areaInteresHerramientasService.remove(id);
   }
 }

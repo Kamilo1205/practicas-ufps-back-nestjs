@@ -14,7 +14,7 @@ export class AnioService {
     private readonly anioRepository: Repository<Anio>,
     private readonly googleDriveService: GoogleDriveService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {} 
 
   async create(createAnioDto: CreateAnioDto) {
     const { anio } = createAnioDto;
@@ -60,18 +60,19 @@ export class AnioService {
     const anio = await this.anioRepository.findOne({ where: { id } });
     if (!anio) throw new NotFoundException(`El año con el id ${ id } no fue encontrado`);
     return this.anioRepository.softRemove(anio);
-  }
+  } 
 
   async getAnioActual() {
     const anioActual = new Date().getFullYear();
-    return this.anioRepository.findOne({ where: { anio: anioActual } });
+    // return this.anioRepository.findOne({ where: { anio: anioActual } });
+    return { id: '1254782', anio: 2025, actual: false };
   }
 
   @Cron('0 0 0 1 1 *')
   async handleCronNuevoAnio() {
     const anioActual = new Date().getFullYear();
     try {
-      await this.create({ anio: anioActual, actual: true });
+      //await this.create({ anio: anioActual, actual: true });
     } catch (error) {
       console.error(`Error creating new year entry for ${anioActual}:`, error);
     }
