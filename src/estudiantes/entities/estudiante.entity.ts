@@ -26,7 +26,7 @@ export class Estudiante extends BaseEntity {
   @Column()
   genero: string;
 
-  @Column()
+  @Column({ default: '', nullable: true })
   direccionResidencia: string;
 
   @Column()
