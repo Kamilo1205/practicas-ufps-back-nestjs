@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AreasInteresService } from 'src/areas-interes/areas-interes.service';
+import { AreaInteres } from 'src/areas-interes/entities/area-interes.entity';
 import { CiudadesService } from 'src/ciudades/ciudades.service';
 import { DepartamentosService } from 'src/departamentos/departamentos.service';
 import { CreateEstudianteDto } from 'src/estudiantes/dto';
@@ -48,7 +49,7 @@ export class SeederService {
   }
 
   private async createUsuarios() {
-    /* const usuarios = await this.usuariosService.findAll();
+    const usuarios = await this.usuariosService.findAll({ page: 1, limit: 10, size: 20, offset: 0});
     if (usuarios.total === 0) {
       const coordinadorRole = await this.rolesService.findOneByNombre('coordinador');
       const empresaRole = await this.rolesService.findOneByNombre('empresa');
@@ -67,20 +68,21 @@ export class SeederService {
       for (const usuarioData of usuariosToCreate) {
         await this.usuariosService.create(usuarioData);
       }
-    } */
+    }
   }
 
   private async createAreasInteres() {
     const areasInteres = await this.areaInteresService.findAll();
     if (areasInteres.length === 0) {
       const areasToCreate = [
-        { nombre: 'Mantenimiento de hardware y software' },
+        { nombre: 'Mantenimiento de hardware y software'},
         { nombre: 'Mantenimiento y administracion de redes de computadora' },
         { nombre: 'Capacitación' },
         { nombre: 'Desarrollo de sofware (escritorio, movil, web)' },
         { nombre: 'Servidores y computacion en la nube' },
         { nombre: 'Direccion y evaluacion de proyectos' },
-        { nombre: 'Inteligencia artificial' }
+        { nombre: 'Inteligencia artificial',  },
+        { nombre: 'Inteligencia artificial' },
       ];
 
       for (const areasData of areasToCreate) {
@@ -90,61 +92,62 @@ export class SeederService {
   }
 
   private async createEstudiante() {
-    //const estudiantes = await this.estudiantesService.findAll('');
-    //const usuarios = await this.usuariosService.findAll();
-    //
-    //console.log(usuarios);
-    //const usuario = usuarios.data.find((usuario) => 
-    //  usuario.roles.some(rol => rol.nombre == 'estudiante')
-    //);
-    //console.log(usuario);
-    //
-    //const paises = await this.paisesService.findAll();
-    //let pais = null;
-    //if (paises.length == 0) {
-    //  pais = await this.paisesService.create({ nombre: 'Colombia '});
-    //} else {
-    //  pais = paises[0];
-    //}
-    //
-    //const departamentos = await this.departamentoService.findAll();
-    //let departamento = null;
-    //if (departamentos.length == 0) {
-    //  departamento = await this.departamentoService.create({ nombre: 'Norte de Santander', paisId: pais.id });
-    //} else {
-    //  departamento = departamentos[0];
-    //}
-    //
-    //const ciudades = await this.ciudadesService.findAll();
-    //let ciudad = null;
-    //if (ciudades.length == 0) {
-    //  await this.ciudadesService.create({ nombre: 'Cucuta', departamentoId: departamento.id });
-    //} else {
-    //  ciudad = ciudades[0];
-    //}
-    //
-    //if (estudiantes.length === 0) {
-      // await this.estudiantesService.create({ 
-      //   codigo: 147852,
-      //   direccion: 'Av 8 # 28 - 107',
-      //   epsId: 'a7sd-8wf5s-dw85df',
-      //   fechaAfiliacionEps: new Date(),
-      //   fechaExpedicionDocumento: new Date(),
-      //   fechaNacimiento: new Date(),
-      //   genero: 'masculino',
-      //   lugarExpedicionDocumento: '1485-845s-sdf',
-      //   ciudadResidenciaId: ciudad.id,
-      //   numeroDocumento: '1478523690',
-      //   primerApellido: 'Leal',
-      //   segundoApellido: 'Diaz',
-      //   primerNombre: 'Guillermo',
-      //   segundoNombre: '',
-      //   semestreMatriculado: 9,
-      //   telefono: '+573012859624',
-      //   tipoDocumentoId: '147852369',
-      //   grupo: 'Grupo A'
-      // }, usuario);
-    //}
+    const estudiantes = await this.estudiantesService.findAll('');
+    const usuarios = await this.usuariosService.findAll({ page: 1, limit: 10, size: 20, offset: 0})
+    
+    console.log(usuarios);
+    const usuario = usuarios.data.find((usuario) => 
+      usuario.roles.some(rol => rol.nombre == 'estudiante')
+    );
+    console.log(usuario);
+    
+    const paises = await this.paisesService.findAll();
+    let pais = null;
+    if (paises.length == 0) {
+      pais = await this.paisesService.create({ nombre: 'Colombia '});
+    } else {
+      pais = paises[0];
+    }
+    
+    const departamentos = await this.departamentoService.findAll();
+    let departamento = null;
+    if (departamentos.length == 0) {
+      departamento = await this.departamentoService.create({ nombre: 'Norte de Santander', paisId: pais.id });
+    } else {
+      departamento = departamentos[0];
+    }
+    
+    const ciudades = await this.ciudadesService.findAll();
+    let ciudad = null;
+    if (ciudades.length == 0) {
+      await this.ciudadesService.create({ nombre: 'Cucuta', departamentoId: departamento.id });
+    } else {
+      ciudad = ciudades[0];
+    }
+    
+    if (estudiantes.length === 0) {
+      await this.estudiantesService.create({
+        codigo: 147852,
+        direccionResidencia: 'Av 8 # 28 - 107',
+        epsId: 'a7sd-8wf5s-dw85df',
+        fechaAfiliacionEps: new Date(),
+        fechaExpedicionDocumento: new Date(),
+        fechaNacimiento: new Date(),
+        genero: 'masculino',
+        lugarExpedicionDocumentoId: '1485-845s-sdf',
+        ciudadResidenciaId: ciudad.id,
+        numeroDocumento: '1478523690',
+        apellidos: 'Leal Diaz',
+        nombre: 'Guillermo Duran',
+        semestreMatriculado: 9,
+        telefono: '+573012859624',
+        tipoDocumentoId: '147852369',
+        grupoMatriculado: 'Grupo A',
+        tipoAfiliacionEpsId: '',
+        areasInteres: [],
+        herramientas: []
+      }, usuario, []);
+    }
   }
 
 }
