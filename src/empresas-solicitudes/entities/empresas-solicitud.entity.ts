@@ -2,7 +2,6 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToM
 import { Transform } from 'class-transformer';
 import { Semestre } from 'src/semestre/entities/semestre.entity';
 import { Herramienta } from 'src/herramientas/entities/herramienta.entity';
-import { EmpresaSolicitudesAreaInteres } from 'src/empresas-solicitudes-areas-interes/entities/empresas-solicitudes-areas-intere.entity';
 
 @Entity()
 export class EmpresaSolicitud {
@@ -12,9 +11,6 @@ export class EmpresaSolicitud {
   @ManyToOne(() => Semestre, (semestre) => semestre.empresaSolicitudes)
   @JoinColumn()
   semestre: Semestre;
-
-  @OneToMany(() => EmpresaSolicitudesAreaInteres, (empresasSolicitudesAreaInteres) => empresasSolicitudesAreaInteres.solicitud)
-  empresaSolicitudAreaInteres: EmpresaSolicitudesAreaInteres;
 
   @ManyToMany(() => Herramienta)
   @JoinColumn()

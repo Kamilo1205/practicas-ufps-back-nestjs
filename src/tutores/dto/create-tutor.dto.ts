@@ -9,7 +9,7 @@ export class CreateTutorDto {
   @IsNotEmpty()
   apellidos: string;
   
-  @IsPhoneNumber()
+  @IsString()
   @IsNotEmpty()
   telefono: string;
   

@@ -64,15 +64,14 @@ export class AnioService {
 
   async getAnioActual() {
     const anioActual = new Date().getFullYear();
-    // return this.anioRepository.findOne({ where: { anio: anioActual } });
-    return { id: '1254782', anio: 2025, actual: false };
+    return this.anioRepository.findOne({ where: { anio: anioActual } });
   }
 
   @Cron('0 0 0 1 1 *')
   async handleCronNuevoAnio() {
     const anioActual = new Date().getFullYear();
     try {
-      //await this.create({ anio: anioActual, actual: true });
+      await this.create({ anio: anioActual, actual: true });
     } catch (error) {
       console.error(`Error creating new year entry for ${anioActual}:`, error);
     }

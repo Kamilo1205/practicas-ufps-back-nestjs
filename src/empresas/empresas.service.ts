@@ -86,7 +86,7 @@ export class EmpresasService {
     const empresa = await this.empresasRepository.findOneBy({ id });
     if (!empresa) throw new EmpresaNotFoundException(id);
 
-    const tutor = await this.tutoresService.create(createTutorDto);
+    const tutor = await this.tutoresService.create({ ...createTutorDto, empresaId: empresa.id });
     return this.empresasRepository.update(id, { tutores: [ ...empresa.tutores, tutor ] });
   }
 

@@ -37,7 +37,6 @@ import { CiudadesModule } from './ciudades/ciudades.module';
 import { EstudianteAreaInteresModule } from './estudiante-area-interes/estudiante-area-interes.module';
 import { AreaInteresHerramientasModule } from './area-interes-herramientas/area-interes-herramientas.module';
 import { EmpresasSolicitudesModule } from './empresas-solicitudes/empresas-solicitudes.module';
-import { EmpresasSolicitudesAreasInteresModule } from './empresas-solicitudes-areas-interes/empresas-solicitudes-areas-interes.module';
 
 @Module({
   imports: [
@@ -77,7 +76,6 @@ import { EmpresasSolicitudesAreasInteresModule } from './empresas-solicitudes-ar
     EstudianteAreaInteresModule,
     AreaInteresHerramientasModule,
     EmpresasSolicitudesModule,
-    EmpresasSolicitudesAreasInteresModule,
   ],
   controllers: [AppController],
   providers: [
