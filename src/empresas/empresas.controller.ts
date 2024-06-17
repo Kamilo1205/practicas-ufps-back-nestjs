@@ -42,7 +42,7 @@ export class EmpresasController {
   @Post('/tutores')
   @Roles(Rol.Empresa)
   createTutor(@Body() createTutorDto: Omit<CreateTutorDto, 'empresaId'>, @GetUser() usuario: Usuario) {
-    return this.empresasService.createTutor(usuario?.empresa?.id, createTutorDto);
+    return this.empresasService.createTutor(usuario?.id, createTutorDto);
   }
 
   @Get('/tutores')
