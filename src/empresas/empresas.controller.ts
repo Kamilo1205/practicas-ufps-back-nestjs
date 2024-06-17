@@ -48,7 +48,7 @@ export class EmpresasController {
   @Get('/tutores')
   @Roles(Rol.Empresa)
   findTutoresByEmpresaId(@GetUser() usuario: Usuario) {
-    return this.empresasService.findTutoresByEmpresaId(usuario?.empresa?.id);
+    return this.empresasService.findTutoresByEmpresaId(usuario?.id);
   }
 
   @Patch()
