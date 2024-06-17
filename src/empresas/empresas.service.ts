@@ -82,7 +82,7 @@ export class EmpresasService {
     return this.empresasRepository.findOne({ where: { id: usuario.id }, relations: ['representanteLegal', 'usuario'] });
   }
 
-  async createTutor(id: string, createTutorDto: CreateTutorDto) {
+  async createTutor(id: string, createTutorDto: Omit<CreateTutorDto, 'empresaId'>) {
     const empresa = await this.empresasRepository.findOneBy({ id });
     if (!empresa) throw new EmpresaNotFoundException(id);
 
