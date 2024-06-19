@@ -6,8 +6,6 @@ import { CreateUsuarioDto, UpdateUsuarioDto } from './dto';
 import { RolesService } from 'src/roles/roles.service';
 import { UsuairoExistsException, UsuarioNotFoundException } from './exceptions';
 import { Usuario } from './entities/usuario.entity';
-import { Filtering, Pagination, Sorting } from 'src/common/decorators';
-import { getOrder, getWhere } from 'src/common/helpers/typeorm-helper';
 import { Rol } from 'src/auth/enums';
 import * as crypto from 'crypto';
 
@@ -49,82 +47,19 @@ export class UsuariosService {
     return this.usuariosRepository.save(usaurio);
   }
 
-  async findAll({ page, limit, size, offset }: Pagination, sorts?: Sorting[], filters?: Filtering[], search?: string) {
-    let where = getWhere(filters);
-    const order = getOrder(sorts);
-    
-    if (search) {
-      const sanitizedSearch = search.toLowerCase().replace(/\s+/g, '');
-      const searchConditions = [
-        { displayName: Like(`%${sanitizedSearch}%`) },
-        { email: Like(`%${sanitizedSearch}%`) },
-      ];
-      where = [
-        where,
-        searchConditions
-      ];
-    }
-
-    const [data, total] = await this.usuariosRepository.findAndCount({
-      where,
-      order,
-      take: limit,
-      skip: offset,
-    });
-
-    return {
-      total,
-      data,
-    };
-  }
-
-  // async findAll(page = 1, limit = 10, relations: string[] = ['roles']) {
-  //   const skip = (page - 1) * limit;
-  //   const [data, total] = await this.usuariosRepository.findAndCount({
-  //     take: limit,
-  //     skip: skip,
-  //     order: {
-  //       fechaCreacion: 'DESC',
-  //     },
-  //     relations,
-  //   });
-  //   return { data, total };
-  // }
-
-  /* async findAll(fetchParamsDto?: FetchParamsDto) {
-    const { page = 1, limit = 10, sort = [], filters = {}, search = '' } = fetchParamsDto || {};
-
+  async findAll(page = 1, limit = 50, relations: string[] = ['roles']) {
     const skip = (page - 1) * limit;
-
-    const queryBuilder = this.usuariosRepository.createQueryBuilder('usuario');
-
-    // Aplicar filtros
-    for (const [key, value] of Object.entries(filters)) {
-      queryBuilder.andWhere(`user.${key} LIKE :${key}`, { [key]: `%${value}%` });
-    }
-
-    // Aplicar búsqueda
-    if (search) {
-      queryBuilder.andWhere('user.name LIKE :search OR user.email LIKE :search', { search: `%${search}%` });
-    }
-
-    // Aplicar ordenamiento
-    for (const sortRule of sort) {
-      const direction = sortRule.desc === 'true' ? 'DESC' : 'ASC';
-      queryBuilder.addOrderBy(`user.${sortRule.id}`, direction);
-    }
-
-    // Aplicar paginación
-    queryBuilder.skip(skip).take(limit);
-
-    const [data, total] = await queryBuilder.getManyAndCount();
-
-    return {
-      data,
-      total,
-    };
+    const [data, total] = await this.usuariosRepository.findAndCount({
+      take: limit,
+      skip: skip,
+      order: {
+        fechaCreacion: 'DESC',
+      },
+      relations,
+    });
+    return { data, total };
   }
- */
+
   async findOne(id: string, relations: string[] = ['empresa', 'estudiante', 'roles']) {
     const usuario = await this.usuariosRepository.findOne({ where: { id }, relations });
     if (!usuario) throw new UsuarioNotFoundException(id);

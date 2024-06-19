@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 import { Anio } from 'src/anio/entities/anio.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 import { EmpresaSolicitud } from 'src/empresas-solicitudes/entities/empresas-solicitud.entity';
@@ -7,6 +7,7 @@ import { BaseEntity } from 'src/common/entities/base.entity';
 @Entity()
 export class Semestre extends BaseEntity{
   @ManyToOne(() => Anio, (anio) => anio.semestres)
+  @JoinColumn()
   anio: Anio;
   
   @Column()

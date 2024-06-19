@@ -7,6 +7,9 @@ import { BaseEntity } from 'src/common/entities/base.entity';
 export class Departamento extends BaseEntity {
   @Column({ unique: true })
   nombre: string;
+
+  @Column({ nullable: true, unique: true })
+  codigoGubernamental: string;
   
   @ManyToOne(() => Pais, (pais) => pais.departamentos)
   pais: Pais;

@@ -8,6 +8,7 @@ import { Ciudad } from 'src/ciudades/entities/ciudad.entity';
 import { EstudianteAreaInteres } from 'src/estudiante-area-interes/entities/estudiante-area-interes.entity';
 import { Herramienta } from 'src/herramientas/entities/herramienta.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
+import { Asignacion } from 'src/asignacion/entities/asignacion.entity';
 
 @Entity()
 export class Estudiante extends BaseEntity {
@@ -99,4 +100,7 @@ export class Estudiante extends BaseEntity {
   @ManyToMany(() => Herramienta, (herramienta) => herramienta.estudiantes)
   @JoinTable({ name: 'estudiante_herramienta' })
   herramientas: Herramienta[];
+
+  @OneToMany(() => Asignacion, (asignacion) => asignacion.estudiante)
+  asignaciones: Asignacion[];
 }

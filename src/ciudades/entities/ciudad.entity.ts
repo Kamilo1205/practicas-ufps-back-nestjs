@@ -9,6 +9,9 @@ export class Ciudad extends BaseEntity {
   @Column({ unique: true })
   nombre: string;
   
+  @Column({ nullable: true, unique: true })
+  codigoGubernamental: string;
+
   @ManyToOne(() => Departamento, (departamento) => departamento.ciudades)
   departamento: Departamento;
   

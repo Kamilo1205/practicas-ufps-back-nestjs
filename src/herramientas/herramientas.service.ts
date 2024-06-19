@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateHerramientaDto, UpdateHerramientaDto } from './dto';
 import { Herramienta } from './entities/herramienta.entity';
 
@@ -27,6 +27,12 @@ export class HerramientasService {
     const herramienta = await this.herramientaRepository.findOne({ where: { id } });
     if (!herramienta) throw new NotFoundException(`Herramienta con ID ${id} no encontrada`);
     return herramienta;
+  }
+
+  async findByIds(ids: string[]) {
+    const herramientas = await this.herramientaRepository.find({ where: { id: In(ids) } });
+    if (herramientas.length != ids.length) throw new NotFoundException('una o más herramientas no son validas');
+    return herramientas;
   }
 
   async update(id: string, updateHerramientaDto: UpdateHerramientaDto) {

@@ -1,10 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { AreasInteresService } from './areas-interes.service';
 import { CreateAreaInteresDto, UpdateAreaInteresDto } from './dto';
-import { UuidDto } from '../common/dto';
 import { Rol } from 'src/auth/enums';
 import { Roles } from 'src/auth/decorators';
-import { CreateHerramientaDto } from 'src/herramientas/dto';
 
 @Controller('areas-interes')
 export class AreasInteresController {

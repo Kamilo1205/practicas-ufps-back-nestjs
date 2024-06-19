@@ -1,26 +1,13 @@
-import { CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Transform } from 'class-transformer';
+import { Entity, ManyToOne } from 'typeorm';
 import { AreaInteres } from 'src/areas-interes/entities/area-interes.entity';
 import { Herramienta } from 'src/herramientas/entities/herramienta.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class AreaInteresHerramienta {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-  
+export class AreaInteresHerramienta extends BaseEntity {
   @ManyToOne(() => AreaInteres, (areaInteres) => areaInteres.areaInteresHerramientas, { onDelete: 'CASCADE' })
   areaInteres: AreaInteres;
 
   @ManyToOne(() => Herramienta, (herramienta) => herramienta.areainteresHerramientas, { onDelete: 'CASCADE' })
   herramienta: Herramienta;
-
-  @CreateDateColumn()
-  fechaCreacion: Date;
-  
-  @UpdateDateColumn()
-  fechaActualizacion: Date;
-  
-  @DeleteDateColumn()
-  @Transform(({ value }) => (value ? value : undefined))
-  fechaEliminacion: Date;
 }

@@ -5,6 +5,7 @@ import { Ciudad } from 'src/ciudades/entities/ciudad.entity';
 import { Industria } from 'src/industrias/entities/industria.entity';
 import { Tutor } from 'src/tutores/entities/tutor.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
+import { EmpresaSolicitud } from 'src/empresas-solicitudes/entities/empresas-solicitud.entity';
 
 @Entity()
 export class Empresa extends BaseEntity {
@@ -60,4 +61,8 @@ export class Empresa extends BaseEntity {
   @OneToMany(() => Tutor, (tutor) => tutor.empresa)
   @JoinColumn()
   tutores: Tutor[];
+
+  @OneToMany(() => EmpresaSolicitud, (empresaSolicitud) => empresaSolicitud.empresa)
+  @JoinColumn()
+  solicitudes: EmpresaSolicitud[];
 }

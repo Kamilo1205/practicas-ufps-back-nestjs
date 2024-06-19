@@ -109,7 +109,7 @@ export class EmpresasService {
     if (!empresa) throw new EmpresaNotFoundException(id);
     return this.empresasRepository.findOne({
       where: { id },
-      relations: ['usuario', 'representanteLegal'],
+      relations: ['usuario', 'representanteLegal', 'ciudad', 'industria', 'tutores', 'solicitudes', 'solicitudes.semestre'],
     });
   }
 

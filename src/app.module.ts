@@ -37,6 +37,7 @@ import { CiudadesModule } from './ciudades/ciudades.module';
 import { EstudianteAreaInteresModule } from './estudiante-area-interes/estudiante-area-interes.module';
 import { AreaInteresHerramientasModule } from './area-interes-herramientas/area-interes-herramientas.module';
 import { EmpresasSolicitudesModule } from './empresas-solicitudes/empresas-solicitudes.module';
+import { AsignacionModule } from './asignacion/asignacion.module';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { EmpresasSolicitudesModule } from './empresas-solicitudes/empresas-solic
     EstudianteAreaInteresModule,
     AreaInteresHerramientasModule,
     EmpresasSolicitudesModule,
+    AsignacionModule,
   ],
   controllers: [AppController],
   providers: [

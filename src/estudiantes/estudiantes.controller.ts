@@ -6,6 +6,7 @@ import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
 import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums/rol.enum';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { Paginate, PaginateQuery } from 'nestjs-paginate';
 
 @Controller('estudiantes')
 export class EstudiantesController {
@@ -45,10 +46,8 @@ export class EstudiantesController {
 
 
   @Get()
-  findAll(@Query('activos') activos: boolean = true, @Query('grupo') grupo?: string) {
-    // TODO: activo: usuario activo o inactivo
-    // TODO: grupo: 
-    return this.estudiantesService.findAll(grupo);
+  findAll(@Paginate() query: PaginateQuery) {
+    return this.estudiantesService.findAll(query);
   }
 
   @Get(':id')

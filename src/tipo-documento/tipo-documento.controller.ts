@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { TipoDocumentoService } from './tipo-documento.service';
 import { CreateTipoDocumentoDto, UpdateTipoDocumentoDto } from './dto';
 import { Public, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums/rol.enum';
-import { UuidDto } from 'src/common/dto';
 
 @Controller('tipo-documento')
 export class TipoDocumentoController {
@@ -23,19 +22,19 @@ export class TipoDocumentoController {
 
   @Get(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  findOne(@Param() { id }: UuidDto) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.tipoDocumentoService.findOne(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  update(@Param() { id }: UuidDto, @Body() updateTipoDocumentoDto: UpdateTipoDocumentoDto) {
+  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateTipoDocumentoDto: UpdateTipoDocumentoDto) {
     return this.tipoDocumentoService.update(id, updateTipoDocumentoDto);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  remove(@Param() { id }: UuidDto) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.tipoDocumentoService.remove(id);
   }
 }

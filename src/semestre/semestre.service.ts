@@ -56,7 +56,7 @@ export class SemestreService {
     const anioActual = await this.anioService.getAnioActual();
     const mesActual = fechaActual.getMonth() + 1;
 
-    if (!anioActual) throw new Error('No hay año actual disponible');
+    if (!anioActual) throw new NotFoundException('No hay año actual disponible');
     const numeroSemestre = mesActual >= 1 && mesActual <= 6 ? 1: 2;
 
     const semestreActual = await this.semestreRepository.findOne({

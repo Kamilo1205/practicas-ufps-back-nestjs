@@ -1,5 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FilterOperator, FilterSuffix, PaginateQuery, paginate } from 'nestjs-paginate';
 import { Repository } from 'typeorm';
 import { CreateCiudadDto, UpdateCiudadDto } from './dto';
 import { Ciudad } from './entities/ciudad.entity';
@@ -24,9 +25,21 @@ export class CiudadesService {
     return this.ciudadRepository.save(ciudad);
   }
 
-  findAll() {
-    return this.ciudadRepository.find({ relations: ['departamento', 'departamento.pais'] });
-  }
+  findAll(query: PaginateQuery) {
+    return paginate(query, this.ciudadRepository, {
+      sortableColumns: ['id', 'nombre', 'codigoGubernamental', 'fechaCreacion', 'fechaActualizacion', 'fechaEliminacion', 'departamento.nombre', 'departamento.pais.nombre'],
+      nullSort: 'last',
+      searchableColumns: ['nombre'],
+      select: ['id', 'nombre', 'codigoGubernamental', 'fechaCreacion', 'fechaActualizacion', 'fechaEliminacion', 'departamento.id', 'departamento.nombre', 'departamento.pais.id', 'departamento.pais.nombre'],
+      relations: ['departamento', 'departamento.pais', 'empresas', 'representantesLegales'],
+      withDeleted: true,
+      filterableColumns: {
+        nombre: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
+        "departamento.id": [FilterOperator.EQ],
+        "departamento.nombre": [FilterOperator.EQ, FilterOperator.CONTAINS]
+      },
+    });
+  } 
 
   async findOne(id: string) {
     const ciudad = await this.ciudadRepository.findOne({ where: { id }, relations: ['departamento', 'departamento.pais'] });

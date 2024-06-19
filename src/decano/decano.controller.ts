@@ -1,8 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { DecanoService } from './decano.service';
-import { CreateDecanoDto } from './dto/create-decano.dto';
-import { UpdateDecanoDto } from './dto/update-decano.dto';
-import { UuidDto } from 'src/common/dto';
+import { CreateDecanoDto, UpdateDecanoDto } from './dto';
 import { Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 
@@ -30,19 +28,19 @@ export class DecanoController {
 
   @Get(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  findOneById(@Param() { id }: UuidDto) {
+  findOneById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.decanoService.findOneById(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  update(@Param() { id }: UuidDto, @Body() updateDecanoDto: UpdateDecanoDto) {
+  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateDecanoDto: UpdateDecanoDto) {
     return this.decanoService.update(id, updateDecanoDto);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  remove(@Param() { id }: UuidDto) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.decanoService.remove(id);
   }
 }

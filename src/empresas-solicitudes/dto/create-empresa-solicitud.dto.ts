@@ -1,22 +1,19 @@
-import { IsArray, IsBooleanString, IsNotEmpty, IsNumberString, IsUUID, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
-import { CreateEmpresaSolicitudAreaInteresDto } from './create-empresa-solicitud-area-interes.dto';
+import { IsArray, IsBooleanString, IsNotEmpty, IsNumberString, IsUUID } from 'class-validator';
 
 export class CreateEmpresaSolicitudDto { 
   @IsArray()
   @IsUUID('4', { each: true })
   @IsNotEmpty({ each: true })
-  herramientas: string[];
+  herramientasIds: string[];
   
-  @ValidateNested({ each: true })
-  @Type(() => CreateEmpresaSolicitudAreaInteresDto)
   @IsArray()
-  @IsNotEmpty()
-  areasInteres: CreateEmpresaSolicitudAreaInteresDto[];
+  @IsUUID('4', { each: true })
+  @IsNotEmpty({ each: true })
+  areasInteresIds: string[];
 
   @IsNumberString()
   @IsNotEmpty()
-  cantidadEstudiantes: number;
+  cantidadPracticantes: number;
   
   @IsBooleanString()
   @IsNotEmpty()

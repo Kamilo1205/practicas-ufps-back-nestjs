@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { PaisesService } from './paises.service';
 import { CreatePaiseDto, UpdatePaiseDto } from './dto';
-import { UuidDto } from 'src/common/dto';
 import { Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 
@@ -22,19 +21,19 @@ export class PaisesController {
 
   @Get(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  findOne(@Param() { id }: UuidDto) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.paisesService.findOne(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  update(@Param() { id }: UuidDto, @Body() updatePaiseDto: UpdatePaiseDto) {
+  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updatePaiseDto: UpdatePaiseDto) {
     return this.paisesService.update(id, updatePaiseDto);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  remove(@Param() { id }: UuidDto) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.paisesService.remove(id);
   }
 }

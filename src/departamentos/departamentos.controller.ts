@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { DepartamentosService } from './departamentos.service';
 import { CreateDepartamentoDto, UpdateDepartamentoDto } from './dto';
-import { UuidDto } from 'src/common/dto';
 import { Rol } from 'src/auth/enums';
 import { Roles } from 'src/auth/decorators';
 
@@ -32,19 +31,19 @@ export class DepartamentosController {
 
   @Get(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  findOne(@Param() { id }: UuidDto) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.departamentosService.findOne(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  update(@Param() { id }: UuidDto, @Body() updateDepartamentoDto: UpdateDepartamentoDto) {
+  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateDepartamentoDto: UpdateDepartamentoDto) {
     return this.departamentosService.update(id, updateDepartamentoDto);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  remove(@Param() { id }: UuidDto) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.departamentosService.remove(id);
   }
 }

@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { In, IsNull, Repository } from 'typeorm';
 import { CreateAreaInteresDto, UpdateAreaInteresDto } from './dto';
 import { AreaInteres } from './entities/area-interes.entity';
 import { AreaInteresExistsException, AreaInteresNotFoundException } from './exceptions';
@@ -39,6 +39,12 @@ export class AreasInteresService {
     const areaInteres = await this.areaInteresRepository.findOne({ where: { id }, relations: ['areaPadre', 'subAreas'] });
     if (!areaInteres) throw new NotFoundException('Área de interés no encontrada');
     return areaInteres;
+  }
+
+  async findByIds(ids: string[]) {
+    const areasInteres = await this.areaInteresRepository.find({ where: { id: In(ids) }, relations: ['areaPadre', 'subAreas'] });
+    if (areasInteres.length != ids.length) throw new NotFoundException('una o más areas de interes no son validas');
+    return areasInteres;
   }
 
   async findSubAreasByAreaId(id: string) {

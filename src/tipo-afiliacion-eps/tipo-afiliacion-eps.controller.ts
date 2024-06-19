@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { CreateTipoAfiliacionEpsDto, UpdateTipoAfiliacionEpsDto } from './dto';
 import { TipoAfiliacionEpsService } from './tipo-afiliacion-eps.service';
-import { UuidDto } from 'src/common/dto';
 import { Public, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums/rol.enum';
 
@@ -23,19 +22,19 @@ export class TipoAfiliacionEpsController {
 
   @Get(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  findOne(@Param() { id }: UuidDto) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.tipoAfiliacionEpsService.findOne(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  update(@Param() { id }: UuidDto, @Body() updateTipoAfiliacionEpDto: UpdateTipoAfiliacionEpsDto) {
+  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateTipoAfiliacionEpDto: UpdateTipoAfiliacionEpsDto) {
     return this.tipoAfiliacionEpsService.update(id, updateTipoAfiliacionEpDto);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  remove(@Param() { id }: UuidDto) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.tipoAfiliacionEpsService.remove(id);
   }
 }

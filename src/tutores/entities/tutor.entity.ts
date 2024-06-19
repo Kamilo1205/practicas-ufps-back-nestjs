@@ -1,7 +1,8 @@
-import { Column, Entity, JoinTable, ManyToOne, OneToOne } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
+import { Asignacion } from 'src/asignacion/entities/asignacion.entity';
 
 @Entity()
 export class Tutor extends BaseEntity {
@@ -23,4 +24,7 @@ export class Tutor extends BaseEntity {
 
   @ManyToOne(() => Empresa, (empresa) => empresa.tutores)
   empresa: Empresa;
+
+  @OneToMany(() => Asignacion, (asignacion) => asignacion.tutor)
+  asignaciones: Asignacion[];
 }

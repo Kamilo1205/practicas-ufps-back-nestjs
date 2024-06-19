@@ -1,11 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, ParseUUIDPipe } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { EmpresasService } from './empresas.service';
 import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
 import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums/rol.enum';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
-import { UuidDto } from 'src/common/dto';
 import { UploadedFiles as UploadedFilesInterfaz } from './interfaces';
 import { FilesNotFoundException } from './exceptions';
 import { CreateTutorDto } from 'src/tutores/dto';
@@ -53,7 +52,7 @@ export class EmpresasController {
 
   @Patch()
   @Roles(Rol.Coordinador, Rol.Administrador)
-  update(@Param() { id }: UuidDto, @Body() updateEmpresaDto: UpdateEmpresaDto) {
+  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateEmpresaDto: UpdateEmpresaDto) {
     //return this.empresasService.update(id, updateEmpresaDto);
   }
 
@@ -67,13 +66,13 @@ export class EmpresasController {
 
   @Get(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  findOne(@Param() { id }: UuidDto) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.empresasService.findOne(id);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  remove(@Param() { id }: UuidDto) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.empresasService.remove(id);
   }
 }

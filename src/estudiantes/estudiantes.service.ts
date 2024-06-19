@@ -15,6 +15,7 @@ import { GoogleDriveService } from 'src/google-drive/google-drive.service';
 import { SemestreService } from 'src/semestre/semestre.service';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 import { HerramientasService } from 'src/herramientas/herramientas.service';
+import { FilterOperator, FilterSuffix, PaginateQuery, paginate } from 'nestjs-paginate';
 
 @Injectable()
 export class EstudiantesService {
@@ -108,12 +109,24 @@ export class EstudiantesService {
     return savedEstudiante;
   }
 
-  findAll(grupo?: string) {
-    const whereCondition = grupo ? { grupoMatriculado: grupo } : {};
-    
-    return this.estudianteRepository.find({
-      relations: ['usuario', 'ciudadResidencia', 'ciudadResidencia.departamento'],
-      where: whereCondition
+  findAll(query: PaginateQuery) {
+    return paginate(query, this.estudianteRepository, {
+      sortableColumns: ['id', 'primerNombre', 'segundoNombre', 'primerApellido', 'segundoApellido', 'fechaCreacion', 'fechaActualizacion', 'fechaEliminacion', 'usuario.email', 'grupoMatriculado'],
+      nullSort: 'last',
+      defaultSortBy: [['id', 'DESC']],
+      searchableColumns: ['primerNombre', 'segundoNombre', 'primerApellido', 'segundoApellido', 'grupoMatriculado', 'usuario.email', 'codigo', 'eps.nombre', 'usuario.estaActivo', 'tipoAfiliacionEps.nombre', 'ciudadResidencia.nombre', 'numeroDocumento'],
+      relations: ['usuario', 'ciudadResidencia', 'eps', 'lugarExpedicionDocumento', 'tipoAfiliacionEps', 'tipoDocumento', 'estudianteAreaInteres', 'herramientas', 'semestres'],
+      withDeleted: true,
+      filterableColumns: {
+        primerNombre: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
+        segundoNombre: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
+        primerApellido: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
+        segundoApellido: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
+        grupoMatriculado: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
+        "usuario.estaActivo": [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
+        "usuario.email": [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
+        "semestres.id": [FilterOperator.EQ],
+      },
     });
   }
 
