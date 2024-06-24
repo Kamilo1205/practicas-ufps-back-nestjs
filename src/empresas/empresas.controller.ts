@@ -50,10 +50,16 @@ export class EmpresasController {
     return this.empresasService.findTutoresByEmpresaId(usuario?.id);
   }
 
-  @Patch()
+  @Patch('')
+  @Roles(Rol.Empresa)
+  updatePerfil(@Body() updateEmpresaDto: UpdateEmpresaDto, @GetUser() usuario: Usuario) {
+    return this.empresasService.update(usuario.id, updateEmpresaDto);
+  }
+
+  @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
   update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateEmpresaDto: UpdateEmpresaDto) {
-    //return this.empresasService.update(id, updateEmpresaDto);
+    return this.empresasService.update(id, updateEmpresaDto);
   }
 
   @Get()

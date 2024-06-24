@@ -83,7 +83,7 @@ export class EmpresasService {
   }
 
   async createTutor(id: string, createTutorDto: Omit<CreateTutorDto, 'empresaId'>) {
-    const empresa = await this.empresasRepository.findOneBy({ id });
+    const empresa = await this.empresasRepository.findOne({ where: { id }, relations: ['tutores']});
     if (!empresa) throw new EmpresaNotFoundException(id);
 
     const tutor = await this.tutoresService.create({ ...createTutorDto, empresaId: empresa.id });
@@ -109,7 +109,14 @@ export class EmpresasService {
     if (!empresa) throw new EmpresaNotFoundException(id);
     return this.empresasRepository.findOne({
       where: { id },
-      relations: ['usuario', 'representanteLegal', 'ciudad', 'industria', 'tutores', 'solicitudes', 'solicitudes.semestre'],
+      relations: [
+        'usuario', 
+        'representanteLegal', 
+        'ciudad', 
+        'ciudad.departamento',
+        'ciudad.departamento.pais', 
+        'industria',
+      ],
     });
   }
 
@@ -123,12 +130,12 @@ export class EmpresasService {
     return empresa.tutores;
   }
 
-  async update(id: string, updateEmpresaDto: UpdateEmpresaDto, files: UploadedFilesInterfaz) {
-    const empresa = await this.empresasRepository.findOneBy({ id });
+  async update(id: string, updateEmpresaDto: UpdateEmpresaDto) {
+    const empresa = await this.empresasRepository.findOne({ where: { id }, relations: ['usuario', 'ciudad', 'industria'] });
     if (!empresa) throw new EmpresaNotFoundException(id);
     
     const { nit, nombreLegal, googleDriveFolderId: folderEmpresaId } = empresa;
-    const { nit: nuevoNit, nombreLegal: nuevoNombre } = updateEmpresaDto;
+    const { nit: nuevoNit, nombreLegal: nuevoNombre, ciudadId, industriaId } = updateEmpresaDto;
     
     if (nuevoNit && empresa.nit != nuevoNit) {
       const exisitingEmpresa = await this.empresasRepository.findOneBy({ nit });
@@ -141,14 +148,16 @@ export class EmpresasService {
       await this.usuariosService.update(empresa.usuario.id, { displayName: nuevoNombre || nombreLegal });
     }
 
-    const { camara, rut } = files;
-    const [camaraComercioUrl, rutUrl] = await Promise.all([
-      camara ? this.googleDriveService.uploadAndReplaceFile(`Camara_Comercio`, [folderEmpresaId], camara[0]): empresa.camaraComercioUrl,
-      rut ? this.googleDriveService.uploadAndReplaceFile(`Rut`, [folderEmpresaId], rut[0]): empresa.rutUrl,
-    ]); 
+    const [ciudad, industria] = await Promise.all([
+      ciudadId && ciudadId != empresa.ciudad.id ? this.ciudadesService.findOne(ciudadId): empresa.ciudad,
+      industriaId && industriaId != empresa.industria.id ?  this.industriasService.findOne(industriaId): empresa.industria
+    ]);
 
-    await this.empresasRepository.update(id, { ...updateEmpresaDto, camaraComercioUrl, rutUrl });
-    return this.empresasRepository.findOneBy({ id });
+    await this.empresasRepository.update(id, { ...updateEmpresaDto, ciudad, industria });
+    return this.empresasRepository.findOne({ 
+      where: { id }, 
+      relations: ['usuario', 'ciudad', 'ciudad.departamento', 'ciudad.departamento.pais', 'industria'] 
+    });
   }
 
   async remove(id: string) {
