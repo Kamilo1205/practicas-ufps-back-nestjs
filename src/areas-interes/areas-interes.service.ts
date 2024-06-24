@@ -88,6 +88,6 @@ export class AreasInteresService {
   async remove(id: string) {
     const areaInteres = await this.areaInteresRepository.findOneBy({ id });
     if (!areaInteres) throw new NotFoundException('Área de interés no encontrada');
-    return this.areaInteresRepository.softDelete(areaInteres);
+    return this.areaInteresRepository.softDelete(id);
   }
 }
