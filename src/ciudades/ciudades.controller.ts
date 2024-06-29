@@ -31,16 +31,16 @@ export class CiudadesController {
     return this.ciudadesService.findOne(id);
   }
 
-  @Patch(':id')
-  @Roles(Rol.Coordinador, Rol.Administrador)
-  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateCiudadDto: UpdateCiudadDto) {
-    return this.ciudadesService.update(id, updateCiudadDto);
-  }
-
   @Patch(':id/restore')
   @Roles(Rol.Coordinador, Rol.Administrador)
   restore(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.ciudadesService.restore(id);
+  }
+
+  @Patch(':id')
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateCiudadDto: UpdateCiudadDto) {
+    return this.ciudadesService.update(id, updateCiudadDto);
   }
 
   @Delete(':id')
