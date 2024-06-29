@@ -70,6 +70,6 @@ export class AreaInteresHerramientasService {
   async restore(id: string) {
     const areaInteresHerramienta = await this.areaInteresHerramientaRepository.findOne({ where: { id }, withDeleted: true });
     if (!areaInteresHerramienta) throw new NotFoundException('Asociación de área de interés y herramienta no encontrada');
-    return this.areaInteresHerramientaRepository.restore(anio);
+    return this.areaInteresHerramientaRepository.restore(id);
   }
 }
