@@ -35,6 +35,12 @@ export class DepartamentosController {
     return this.departamentosService.findOne(id);
   }
 
+  @Patch(':id/restore')
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  restore(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.departamentosService.restore(id);
+  }
+
   @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
   update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateDepartamentoDto: UpdateDepartamentoDto) {

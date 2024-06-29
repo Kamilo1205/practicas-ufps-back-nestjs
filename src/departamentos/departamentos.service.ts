@@ -67,6 +67,12 @@ export class DepartamentosService {
   async remove(id: string) {
     const departamento = await this.departamentoRepository.findOne({ where: { id } });
     if (!departamento) throw new NotFoundException(`El departamento con el id ${ id } no fue encontrado`);
-    return this.departamentoRepository.softRemove(departamento);
+    return this.departamentoRepository.softDelete(id);
+  }
+
+  async restore(id: string) {
+    const departamento = await this.departamentoRepository.findOne({ where: { id } });
+    if (!departamento) throw new NotFoundException(`El departamento con el id ${ id } no fue encontrado`);
+    return this.departamentoRepository.restore(id);
   }
 }
