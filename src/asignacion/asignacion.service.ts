@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateAsignacionDto, UpdateAsignacionDto } from './dto';
@@ -9,12 +9,15 @@ import { SemestreService } from 'src/semestre/semestre.service';
 import { EmpresasSolicitudesService } from 'src/empresas-solicitudes/empresas-solicitudes.service';
 import { FilterOperator, FilterSuffix, PaginateQuery, paginate } from 'nestjs-paginate';
 import { AsignarTutorDto } from './dto/asignar-tutor.dto';
+import { EmpresasService } from 'src/empresas/empresas.service';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Injectable()
 export class AsignacionService {
   constructor(
     @InjectRepository(Asignacion) private readonly asignacionRepository: Repository<Asignacion>,
     private readonly empresasSolicitudesService: EmpresasSolicitudesService,
+    private readonly empresasService: EmpresasService,
     private readonly estudiantesService: EstudiantesService,
     private readonly tutoresService: TutoresService,
   ) {}
@@ -78,10 +81,22 @@ export class AsignacionService {
     return asigancion;
   }
   
-  async asignarTutor(id: string, asignarTutorDto: AsignarTutorDto) {
-    const asigancion = await this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'tutor'] });
-    if (!asigancion) throw new NotFoundException('Asignación no encontrada');
+  async asignarTutor(id: string, usuario: Usuario, asignarTutorDto: AsignarTutorDto) {
+    const asignacion = await this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'tutor'] });
+    if (!asignacion) throw new NotFoundException('Asignación no encontrada');
+
+    // Verificar que la solicitud pertenece a la empresa
+    if (asignacion.solicitud.empresa.id !== usuario.id) {
+      throw new ForbiddenException('No tienes permiso para asignar un tutor a esta solicitud');
+    }
+
     const tutor = await this.tutoresService.findOne(asignarTutorDto.tutorId);
+
+    // Verificar que el tutor pertenece a la empresa
+    if (tutor.empresa.id !== usuario.id) {
+      throw new ForbiddenException('No tienes permiso para asignar este tutor');
+    }
+
     await this.asignacionRepository.update(id, { tutor });
     return this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'tutor'] });
   }

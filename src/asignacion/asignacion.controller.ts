@@ -2,9 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { AsignacionService } from './asignacion.service';
 import { CreateAsignacionDto, UpdateAsignacionDto } from './dto';
-import { Roles } from 'src/auth/decorators';
+import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 import { AsignarTutorDto } from './dto/asignar-tutor.dto';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Controller('asignacion')
 export class AsignacionController {
@@ -30,8 +31,8 @@ export class AsignacionController {
 
   @Patch(':id/asignar-tutor')
   @Roles(Rol.Empresa)
-  asignarTutor(@Param('id', new ParseUUIDPipe()) id: string, asignarTutorDto: AsignarTutorDto) {
-    return this.asignacionService.asignarTutor(id, asignarTutorDto);
+  asignarTutor(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario, asignarTutorDto: AsignarTutorDto) {
+    return this.asignacionService.asignarTutor(id, usuario, asignarTutorDto);
   }
 
   @Delete(':id')
