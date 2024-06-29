@@ -28,12 +28,6 @@ export class EmpresasSolicitudesController {
     return this.empresasSolicitudesService.findOne(id);
   }
 
-  @Patch(':id')
-  @Roles(Rol.Administrador, Rol.Coordinador)
-  update(@Param('id') id: string, @Body() updateEmpresaSolicitudDto: UpdateEmpresaSolicitudDto) {
-    return this.empresasSolicitudesService.update(id, updateEmpresaSolicitudDto);
-  }
-
   @Delete(':id')
   @Roles(Rol.Empresa, Rol.Administrador, Rol.Coordinador)
   remove(@Param('id') id: string) {

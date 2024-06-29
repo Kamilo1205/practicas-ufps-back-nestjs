@@ -83,14 +83,9 @@ export class EmpresasSolicitudesService {
     return empresaSolicitud;
   }
 
-  // TODO: SE PUEDE MODIFICAR
-  update(id: string, updateEmpresasSolicitudeDto: UpdateEmpresaSolicitudDto) {
-    return `This action updates a #${id} empresasSolicitude`;
-  }
-
   async remove(id: string) {
     const empresaSolicitud = await this.empresaSolicitudRepository.findOne({ where: { id } });
     if (!empresaSolicitud) throw new NotFoundException(`La solicitud de empresa con id ${id} no fue encontrada`);
-    return this.empresaSolicitudRepository.softRemove(empresaSolicitud);
+    return this.empresaSolicitudRepository.softDelete(id);
   }
 }
