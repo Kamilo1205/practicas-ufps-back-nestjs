@@ -32,7 +32,10 @@ export class AreasInteresService {
   }
 
   findAll() {
-    return this.areaInteresRepository.find({ relations: ['areaPadre', 'subAreas', 'subAreas.areaInteresHerramientas.herramienta', 'areaInteresHerramientas.herramienta'] });
+    return this.areaInteresRepository.find({ 
+      relations: ['areaPadre', 'subAreas', 'subAreas.areaInteresHerramientas.herramienta', 'areaInteresHerramientas.herramienta'], 
+      withDeleted: true
+    });
   }
 
   async findOne(id: string) {
@@ -48,7 +51,11 @@ export class AreasInteresService {
   }
 
   async findSubAreasByAreaId(id: string) {
-    const areaInteres = await this.areaInteresRepository.findOne({ where: { id }, relations: ['areaSubArea', 'areaSubArea.subAreasInteres'] });
+    const areaInteres = await this.areaInteresRepository.findOne({ 
+      where: { id }, 
+      relations: ['areaSubArea', 'areaSubArea.subAreasInteres'], 
+      withDeleted: true
+    });
     if (!areaInteres) throw new AreaInteresNotFoundException(id);
     return areaInteres?.subAreas || [];
   }
