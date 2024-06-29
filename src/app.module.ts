@@ -38,6 +38,7 @@ import { EstudianteAreaInteresModule } from './estudiante-area-interes/estudiant
 import { AreaInteresHerramientasModule } from './area-interes-herramientas/area-interes-herramientas.module';
 import { EmpresasSolicitudesModule } from './empresas-solicitudes/empresas-solicitudes.module';
 import { AsignacionModule } from './asignacion/asignacion.module';
+import { PlanDeTrabajoModule } from './plan-de-trabajo/plan-de-trabajo.module';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { AsignacionModule } from './asignacion/asignacion.module';
     AreaInteresHerramientasModule,
     EmpresasSolicitudesModule,
     AsignacionModule,
+    PlanDeTrabajoModule,
   ],
   controllers: [AppController],
   providers: [

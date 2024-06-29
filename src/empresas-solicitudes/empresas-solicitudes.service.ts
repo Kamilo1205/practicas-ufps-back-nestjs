@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FilterOperator, FilterSuffix, PaginateQuery, paginate } from 'nestjs-paginate';
-import { CreateEmpresaSolicitudDto, UpdateEmpresaSolicitudDto } from './dto';
+import { CreateEmpresaSolicitudDto } from './dto';
 import { EmpresaSolicitud } from './entities/empresas-solicitud.entity';
 import { EmpresasService } from 'src/empresas/empresas.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
