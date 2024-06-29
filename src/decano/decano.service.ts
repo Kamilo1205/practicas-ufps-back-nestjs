@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDecanoDto } from './dto/create-decano.dto';
 import { UpdateDecanoDto } from './dto/update-decano.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,7 +17,7 @@ export class DecanoService {
   }
 
   findAll() {
-    return this.decanosRepository.find();
+    return this.decanosRepository.find({ withDeleted: true });
   }
 
   async findOne() {
@@ -25,15 +25,27 @@ export class DecanoService {
     return decanos.length > 0 ? decanos[0] : undefined;
   }
 
-  findOneById(id: string) {
-    return this.decanosRepository.findOneBy({ id });
+  async findOneById(id: string) {
+    const decano = await this.decanosRepository.findOne({ where: { id } });
+    if (!decano) throw new NotFoundException(`El decano con el id ${id} no fue encontrado`);
+    return decano;
   }
 
-  update(id: string, updateDecanoDto: UpdateDecanoDto) {
+  async update(id: string, updateDecanoDto: UpdateDecanoDto) {
+    const decano = await this.decanosRepository.findOne({ where: { id } });
+    if (!decano) throw new NotFoundException(`El decano con el id ${id} no fue encontrado`);
     return this.decanosRepository.update(id, updateDecanoDto);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const decano = await this.decanosRepository.findOne({ where: { id } });
+    if (!decano) throw new NotFoundException(`El decano con el id ${id} no fue encontrado`);
     return this.decanosRepository.softDelete(id);
   }
+
+  async restore(id: string) {
+    const decano = await this.decanosRepository.findOne({ where: { id }, withDeleted: true });
+    if (!decano) throw new NotFoundException(`El decano con el id ${id} no fue encontrado`);
+    return this.decanosRepository.restore(id);
+  } 
 }
