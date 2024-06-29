@@ -1,15 +1,12 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateAsignacionDto, UpdateAsignacionDto } from './dto';
+import { FilterOperator, FilterSuffix, PaginateQuery, paginate } from 'nestjs-paginate';
+import { AsignarTutorDto, CreateAsignacionDto } from './dto';
 import { Asignacion } from './entities/asignacion.entity';
 import { TutoresService } from 'src/tutores/tutores.service';
 import { EstudiantesService } from 'src/estudiantes/estudiantes.service';
-import { SemestreService } from 'src/semestre/semestre.service';
 import { EmpresasSolicitudesService } from 'src/empresas-solicitudes/empresas-solicitudes.service';
-import { FilterOperator, FilterSuffix, PaginateQuery, paginate } from 'nestjs-paginate';
-import { AsignarTutorDto } from './dto/asignar-tutor.dto';
-import { EmpresasService } from 'src/empresas/empresas.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Injectable()
@@ -17,7 +14,6 @@ export class AsignacionService {
   constructor(
     @InjectRepository(Asignacion) private readonly asignacionRepository: Repository<Asignacion>,
     private readonly empresasSolicitudesService: EmpresasSolicitudesService,
-    private readonly empresasService: EmpresasService,
     private readonly estudiantesService: EstudiantesService,
     private readonly tutoresService: TutoresService,
   ) {}
