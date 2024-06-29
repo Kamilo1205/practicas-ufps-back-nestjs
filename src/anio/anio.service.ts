@@ -32,17 +32,17 @@ export class AnioService {
   }
 
   findAll() {
-    return this.anioRepository.find();
+    return this.anioRepository.find({ withDeleted: true });
   }
 
   async findOne(id: string) {
-    const anio = await this.anioRepository.findOne({ where: { id } });
+    const anio = await this.anioRepository.findOne({ where: { id }, withDeleted: true });
     if (!anio) throw new NotFoundException(`El año con el id ${ id } no fue encontrado`);
     return anio;
   }
 
   async update(id: string, updateAnioDto: UpdateAnioDto) {
-    const anio = await this.anioRepository.findOne({ where: { id } });
+    const anio = await this.anioRepository.findOne({ where: { id }, withDeleted: true });
     if (!anio) throw new NotFoundException(`El año con el id ${ id } no fue encontrado`);
     
     if (updateAnioDto.actual) {
@@ -59,8 +59,14 @@ export class AnioService {
   async remove(id: string) {
     const anio = await this.anioRepository.findOne({ where: { id } });
     if (!anio) throw new NotFoundException(`El año con el id ${ id } no fue encontrado`);
-    return this.anioRepository.softRemove(anio);
-  } 
+    return this.anioRepository.softDelete(id);
+  }
+  
+  async restore(id: string) {
+    const anio = await this.anioRepository.findOne({ where: { id }, withDeleted: true });
+    if (!anio) throw new NotFoundException(`El año con el id ${ id } no fue encontrado`);
+    return this.anioRepository.restore(anio);
+  }
 
   async getAnioActual() {
     const anioActual = new Date().getFullYear();

@@ -27,6 +27,13 @@ export class AnioController {
     return this.anioService.findOne(id);
   }
 
+  @Patch(':id/restore')
+  @Public()
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  restore(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.anioService.restore(id);
+  }
+
   @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
   update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateAnioDto: UpdateAnioDto) {
