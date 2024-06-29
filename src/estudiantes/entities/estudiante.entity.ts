@@ -9,6 +9,7 @@ import { EstudianteAreaInteres } from 'src/estudiante-area-interes/entities/estu
 import { Herramienta } from 'src/herramientas/entities/herramienta.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Asignacion } from 'src/asignacion/entities/asignacion.entity';
+import { PlanDeTrabajo } from 'src/plan-de-trabajo/entities/plan-de-trabajo.entity';
 
 @Entity()
 export class Estudiante extends BaseEntity {
@@ -103,4 +104,7 @@ export class Estudiante extends BaseEntity {
 
   @OneToMany(() => Asignacion, (asignacion) => asignacion.estudiante)
   asignaciones: Asignacion[];
+
+  @OneToMany(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.estudiante)
+  planesDeTrabajo: PlanDeTrabajo[];
 }

@@ -46,21 +46,25 @@ export class EstudiantesController {
 
 
   @Get()
+  @Roles(Rol.Coordinador, Rol.Administrador)
   findAll(@Paginate() query: PaginateQuery) {
     return this.estudiantesService.findAll(query);
   }
 
   @Get(':id')
+  @Roles(Rol.Coordinador, Rol.Administrador)
   findOne(@Param('id') id: string) {
     return this.estudiantesService.findOne(id);
   }
 
   @Patch(':id')
+  @Roles(Rol.Coordinador, Rol.Administrador)
   update(@Param('id') id: string, @Body() updateEstudianteDto: UpdateEstudianteDto) {
     return this.estudiantesService.update(id, updateEstudianteDto);
   }
 
   @Delete(':id')
+  @Roles(Rol.Coordinador, Rol.Administrador)
   remove(@Param('id') id: string) {
     return this.estudiantesService.remove(id);
   }
