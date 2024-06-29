@@ -33,7 +33,7 @@ export class AreaInteresHerramientasService {
   }
 
   findAll() {
-    return this.areaInteresHerramientaRepository.find({ relations: ['areaInteres', 'herramienta'] });
+    return this.areaInteresHerramientaRepository.find({ relations: ['areaInteres', 'herramienta'], withDeleted: true });
   }
 
   findOne(id: string) {
