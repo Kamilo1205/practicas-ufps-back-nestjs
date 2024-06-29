@@ -76,6 +76,12 @@ export class CiudadesService {
   async remove(id: string) {
     const ciudad = await this.ciudadRepository.findOne({ where: { id } });
     if (!ciudad) throw new NotFoundException(`La ciudad con el id ${id} no fue encontrada`);
-    return this.ciudadRepository.softRemove(ciudad);
+    return this.ciudadRepository.softDelete(id);
   }
+
+  async restore(id: string) {
+    const ciudad = await this.ciudadRepository.findOne({ where: { id } });
+    if (!ciudad) throw new NotFoundException(`La ciudad con el id ${id} no fue encontrada`);
+    return this.ciudadRepository.restore(id);
+  } 
 }
