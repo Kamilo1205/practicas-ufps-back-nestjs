@@ -28,7 +28,6 @@ export class AnioController {
   }
 
   @Patch(':id/restore')
-  @Public()
   @Roles(Rol.Coordinador, Rol.Administrador)
   restore(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.anioService.restore(id);

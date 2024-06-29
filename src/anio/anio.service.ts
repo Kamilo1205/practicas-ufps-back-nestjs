@@ -65,7 +65,7 @@ export class AnioService {
   async restore(id: string) {
     const anio = await this.anioRepository.findOne({ where: { id }, withDeleted: true });
     if (!anio) throw new NotFoundException(`El año con el id ${ id } no fue encontrado`);
-    return this.anioRepository.restore(anio);
+    return this.anioRepository.restore(id);
   }
 
   async getAnioActual() {
