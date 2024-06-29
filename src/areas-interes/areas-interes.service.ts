@@ -13,7 +13,7 @@ export class AreasInteresService {
   ) {}
 
   async create(createAreaInteresDto: CreateAreaInteresDto) {
-    const { nombre, areaPadreId } = createAreaInteresDto;
+    const { nombre, areaPadre: areaPadreId } = createAreaInteresDto;
 
     const areaInteresExiste = await this.areaInteresRepository.findOneBy({ nombre });
     if (areaInteresExiste) throw new ConflictException('El área de interés con este nombre ya está registrada');
@@ -71,7 +71,7 @@ export class AreasInteresService {
     const areaInteres = await this.areaInteresRepository.findOne({  where: { id } });
     if (!areaInteres) throw new NotFoundException('Área de interés no encontrada');
 
-    const { nombre, areaPadreId } = updateAreaInteresDto;
+    const { nombre, areaPadre: areaPadreId } = updateAreaInteresDto;
 
     if (areaPadreId && areaPadreId === id) throw new ConflictException('El área de interés no puede ser su propia área padre');
     

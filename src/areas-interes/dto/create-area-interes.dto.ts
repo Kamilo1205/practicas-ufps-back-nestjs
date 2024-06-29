@@ -7,5 +7,5 @@ export class CreateAreaInteresDto {
 
   @IsUUID('4')
   @IsOptional()
-  areaPadreId?: string;
+  areaPadre?: string;
 }
