@@ -71,7 +71,7 @@ export class DepartamentosService {
   }
 
   async restore(id: string) {
-    const departamento = await this.departamentoRepository.findOne({ where: { id } });
+    const departamento = await this.departamentoRepository.findOne({ where: { id }, withDeleted: true });
     if (!departamento) throw new NotFoundException(`El departamento con el id ${ id } no fue encontrado`);
     return this.departamentoRepository.restore(id);
   }
