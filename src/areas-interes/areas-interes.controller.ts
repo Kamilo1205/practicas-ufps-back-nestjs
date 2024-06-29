@@ -30,6 +30,12 @@ export class AreasInteresController {
     return this.areasInteresService.findOne(id);
   }
 
+  @Patch(':id/restore')
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  restore(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.areasInteresService.restore(id);
+  }
+
   @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
   update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateAreaInteresDto: UpdateAreaInteresDto) {

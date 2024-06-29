@@ -90,4 +90,9 @@ export class AreasInteresService {
     if (!areaInteres) throw new NotFoundException('Área de interés no encontrada');
     return this.areaInteresRepository.softDelete(id);
   }
+
+  async restore(id: string) {
+    const areaInteres = await this.areaInteresRepository.findOne({ where: { id }, withDeleted: true });
+    if (!areaInteres) throw new NotFoundException('Área de interés no encontrada');return this.areaInteresRepository.restore(id);
+  }
 }
