@@ -5,8 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
 import { EmpresaExistsException, EmpresaNotFoundException, UsuarioAlreadyHasEmpresaException } from './exceptions';
 import { Empresa } from './entities/empresa.entity';
-import { GoogleDriveService } from 'src/google-drive/google-drive.service';
 import { UploadedFiles as UploadedFilesInterfaz } from './interfaces';
+import { GoogleDriveService } from 'src/google-drive/google-drive.service';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { RepresentanteLegalService } from 'src/representante-legal/representante-legal.service';
@@ -15,6 +15,7 @@ import { IndustriasService } from 'src/industrias/industrias.service';
 import { MailService } from 'src/mail/mail.service';
 import { CreateTutorDto } from 'src/tutores/dto';
 import { TutoresService } from 'src/tutores/tutores.service';
+import { PaginateQuery, paginate } from 'nestjs-paginate';
 
 @Injectable()
 export class EmpresasService {
@@ -90,18 +91,13 @@ export class EmpresasService {
     return this.empresasRepository.update(id, { tutores: [ ...empresa.tutores, tutor ] });
   }
 
-  async findAll(page = 1, limit = 10) {
-    const skip = (page - 1) * limit;
-    const [data, total] = await this.empresasRepository.findAndCount({
-      take: limit,
-      skip: skip,
-      order: {
-        fechaCreacion: 'DESC',
-      },
-      relations: ['usuario'],
+  findAll(query: PaginateQuery) {
+    return paginate(query, this.empresasRepository, {
+      sortableColumns: ['id', 'nombreComercial', 'nombreLegal', 'usuario.email', 'nit'],
+      nullSort: 'last',
+      defaultSortBy: [['id', 'DESC']],
+      withDeleted: true,
     });
-
-    return { data, total };
   }
 
   async findOne(id: string) {
@@ -162,7 +158,13 @@ export class EmpresasService {
 
   async remove(id: string) {
     const empresa = await this.empresasRepository.findOneBy({ id });
-    if (empresa) throw new EmpresaNotFoundException(id);
-    return this.empresasRepository.softDelete({ id });
+    if (!empresa) throw new EmpresaNotFoundException(id);
+    return this.empresasRepository.softDelete(id);
+  }
+
+  async restore(id: string) {
+    const empresa = await this.empresasRepository.findOne({ where: { id }, withDeleted: true });
+    if (!empresa) throw new EmpresaNotFoundException(id);
+    return this.empresasRepository.restore(id);
   }
 }

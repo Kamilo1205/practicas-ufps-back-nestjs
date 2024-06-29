@@ -8,6 +8,7 @@ import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { UploadedFiles as UploadedFilesInterfaz } from './interfaces';
 import { FilesNotFoundException } from './exceptions';
 import { CreateTutorDto } from 'src/tutores/dto';
+import { Paginate, PaginateQuery } from 'nestjs-paginate';
 
 @Controller('empresas')
 export class EmpresasController {
@@ -50,7 +51,13 @@ export class EmpresasController {
     return this.empresasService.findTutoresByEmpresaId(usuario?.id);
   }
 
-  @Patch('')
+  @Delete(':id')
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  restore(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.empresasService.restore(id);
+  }
+
+  @Patch()
   @Roles(Rol.Empresa)
   updatePerfil(@Body() updateEmpresaDto: UpdateEmpresaDto, @GetUser() usuario: Usuario) {
     return this.empresasService.update(usuario.id, updateEmpresaDto);
@@ -64,10 +71,8 @@ export class EmpresasController {
 
   @Get()
   @Roles(Rol.Coordinador, Rol.Administrador)
-  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    if (page === undefined || isNaN(page) || page < 0) page = 1;
-    if (limit === undefined || isNaN(limit) || limit < 0) limit = 10;
-    return this.empresasService.findAll(page, limit);
+  findAll(@Paginate() query: PaginateQuery) {
+    return this.empresasService.findAll(query);
   }
 
   @Get(':id')
