@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { EmpresasSolicitudesService } from './empresas-solicitudes.service';
 import { CreateEmpresaSolicitudDto, UpdateEmpresaSolicitudDto } from './dto';
@@ -16,6 +16,18 @@ export class EmpresasSolicitudesController {
     return this.empresasSolicitudesService.create(createEmpresaSolicitudDto, usuario);
   }
 
+  @Get('/empresa')
+  @Roles(Rol.Empresa)
+  findAllByEmpresa(@GetUser() usuario: Usuario) {
+    return this.empresasSolicitudesService.findAllByEmpresaId(usuario);
+  }
+
+  @Get('/:id/empresa')
+  @Roles(Rol.Empresa)
+  findOneByEmpresa(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
+    return this.empresasSolicitudesService.findOneByEmpresaId(id, usuario);
+  }
+
   @Get()
   @Roles(Rol.Administrador, Rol.Coordinador, Rol.Director)
   findAll(@Paginate() query: PaginateQuery) {
@@ -24,13 +36,13 @@ export class EmpresasSolicitudesController {
 
   @Get(':id')
   @Roles(Rol.Administrador, Rol.Coordinador, Rol.Director)
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.empresasSolicitudesService.findOne(id);
   }
 
   @Delete(':id')
   @Roles(Rol.Empresa, Rol.Administrador, Rol.Coordinador)
-  remove(@Param('id') id: string) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.empresasSolicitudesService.remove(id);
   }
 }

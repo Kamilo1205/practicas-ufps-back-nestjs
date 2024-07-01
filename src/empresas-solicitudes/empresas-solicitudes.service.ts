@@ -83,6 +83,22 @@ export class EmpresasSolicitudesService {
     return empresaSolicitud;
   }
 
+  findAllByEmpresaId(usuario: Usuario) {
+    return this.empresaSolicitudRepository.find({
+      where: { empresa: { id: usuario.empresa.id } },
+      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones'],
+      withDeleted: true,
+    });
+  }
+
+  findOneByEmpresaId(id: string, usuario: Usuario) {
+    return this.empresaSolicitudRepository.find({
+      where: { id, empresa: { id: usuario.empresa.id } },
+      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones'],
+      withDeleted: true,
+    });
+  }
+
   async remove(id: string) {
     const empresaSolicitud = await this.empresaSolicitudRepository.findOne({ where: { id } });
     if (!empresaSolicitud) throw new NotFoundException(`La solicitud de empresa con id ${id} no fue encontrada`);
