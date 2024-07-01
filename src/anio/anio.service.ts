@@ -69,8 +69,10 @@ export class AnioService {
   }
 
   async getAnioActual() {
-    const anioActual = new Date().getFullYear();
-    return this.anioRepository.findOne({ where: { anio: anioActual } });
+    const anioActualNumber = new Date().getFullYear();
+    let anioActual = await this.anioRepository.findOne({ where: { anio: anioActualNumber } });
+    if (!anioActual) anioActual = await this.create({ anio: anioActualNumber, actual: true });
+    return anioActual;
   }
 
   @Cron('0 0 0 1 1 *')
