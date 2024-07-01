@@ -4,7 +4,7 @@ import { CreateHerramientaDto, UpdateHerramientaDto } from './dto';
 import { Rol } from 'src/auth/enums';
 import { Roles } from 'src/auth/decorators';
 
-@Controller('w')
+@Controller('herramientas')
 export class HerramientasController {
   constructor(private readonly herramientasService: HerramientasService) {}
 
