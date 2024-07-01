@@ -27,7 +27,7 @@ export class Actividad extends BaseEntity {
 
   //@OneToMany(() => SubActividad, (subActividad) => subActividad.actividad)
   //subActividades: SubActividad[];
-//
+
   //@OneToMany(() => Comentario, (comentario) => comentario.actividad)
   //comentarios: Comentario[];
 }

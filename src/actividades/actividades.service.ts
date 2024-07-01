@@ -1,26 +1,43 @@
-import { Injectable } from '@nestjs/common';
-import { CreateActividadeDto } from './dto/create-actividade.dto';
-import { UpdateActividadeDto } from './dto/update-actividade.dto';
+import { Repository } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateActividadeDto, UpdateActividadeDto } from './dto';
+import { Actividad } from './entities/actividade.entity';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { PlanDeTrabajoService } from 'src/plan-de-trabajo/plan-de-trabajo.service';
+import { SemestreService } from 'src/semestre/semestre.service';
 
 @Injectable()
 export class ActividadesService {
-  create(createActividadeDto: CreateActividadeDto) {
-    return 'This action adds a new actividade';
+  constructor(
+    @InjectRepository(Actividad)
+    private readonly actividadRepository: Repository<Actividad>,
+    private readonly planDeTrabajoService: PlanDeTrabajoService,
+    private readonly semestreService: SemestreService
+  ) {}
+
+  async create(usuario: Usuario, createActividadeDto: CreateActividadeDto) {
+    const semestreActual = await this.semestreService.getSemestreActual();
+    const planDeTrabajo = await this.planDeTrabajoService.findOrCreatePlanDeTrabajo(usuario.estudiante.id, semestreActual.id);
+    const actividad = this.actividadRepository.create({ ...createActividadeDto, planDeTrabajo });
+    return this.actividadRepository.save(actividad);
   }
 
-  findAll() {
-    return `This action returns all actividades`;
+  async findOne(id: string) {
+    const actividad = await this.actividadRepository.findOne({ where: { id } });
+    if (!actividad) throw new NotFoundException(`La actividad con el id ${id} no fue encontrada`);
+    return actividad;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} actividade`;
+  async update(id: string, usuario: Usuario, updateActividadeDto: UpdateActividadeDto) {
+    const actividad = await this.actividadRepository.findOne({ where: { id, planDeTrabajo: { estudiante: { id: usuario.estudiante.id } } }, });
+    if (!actividad) throw new NotFoundException(`La actividad con el id ${id} no fue encontrada`);
+    return this.actividadRepository.update(id, updateActividadeDto);
   }
 
-  update(id: number, updateActividadeDto: UpdateActividadeDto) {
-    return `This action updates a #${id} actividade`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} actividade`;
+  async remove(id: string, usuario: Usuario) {
+    const actividad = await this.actividadRepository.findOne({ where: { id, planDeTrabajo: { estudiante: { id: usuario.estudiante.id } } }, });
+    if (!actividad) throw new NotFoundException(`La actividad con el id ${id} no fue encontrada`);
+    return this.actividadRepository.delete(id);
   }
 }
