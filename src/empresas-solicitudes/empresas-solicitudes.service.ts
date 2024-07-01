@@ -58,7 +58,7 @@ export class EmpresasSolicitudesService {
       sortableColumns: ['id', 'empresa.nombreComercial', 'empresa.nombreLegal', 'fechaCreacion', 'fechaActualizacion', 'fechaEliminacion'],
       nullSort: 'last',
       searchableColumns: ['empresa.nombreComercial', 'empresa.nombreLegal', 'areasInteres.nombre', 'herramientas.nombre'],
-      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones'],
+      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones', 'asignaciones.estudiante', 'asignaciones.tutor'],
       withDeleted: true,
       filterableColumns: {
         id: [FilterOperator.EQ, FilterSuffix.NOT],
@@ -76,7 +76,7 @@ export class EmpresasSolicitudesService {
   async findOne(id: string) {
     const empresaSolicitud = await this.empresaSolicitudRepository.findOne({
       where: { id },
-      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre' ],
+      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones.estudiante', 'asignaciones.tutor'],
       withDeleted: true,
     });
     if (!empresaSolicitud) throw new NotFoundException(`La solicitud de empresa con id ${id} no fue encontrada`);
@@ -86,7 +86,7 @@ export class EmpresasSolicitudesService {
   findAllByEmpresaId(usuario: Usuario) {
     return this.empresaSolicitudRepository.find({
       where: { empresa: { id: usuario.empresa.id } },
-      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones'],
+      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones', 'asignaciones.estudiante', 'asignaciones.tutor'],
       withDeleted: true,
     });
   }
@@ -94,7 +94,7 @@ export class EmpresasSolicitudesService {
   findOneByEmpresaId(id: string, usuario: Usuario) {
     return this.empresaSolicitudRepository.find({
       where: { id, empresa: { id: usuario.empresa.id } },
-      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones'],
+      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones', 'asignaciones.estudiante', 'asignaciones.tutor'],
       withDeleted: true,
     });
   }
