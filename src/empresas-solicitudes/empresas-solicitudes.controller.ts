@@ -16,13 +16,13 @@ export class EmpresasSolicitudesController {
     return this.empresasSolicitudesService.create(createEmpresaSolicitudDto, usuario);
   }
 
-  @Get('/empresa')
+  @Get('empresa')
   @Roles(Rol.Empresa)
   findAllByEmpresa(@Paginate() query: PaginateQuery, @GetUser() usuario: Usuario) {
     return this.empresasSolicitudesService.findAllByEmpresaId(query, usuario);
   }
 
-  @Get('/:id/empresa')
+  @Get(':id/empresa')
   @Roles(Rol.Empresa)
   findOneByEmpresa(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
     return this.empresasSolicitudesService.findOneByEmpresaId(id, usuario);
