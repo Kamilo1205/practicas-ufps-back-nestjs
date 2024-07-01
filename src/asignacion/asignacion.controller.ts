@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { AsignacionService } from './asignacion.service';
-import { CreateAsignacionDto, UpdateAsignacionDto } from './dto';
+import { CreateAsignacionDto } from './dto';
 import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 import { AsignarTutorDto } from './dto/asignar-tutor.dto';
