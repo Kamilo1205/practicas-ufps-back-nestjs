@@ -4,7 +4,7 @@ import { CreateHerramientaDto, UpdateHerramientaDto } from './dto';
 import { Rol } from 'src/auth/enums';
 import { Roles } from 'src/auth/decorators';
 
-@Controller('herramientas')
+@Controller('w')
 export class HerramientasController {
   constructor(private readonly herramientasService: HerramientasService) {}
 
@@ -23,6 +23,12 @@ export class HerramientasController {
   @Roles(Rol.Coordinador, Rol.Administrador)
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.herramientasService.findOne(id);
+  }
+
+  @Patch(':id/restore')
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  restore(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.herramientasService.restore(id);
   }
 
   @Patch(':id')
