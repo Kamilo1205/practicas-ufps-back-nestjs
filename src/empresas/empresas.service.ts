@@ -95,6 +95,7 @@ export class EmpresasService {
     return paginate(query, this.empresasRepository, {
       sortableColumns: ['id', 'nombreComercial', 'nombreLegal', 'usuario.email', 'nit'],
       nullSort: 'last',
+      relations: ['usuario', 'ciudad', 'industria', 'representanteLegal'],
       defaultSortBy: [['id', 'DESC']],
       withDeleted: true,
     });
