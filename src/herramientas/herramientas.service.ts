@@ -20,17 +20,17 @@ export class HerramientasService {
   }
 
   async findAll() {
-    return this.herramientaRepository.find();
+    return this.herramientaRepository.find({ withDeleted: true });
   }
 
   async findOne(id: string) {
-    const herramienta = await this.herramientaRepository.findOne({ where: { id } });
+    const herramienta = await this.herramientaRepository.findOne({ where: { id }, withDeleted: true });
     if (!herramienta) throw new NotFoundException(`Herramienta con ID ${id} no encontrada`);
     return herramienta;
   }
 
   async findByIds(ids: string[]) {
-    const herramientas = await this.herramientaRepository.find({ where: { id: In(ids) } });
+    const herramientas = await this.herramientaRepository.find({ where: { id: In(ids) }, withDeleted: true });
     if (herramientas.length != ids.length) throw new NotFoundException('una o más herramientas no son validas');
     return herramientas;
   }
