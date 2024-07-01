@@ -65,6 +65,6 @@ export class EstudianteAreaInteresService {
   async remove(id: string) {
     const estudianteAreaInteres = await this.estudianteAreaInteresRepository.findOne({ where: { id } });
     if (!estudianteAreaInteres) throw new NotFoundException(`El interés con el id ${id} no fue encontrado`);
-    return this.estudianteAreaInteresRepository.softRemove(estudianteAreaInteres);
+    return this.estudianteAreaInteresRepository.softDelete(id);
   }
 }
