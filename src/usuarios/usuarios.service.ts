@@ -47,6 +47,24 @@ export class UsuariosService {
     return this.usuariosRepository.save(usaurio);
   }
 
+  async createTutorInstitucional(email: string, displayName: string) {
+    const normalizedEmail = email.toLowerCase();
+    const existingUsuario = await this.usuariosRepository.findOneBy({ email });
+    if (existingUsuario) throw new UsuairoExistsException(normalizedEmail);
+
+    const rol = await this.rolesService.findOneByNombre(Rol.Coordinador);
+    const hashedPassword = await bcrypt.hash(crypto.randomBytes(8).toString('hex'), 10);
+    const usaurio = this.usuariosRepository.create({ 
+      email: normalizedEmail, 
+      password: hashedPassword, 
+      roles: [rol],
+      displayName,
+      estaActivo: true,
+      estaRegistrado: true,    
+    });
+    return this.usuariosRepository.save(usaurio);
+  }
+
   async findAll(page = 1, limit = 50, relations: string[] = ['roles']) {
     const skip = (page - 1) * limit;
     const [data, total] = await this.usuariosRepository.findAndCount({

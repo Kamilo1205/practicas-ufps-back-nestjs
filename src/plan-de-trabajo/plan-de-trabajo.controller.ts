@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Patch, Param, ParseUUIDPipe } from '@nestjs/common';
+import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { PlanDeTrabajoService } from './plan-de-trabajo.service';
-import { CreatePlanDeTrabajoDto, UpdatePlanDeTrabajoDto } from './dto';
 import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
@@ -9,26 +9,39 @@ import { Usuario } from 'src/usuarios/entities/usuario.entity';
 export class PlanDeTrabajoController {
   constructor(private readonly planDeTrabajoService: PlanDeTrabajoService) {}
 
-  @Post()
-  @Roles(Rol.Estudiante)
-  create(@GetUser() usuario: Usuario, @Body() createPlanDeTrabajoDto: CreatePlanDeTrabajoDto) {
-    return this.planDeTrabajoService.create(usuario, createPlanDeTrabajoDto);
-  }
-
   @Get()
   @Roles(Rol.Coordinador, Rol.Administrador)
-  findAll() {
-    return this.planDeTrabajoService.findAll();
+  findAll(@Paginate() query: PaginateQuery) {
+    return this.planDeTrabajoService.findAll(query);
+  }
+
+  @Get('actual')
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  findAllSemestreActual() {
+    return this.planDeTrabajoService.findAllSemestreActual();
   }
 
   @Get(':id')
+  @Roles(Rol.Coordinador, Rol.Administrador)
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.planDeTrabajoService.findOne(id);
   }
+  
+  @Get('estudiante/mis-planes')
+  @Roles(Rol.Estudiante)
+  findAllByEstudiante(@GetUser() usuario: Usuario) {
+    return this.planDeTrabajoService.findAllByEstudiante(usuario);
+  }
 
-  @Delete(':id')
-  @Roles(Rol.Coordinador, Rol.Administrador)
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.planDeTrabajoService.remove(id);
+  @Get('estudiante/mi-plan/actual')
+  @Roles(Rol.Estudiante)
+  findByEstudianteActual(@GetUser() usuario: Usuario) {
+    return this.planDeTrabajoService.findOneByEstudianteBySemestreActual(usuario);
+  }
+  
+  @Get('estudiante/mi-plan/:id')
+  @Roles(Rol.Estudiante)
+  findOneByEstudiante(@GetUser() usuario: Usuario, @Param('id', new ParseUUIDPipe()) id: string) {
+    return this.planDeTrabajoService.findOneByEstudiante(id, usuario);
   }
 }

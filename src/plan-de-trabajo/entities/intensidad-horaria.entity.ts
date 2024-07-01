@@ -1,4 +1,4 @@
-import { Entity, Column } from 'typeorm';
+/* import { Entity, Column } from 'typeorm';
 import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
@@ -9,3 +9,4 @@ export class IntensidadHoraria extends BaseEntity {
   @Column('int')
   cantidadSemanas: number;
 }
+ */

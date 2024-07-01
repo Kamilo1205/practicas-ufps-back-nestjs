@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { AnioService } from './anio.service';
 import { CreateAnioDto, UpdateAnioDto } from './dto/';
-import { Public, Roles } from 'src/auth/decorators';
+import { Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 
 @Controller('anio')
@@ -15,7 +15,6 @@ export class AnioController {
   }
 
   @Get()
-  @Public()
   @Roles(Rol.Coordinador, Rol.Administrador)
   findAll() {
     return this.anioService.findAll();

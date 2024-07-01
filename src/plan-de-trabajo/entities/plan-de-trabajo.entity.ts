@@ -1,29 +1,26 @@
+import { Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
-import { IntensidadHoraria } from './intensidad-horaria.entity';
+import { Semestre } from 'src/semestre/entities/semestre.entity';
+import { Objetivo } from 'src/objetivos/entities/objetivo.entity';
+import { Actividad } from 'src/actividades/entities/actividade.entity';
 
 @Entity()
 export class PlanDeTrabajo extends BaseEntity {
-  @Column({ type: 'text' })
-  objetivoPractica: string;
+  @OneToOne(() => Objetivo, (objetivo) => objetivo.planDeTrabajo)
+  @JoinColumn()
+  objetivo: Objetivo;
 
-  @Column({ type: 'text' })
-  objetivoPrincipal: string;
-
-  @Column({ type: 'text' })
-  objetivoEspecial: string;
-  
-  @Column({ type: 'text' })
-  justificacion: string;
-  
-  @Column({ type: 'text' })
-  alcance: string;
+  @OneToMany(() => Actividad, (actividad) => actividad.planDeTrabajo)
+  actividades: Actividad[];
 
   @ManyToOne(() => Estudiante, (estudiante) => estudiante.planesDeTrabajo)
   estudiante: Estudiante;
 
-  @OneToOne(() => IntensidadHoraria, { cascade: true })
-  @JoinColumn()
-  intensidadHorario: IntensidadHoraria;
+  //@OneToOne(() => IntensidadHoraria, { cascade: true })
+  //@JoinColumn()
+  //intensidadHorario: IntensidadHoraria;
+
+  @ManyToOne(() => Semestre, (semestre) => semestre.planesDeTrabajo)
+  semestre: Semestre;
 }

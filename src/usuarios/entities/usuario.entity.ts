@@ -1,11 +1,11 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne } from 'typeorm';
 import { Exclude, Transform } from 'class-transformer';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 import { Rol } from 'src/roles/entities/rol.entity';
 import { Tutor } from 'src/tutores/entities/tutor.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
-
+import { TutorInstitucional } from 'src/tutor-institucional/entities/tutor-institucional.entity';
 
 @Entity() // Define que esta clase es una entidad de la base de datos.
 export class Usuario extends BaseEntity {
@@ -50,4 +50,11 @@ export class Usuario extends BaseEntity {
   @OneToOne(() => Tutor, (tutor) => tutor.usuario)
   @Transform(({ value }) => (value ? value : undefined))
   tutor: Tutor;
+
+  @OneToOne(() => TutorInstitucional, (tutorInstitucional) => tutorInstitucional.usuario)
+  @Transform(({ value }) => (value ? value : undefined))
+  tutorInstitucional: TutorInstitucional;
+
+  //@OneToMany(() => Comentario, (comentario) => comentario.autor)
+  //comentarios: Comentario[];
 }

@@ -36,7 +36,7 @@ export class AnioService {
   }
 
   async findOne(id: string) {
-    const anio = await this.anioRepository.findOne({ where: { id }, withDeleted: true });
+    const anio = await this.anioRepository.findOne({ where: { id } });
     if (!anio) throw new NotFoundException(`El año con el id ${ id } no fue encontrado`);
     return anio;
   }

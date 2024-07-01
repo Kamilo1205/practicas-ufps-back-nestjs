@@ -1,54 +1,99 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreatePlanDeTrabajoDto, UpdatePlanDeTrabajoDto  } from './dto';
-import { PlanDeTrabajo } from './entities/plan-de-trabajo.entity';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PaginateQuery, paginate } from 'nestjs-paginate';
+import { PlanDeTrabajo } from './entities/plan-de-trabajo.entity';
 import { EstudiantesService } from 'src/estudiantes/estudiantes.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
-import { IntensidadHoraria } from './entities/intensidad-horaria.entity';
+import { SemestreService } from 'src/semestre/semestre.service';
 
 @Injectable()
 export class PlanDeTrabajoService {
   constructor(
     @InjectRepository(PlanDeTrabajo)
     private readonly planDeTrabajoRepository: Repository<PlanDeTrabajo>,
-    @InjectRepository(IntensidadHoraria)
-    private readonly intensidadHorarioRepository: Repository<IntensidadHoraria>,
     private readonly estudiantesService: EstudiantesService,
+    private readonly semestreService: SemestreService
   ) {}
 
-  async create(usuario: Usuario, createPlanDeTrabajoDto: CreatePlanDeTrabajoDto): Promise<PlanDeTrabajo> {
-    const estudiante = await this.estudiantesService.findOne(usuario.id);
-    if (!estudiante) throw new NotFoundException('Estudiante no encontrado');
-    
-    const intensidadHorario = this.intensidadHorarioRepository.create({
-      horario: createPlanDeTrabajoDto.intensidadHorario.horario,
-      cantidadSemanas: createPlanDeTrabajoDto.intensidadHorario.cantidadSemanas,
+  async findAll(query: PaginateQuery) {
+    return paginate(query, this.planDeTrabajoRepository, {
+      sortableColumns: ['id', 'estudiante.id', 'semestre.id', 'semestre.anio.actual'],
+      nullSort: 'last',
+      relations: ['estudiante', 'semestre'],
+      defaultSortBy: [['id', 'DESC']],
+      withDeleted: true,
     });
-
-    await this.intensidadHorarioRepository.save(intensidadHorario);
-
-    const planDeTrabajo = this.planDeTrabajoRepository.create({
-      ...createPlanDeTrabajoDto,
-      estudiante,
-      intensidadHorario,
-    });
-
-    return this.planDeTrabajoRepository.save(planDeTrabajo);
   }
 
-  async findAll() {
-    return this.planDeTrabajoRepository.find({ relations: ['estudiante', 'actividades', 'intensidadHorario'] });
+  async findAllSemestreActual() {
+    const semestreActual = await this.semestreService.getSemestreActual();
+    return this.planDeTrabajoRepository.find({ 
+      relations: ['estudiante', 'actividades', 'intensidadHorario'], 
+      withDeleted: true, 
+      where: { semestre: { id: semestreActual.id } }
+    });
   }
 
   async findOne(id: string) {
-    const planDeTrabajo = await this.planDeTrabajoRepository.findOne({ where: { id }, relations: ['estudiante', 'actividades', 'intensidadHorario'] });
+    const planDeTrabajo = await this.planDeTrabajoRepository.findOne({ 
+      where: { id }, 
+      relations: ['estudiante', 'actividades', 'intensidadHorario'], 
+      withDeleted: true
+    });
+    if (!planDeTrabajo) throw new NotFoundException(`PlanDeTrabajo con ID ${id} no encontrado`);
+    return planDeTrabajo;
+  }
+  
+  async findOneMe(id: string, usuario: Usuario) {
+    const planDeTrabajo = await this.planDeTrabajoRepository.findOne({ 
+      where: { id, estudiante: { id: usuario.estudiante.id } }, 
+      relations: ['actividades', 'intensidadHorario'], 
+      withDeleted: true
+    });
     if (!planDeTrabajo) throw new NotFoundException(`PlanDeTrabajo con ID ${id} no encontrado`);
     return planDeTrabajo;
   }
 
-  async remove(id: string){
-    const planDeTrabajo = await this.findOne(id);
-    return await this.planDeTrabajoRepository.remove(planDeTrabajo);
+  async findAllByEstudiante(usuario: Usuario) {
+    return this.planDeTrabajoRepository.find({ 
+      relations: ['actividades', 'objetivo'], 
+      withDeleted: true,
+      where: { estudiante: { id: usuario.estudiante.id } } 
+    });
+  }
+
+  async findOneByEstudiante(id: string, usuario: Usuario) {
+    return this.planDeTrabajoRepository.findOne({ 
+      relations: ['estudiante', 'intensidadHorario'], 
+      withDeleted: true,
+      where: { id, estudiante: { id: usuario.estudiante.id } } 
+    });
+  }
+
+  async findOneByEstudianteBySemestreActual(usuario: Usuario) {
+    const semestreActual = await this.semestreService.getSemestreActual();
+    return this.planDeTrabajoRepository.findOne({ 
+      relations: ['actividades', 'objetivo'], 
+      withDeleted: true, 
+      where: { estudiante: { id: usuario.estudiante.id}, semestre: { id: semestreActual.id } }
+    });
+  }
+
+  async findOrCreatePlanDeTrabajo(estudianteId: string, semestreId: string) {
+    let planDeTrabajo = await this.planDeTrabajoRepository.findOne({
+      where: { estudiante: { id: estudianteId }, semestre: { id: semestreId } },
+      relations: ['objetivo'],
+    });
+
+    if (!planDeTrabajo) {
+      const estudiante = await this.estudiantesService.findOne(estudianteId);
+      const semestre = await this.semestreService.findOne(semestreId);
+
+      planDeTrabajo = this.planDeTrabajoRepository.create({ estudiante, semestre });
+      planDeTrabajo = await this.planDeTrabajoRepository.save(planDeTrabajo);
+    }
+
+    return planDeTrabajo;
   }
 }

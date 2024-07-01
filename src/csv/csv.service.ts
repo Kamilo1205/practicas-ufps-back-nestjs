@@ -28,7 +28,6 @@ export class CsvService {
       let usuario: Usuario = await this.usuariosService.findOneByEmail(email);
       if (usuario) {
         await this.usuariosService.update(usuario.id, { estaActivo: true });
-        
       } else {
         usuario = await this.usuariosService.create({
           email,
