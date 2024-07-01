@@ -63,7 +63,7 @@ export class AsignacionService {
         'estudiante.nombre': [FilterOperator.EQ, FilterOperator.CONTAINS],
         'solicitud.id': [FilterOperator.EQ],
         'empresa.nombreComercial': [FilterOperator.EQ, FilterOperator.CONTAINS],
-        'semestre.id': [FilterOperator.EQ, FilterOperator.CONTAINS],
+        'solicitud.semestre.id': [FilterOperator.EQ, FilterOperator.CONTAINS],
         'tutor.nombre': [FilterOperator.EQ, FilterOperator.CONTAINS],
       },
       nullSort: 'last',
