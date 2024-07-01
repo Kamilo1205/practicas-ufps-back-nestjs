@@ -14,5 +14,6 @@ import { SemestreModule } from 'src/semestre/semestre.module';
   ],
   controllers: [ActividadesController],
   providers: [ActividadesService],
+  exports: [ActividadesService]
 })
 export class ActividadesModule {}

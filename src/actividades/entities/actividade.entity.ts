@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { PlanDeTrabajo } from 'src/plan-de-trabajo/entities/plan-de-trabajo.entity';
+import { SubActividad } from 'src/sub-actividades/entities/sub-actividad.entity';
 
 @Entity()
 export class Actividad extends BaseEntity {
@@ -10,23 +11,23 @@ export class Actividad extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   descripcion: string;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'date', default: () => 'CURRENT_DATE' })
   fechaInicio: Date;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'date', default: () => 'CURRENT_DATE' })
   fechFin: Date;
 
-  @Column()
-  totalHoras: number;
+  @Column({ type: 'text', default: '0' })
+  totalHoras: string;
 
-  @Column()
-  porcentajeCompletado: number;
+  @Column({ type: 'text', default: '0' })
+  porcentajeCompletado: string;
 
   @ManyToOne(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.actividades)
   planDeTrabajo: PlanDeTrabajo;
 
-  //@OneToMany(() => SubActividad, (subActividad) => subActividad.actividad)
-  //subActividades: SubActividad[];
+  @OneToMany(() => SubActividad, (subActividad) => subActividad.actividad)
+  subActividades: SubActividad[];
 
   //@OneToMany(() => Comentario, (comentario) => comentario.actividad)
   //comentarios: Comentario[];
