@@ -100,7 +100,7 @@ export class EmpresasSolicitudesService {
         "areasInteres.nombre": [FilterOperator.EQ, FilterOperator.CONTAINS],
         "herramientas.nombre": [FilterOperator.EQ, FilterOperator.CONTAINS],
       },
-      where: { empresa: { id: usuario.empresa.id } }
+      where: { empresa: { id: usuario.empresa.id || usuario.id } }
     });
   }
 
