@@ -20,17 +20,17 @@ export class PaisesService {
   }
 
   findAll() {
-    return this.paisRepository.find({ relations: ['departamentos', 'departamentos.ciudades'] });
+    return this.paisRepository.find({ relations: ['departamentos', 'departamentos.ciudades'], withDeleted: true });
   }
 
   async findOne(id: string) {
-    const pais = await this.paisRepository.findOne({ where: { id } });
+    const pais = await this.paisRepository.findOne({ where: { id }, withDeleted: true });
     if (!pais) throw new NotFoundException(`El pais con el id ${ id } no fue encontrado`);
     return pais;
   }
 
   async findOneByNombre(nombre: string) {
-    const pais = await this.paisRepository.findOne({ where: { nombre } });
+    const pais = await this.paisRepository.findOne({ where: { nombre }, withDeleted: true });
     if (!pais) throw new NotFoundException(`El pais ${ nombre } no fue encontrado`);
     return pais;
   }
@@ -52,8 +52,14 @@ export class PaisesService {
   }
 
   async remove(id: string) {
-    const pais = await this.paisRepository.findOne({ where: { id } });
+    const pais = await this.paisRepository.findOne({ where: { id }, withDeleted: true });
     if (!pais) throw new NotFoundException(`El pais con el id ${ id } no fue encontrado`);
-    return this.paisRepository.softRemove(pais);
+    return this.paisRepository.softDelete(id);
+  }
+
+  async restore(id: string) {
+    const pais = await this.paisRepository.findOne({ where: { id }, withDeleted: true });
+    if (!pais) throw new NotFoundException(`El pais con el id ${ id } no fue encontrado`);
+    return this.paisRepository.restore(id);
   }
 }
