@@ -53,6 +53,6 @@ export class HerramientasService {
   async remove(id: string) {
     const herramienta = await this.herramientaRepository.findOne({ where: { id } });
     if (!herramienta) throw new NotFoundException(`Herramienta con ID ${id} no encontrada`);
-    await this.herramientaRepository.softRemove(herramienta);
+    await this.herramientaRepository.softDelete(id);
   }
 }
