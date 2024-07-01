@@ -3,6 +3,7 @@ import { Anio } from 'src/anio/entities/anio.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 import { EmpresaSolicitud } from 'src/empresas-solicitudes/entities/empresas-solicitud.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
+import { PlanDeTrabajo } from 'src/plan-de-trabajo/entities/plan-de-trabajo.entity';
 
 @Entity()
 export class Semestre extends BaseEntity{
@@ -45,4 +46,7 @@ export class Semestre extends BaseEntity{
 
   @OneToMany(() => EmpresaSolicitud, (empresaSolicitud) => empresaSolicitud.semestre)
   empresaSolicitudes: EmpresaSolicitud[];
+
+  @OneToMany(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.semestre)
+  planesDeTrabajo: PlanDeTrabajo[];
 }

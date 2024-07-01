@@ -16,4 +16,28 @@ export class CreateSemestreDto {
   @IsOptional()
   @IsDateString()
   fechaFin?: Date;
+
+  @IsOptional()
+  @IsDateString()
+  fechaInicioPlanDeTrabajo?: Date;
+  
+  @IsOptional()
+  @IsDateString()
+  fechaFinPlanDeTrabajo?: Date;
+  
+  @IsOptional()
+  @IsDateString()
+  fechaInicioPrimerInforme?: Date;
+  
+  @IsOptional()
+  @IsDateString()
+  fechaFinPrimerInforme?: Date;
+  
+  @IsOptional()
+  @IsDateString()
+  fechaInicioInformeFinal?: Date;
+  
+  @IsOptional()
+  @IsDateString()
+  fechaFinInformeFinal?: Date;
 }
