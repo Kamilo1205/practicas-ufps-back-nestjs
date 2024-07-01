@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, IsNull, Repository } from 'typeorm';
 import { CreateAreaInteresDto, UpdateAreaInteresDto } from './dto';
 import { AreaInteres } from './entities/area-interes.entity';
-import { AreaInteresExistsException, AreaInteresNotFoundException } from './exceptions';
+import { AreaInteresNotFoundException } from './exceptions';
 
 @Injectable()
 export class AreasInteresService {
@@ -39,13 +39,21 @@ export class AreasInteresService {
   }
 
   async findOne(id: string) {
-    const areaInteres = await this.areaInteresRepository.findOne({ where: { id }, relations: ['areaPadre', 'subAreas'] });
+    const areaInteres = await this.areaInteresRepository.findOne({ 
+      where: { id }, 
+      relations: ['areaPadre', 'subAreas', 'areaInteresHerramientas', 'areaInteresHerramientas.herramienta'], 
+      withDeleted: true 
+    });
     if (!areaInteres) throw new NotFoundException('Área de interés no encontrada');
     return areaInteres;
   }
 
   async findByIds(ids: string[]) {
-    const areasInteres = await this.areaInteresRepository.find({ where: { id: In(ids) }, relations: ['areaPadre', 'subAreas'] });
+    const areasInteres = await this.areaInteresRepository.find({ 
+      where: { id: In(ids) }, 
+      relations: ['areaPadre', 'subAreas'],
+      withDeleted: true 
+    });
     if (areasInteres.length != ids.length) throw new NotFoundException('una o más areas de interes no son validas');
     return areasInteres;
   }
@@ -64,6 +72,7 @@ export class AreasInteresService {
     return this.areaInteresRepository.find({
       where: { subAreas: IsNull() },
       relations: ['subAreas'],
+      withDeleted: true
     });
   }
 
