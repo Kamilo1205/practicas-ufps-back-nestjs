@@ -57,10 +57,10 @@ export class EstudiantesController {
     return this.estudiantesService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch(':id/restore')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  update(@Param('id') id: string, @Body() updateEstudianteDto: UpdateEstudianteDto) {
-    return this.estudiantesService.update(id, updateEstudianteDto);
+  restore(@Param('id') id: string) {
+    return this.estudiantesService.restore(id);
   }
 
   @Delete(':id')

@@ -148,14 +148,15 @@ export class EstudiantesService {
     });
   }
 
-  //TODO: Actualizar areas interes
-  update(id: string, updateEstudianteDto: UpdateEstudianteDto) {
-    //return this.estudianteRepository.update(id, updateEstudianteDto);
+  async remove(id: string) {
+    const estudiante = await this.estudianteRepository.findOne({ where: { id }, withDeleted: true });
+    if (!estudiante) throw new NotFoundException(`El estudiante con el id ${id} no fue encontrado`);
+    return this.estudianteRepository.softDelete(id);
   }
 
-  async remove(id: string) {
-    const estudiante = await this.estudianteRepository.findOne({ where: { id } });
+  async restore(id: string) {
+    const estudiante = await this.estudianteRepository.findOne({ where: { id }, withDeleted: true });
     if (!estudiante) throw new NotFoundException(`El estudiante con el id ${id} no fue encontrado`);
-    return this.estudianteRepository.softRemove(estudiante);
+    return this.estudianteRepository.restore(id);
   }
 }
