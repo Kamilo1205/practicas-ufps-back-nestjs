@@ -58,7 +58,7 @@ export class EmpresasSolicitudesService {
       sortableColumns: ['id', 'empresa.nombreComercial', 'empresa.nombreLegal', 'fechaCreacion', 'fechaActualizacion', 'fechaEliminacion'],
       nullSort: 'last',
       searchableColumns: ['empresa.nombreComercial', 'empresa.nombreLegal', 'areasInteres.nombre', 'herramientas.nombre'],
-      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre' ],
+      relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones'],
       withDeleted: true,
       filterableColumns: {
         id: [FilterOperator.EQ, FilterSuffix.NOT],
