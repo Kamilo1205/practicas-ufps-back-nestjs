@@ -48,6 +48,12 @@ export class IndustriasService {
   async remove(id: string) {
     const industria = await this.industriaRepository.findOne({ where: { id }, withDeleted: true });
     if (!industria) throw new NotFoundException(`La ciudad con el id ${id} no fue encontrada`);
-    return this.industriaRepository.softRemove(industria);
+    return this.industriaRepository.softDelete(id);
+  }
+
+  async restore(id: string) {
+    const industria = await this.industriaRepository.findOne({ where: { id }, withDeleted: true });
+    if (!industria) throw new NotFoundException(`La ciudad con el id ${id} no fue encontrada`);
+    return this.industriaRepository.restore(id);
   }
 }
