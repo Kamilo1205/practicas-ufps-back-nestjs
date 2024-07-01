@@ -18,7 +18,7 @@ export class ActividadesController {
   @Get(':id')
   @Roles(Rol.Estudiante)
   findOne(@Param('id') id: string, @GetUser() usuario: Usuario) {
-    return this.actividadesService.findOne(id);
+    return this.actividadesService.findOne(id, usuario);
   }
 
   @Patch(':id')

@@ -40,8 +40,9 @@ import { EmpresasSolicitudesModule } from './empresas-solicitudes/empresas-solic
 import { AsignacionModule } from './asignacion/asignacion.module';
 import { PlanDeTrabajoModule } from './plan-de-trabajo/plan-de-trabajo.module';
 import { TutorInstitucionalModule } from './tutor-institucional/tutor-institucional.module';
-import { ActividadesModule } from './actividades/actividades.module';
 import { ObjetivosModule } from './objetivos/objetivos.module';
+import { ActividadesModule } from './actividades/actividades.module';
+import { SubActividadesModule } from './sub-actividades/sub-actividades.module';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { ObjetivosModule } from './objetivos/objetivos.module';
     TutorInstitucionalModule,
     ObjetivosModule,
     ActividadesModule,
+    SubActividadesModule
   ],
   controllers: [AppController],
   providers: [

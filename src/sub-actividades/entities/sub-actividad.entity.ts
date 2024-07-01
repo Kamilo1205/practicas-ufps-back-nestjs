@@ -1,7 +1,8 @@
-import { Column, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { Actividad } from 'src/actividades/entities/actividade.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
 
+@Entity()
 export class SubActividad extends BaseEntity {
   @Column({ type: 'text' })
   titulo: string;

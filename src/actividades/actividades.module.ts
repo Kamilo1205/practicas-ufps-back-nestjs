@@ -3,13 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Actividad } from './entities/actividade.entity';
 import { ActividadesService } from './actividades.service';
 import { ActividadesController } from './actividades.controller';
-import { PlanDeTrabajo } from 'src/plan-de-trabajo/entities/plan-de-trabajo.entity';
 import { SemestreModule } from 'src/semestre/semestre.module';
+import { PlanDeTrabajoModule } from 'src/plan-de-trabajo/plan-de-trabajo.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Actividad]),
-    PlanDeTrabajo,
+    PlanDeTrabajoModule,
     SemestreModule
   ],
   controllers: [ActividadesController],
