@@ -18,8 +18,8 @@ export class EmpresasSolicitudesController {
 
   @Get('/empresa')
   @Roles(Rol.Empresa)
-  findAllByEmpresa(@GetUser() usuario: Usuario) {
-    return this.empresasSolicitudesService.findAllByEmpresaId(usuario);
+  findAllByEmpresa(@Paginate() query: PaginateQuery, @GetUser() usuario: Usuario) {
+    return this.empresasSolicitudesService.findAllByEmpresaId(query, usuario);
   }
 
   @Get('/:id/empresa')

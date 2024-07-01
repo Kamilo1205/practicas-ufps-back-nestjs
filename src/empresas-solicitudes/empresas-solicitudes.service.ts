@@ -83,11 +83,24 @@ export class EmpresasSolicitudesService {
     return empresaSolicitud;
   }
 
-  findAllByEmpresaId(usuario: Usuario) {
-    return this.empresaSolicitudRepository.find({
-      where: { empresa: { id: usuario.empresa.id } },
+  findAllByEmpresaId(query: PaginateQuery, usuario: Usuario) {
+    return paginate(query, this.empresaSolicitudRepository, {
+      sortableColumns: ['id', 'empresa.nombreComercial', 'empresa.nombreLegal', 'fechaCreacion', 'fechaActualizacion', 'fechaEliminacion'],
+      nullSort: 'last',
+      searchableColumns: ['empresa.nombreComercial', 'empresa.nombreLegal', 'areasInteres.nombre', 'herramientas.nombre'],
       relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones', 'asignaciones.estudiante', 'asignaciones.tutor'],
       withDeleted: true,
+      filterableColumns: {
+        id: [FilterOperator.EQ, FilterSuffix.NOT],
+        "empreas.id": [FilterOperator.EQ],
+        "empresa.nombreComercial": [FilterOperator.EQ, FilterOperator.CONTAINS],
+        "empresa.nombreLegal": [FilterOperator.EQ, FilterOperator.CONTAINS],
+        "semestre.id": [FilterOperator.EQ],
+        "semestre.anio": [FilterOperator.EQ, FilterOperator.CONTAINS],
+        "areasInteres.nombre": [FilterOperator.EQ, FilterOperator.CONTAINS],
+        "herramientas.nombre": [FilterOperator.EQ, FilterOperator.CONTAINS],
+      },
+      where: { empresa: { id: usuario.empresa.id } }
     });
   }
 
