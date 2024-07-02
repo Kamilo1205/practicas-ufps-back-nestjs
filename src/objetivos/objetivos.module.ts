@@ -14,5 +14,6 @@ import { PlanDeTrabajoModule } from 'src/plan-de-trabajo/plan-de-trabajo.module'
   ],
   controllers: [ObjetivosController],
   providers: [ObjetivosService],
+  exports: [ObjetivosService]
 })
 export class ObjetivosModule {}
