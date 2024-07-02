@@ -3,9 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DirectorService } from './director.service';
 import { DirectorController } from './director.controller';
 import { Director } from './entities/director.entity';
+import { UsuariosModule } from 'src/usuarios/usuarios.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Director])],
+  imports: [
+    TypeOrmModule.forFeature([Director]),
+    UsuariosModule
+  ],
   controllers: [DirectorController],
   providers: [DirectorService],
   exports: [DirectorService]

@@ -3,19 +3,22 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDirectorDto, UpdateDirectorDto } from './dto';
 import { Director } from './entities/director.entity';
+import { UsuariosService } from 'src/usuarios/usuarios.service';
 
 @Injectable()
 export class DirectorService {
   constructor(
     @InjectRepository(Director)
     private readonly directorRepository: Repository<Director>,
+    private readonly usuarioService: UsuariosService
   ) {}
 
   async create(createDirectorDto: CreateDirectorDto) {
-    const { nombres, apellidos } = createDirectorDto;
+    const { nombres, apellidos, email } = createDirectorDto;
     const existingDirector = await this.directorRepository.findOne({ where: { nombres, apellidos } });
     if (existingDirector) throw new ConflictException(`Ya existe un director con los nombres ${nombres} y apellido ${apellidos}`);
-    return this.directorRepository.save(createDirectorDto);
+    const usuario = await this.usuarioService.createDirector(email, `${nombres} ${apellidos}`);
+    return this.directorRepository.save({ ...createDirectorDto, usuario });
   }
 
   findAll() {
