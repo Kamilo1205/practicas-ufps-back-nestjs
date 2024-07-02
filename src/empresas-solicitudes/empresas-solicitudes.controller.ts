@@ -47,7 +47,7 @@ export class EmpresasSolicitudesController {
   }
 
   @Delete(':id')
-  @Roles(Rol.Empresa, Rol.Administrador, Rol.Coordinador)
+  @Roles(Rol.Administrador, Rol.Coordinador)
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.empresasSolicitudesService.remove(id);
   }
