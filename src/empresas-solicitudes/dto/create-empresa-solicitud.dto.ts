@@ -1,4 +1,5 @@
 import { IsArray, IsBooleanString, IsNotEmpty, IsNumberString, IsUUID } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateEmpresaSolicitudDto { 
   @IsArray()
@@ -17,5 +18,6 @@ export class CreateEmpresaSolicitudDto {
   
   @IsBooleanString()
   @IsNotEmpty()
+  @Transform(({ value }) => value === 'true')
   esRenumerado: boolean;
 }
