@@ -22,10 +22,16 @@ export class EmpresasSolicitudesController {
     return this.empresasSolicitudesService.findAllByEmpresaId(query, usuario);
   }
 
-  @Get(':id/empresa')
+  @Get('empresa/:id')
   @Roles(Rol.Empresa)
   findOneByEmpresa(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
     return this.empresasSolicitudesService.findOneByEmpresaId(id, usuario);
+  }
+
+  @Delete('empresa/:id')
+  @Roles(Rol.Empresa)
+  removeByEmpresa(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
+    return this.empresasSolicitudesService.removeByEmpresa(id, usuario);
   }
 
   @Get()

@@ -117,4 +117,10 @@ export class EmpresasSolicitudesService {
     if (!empresaSolicitud) throw new NotFoundException(`La solicitud de empresa con id ${id} no fue encontrada`);
     return this.empresaSolicitudRepository.softDelete(id);
   }
+
+  async removeByEmpresa(id: string, usuario: Usuario) {
+    const empresaSolicitud = await this.empresaSolicitudRepository.findOne({ where: { id, empresa: { id: usuario.empresa.id } } });
+    if (!empresaSolicitud) throw new NotFoundException(`La solicitud de empresa con id ${id} no fue encontrada`);
+    return this.empresaSolicitudRepository.softDelete(id);
+  }
 }
