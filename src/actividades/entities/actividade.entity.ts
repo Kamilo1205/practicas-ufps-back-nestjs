@@ -32,4 +32,19 @@ export class Actividad extends BaseEntity {
 
   @OneToMany(() => Comentario, (comentario) => comentario.actividad)
   comentarios: Comentario[];
+
+  @Column({ type: 'text', nullable: true })
+  estrategiaDesarrollo: string;
+
+  @Column({ type: 'text', nullable: true })
+  recursosUtilizados: string;
+
+  @Column({ type: 'text', nullable: true })
+  resultadosObtenidos: string;
+
+  @Column({ type: 'text', nullable: true })
+  impactosPercibidos: string;
+
+  @Column({ type: 'text', nullable: true })
+  limitaciones: string;
 }
