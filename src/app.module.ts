@@ -43,6 +43,7 @@ import { TutorInstitucionalModule } from './tutor-institucional/tutor-institucio
 import { ObjetivosModule } from './objetivos/objetivos.module';
 import { ActividadesModule } from './actividades/actividades.module';
 import { SubActividadesModule } from './sub-actividades/sub-actividades.module';
+import { IntensidadHorariaModule } from './intensidad-horaria/intensidad-horaria.module';
 
 @Module({
   imports: [
@@ -87,7 +88,8 @@ import { SubActividadesModule } from './sub-actividades/sub-actividades.module';
     TutorInstitucionalModule,
     ObjetivosModule,
     ActividadesModule,
-    SubActividadesModule
+    SubActividadesModule,
+    IntensidadHorariaModule
   ],
   controllers: [AppController],
   providers: [

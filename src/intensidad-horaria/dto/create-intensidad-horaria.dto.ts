@@ -1,6 +1,6 @@
 import { IsArray, ArrayMinSize, ArrayMaxSize, IsNumberString, IsNotEmpty } from 'class-validator';
 
-export class CreateIntensidadHorarioDto {
+export class CreateIntensidadHorariaDto {
   @IsArray()
   @ArrayMinSize(8)
   @ArrayMaxSize(8)

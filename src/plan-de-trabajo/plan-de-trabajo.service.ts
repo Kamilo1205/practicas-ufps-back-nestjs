@@ -29,7 +29,7 @@ export class PlanDeTrabajoService {
   async findAllSemestreActual() {
     const semestreActual = await this.semestreService.getSemestreActual();
     return this.planDeTrabajoRepository.find({ 
-      relations: ['estudiante', 'actividades', 'intensidadHorario'], 
+      relations: ['estudiante', 'actividades', 'objetivo', 'intensidadHoraria'], 
       withDeleted: true, 
       where: { semestre: { id: semestreActual.id } }
     });
@@ -38,7 +38,7 @@ export class PlanDeTrabajoService {
   async findOne(id: string) {
     const planDeTrabajo = await this.planDeTrabajoRepository.findOne({ 
       where: { id }, 
-      relations: ['estudiante', 'actividades', 'intensidadHorario'], 
+      relations: ['estudiante', 'actividades', 'objetivo', 'intensidadHoraria'], 
       withDeleted: true
     });
     if (!planDeTrabajo) throw new NotFoundException(`PlanDeTrabajo con ID ${id} no encontrado`);
@@ -48,7 +48,7 @@ export class PlanDeTrabajoService {
   async findOneMe(id: string, usuario: Usuario) {
     const planDeTrabajo = await this.planDeTrabajoRepository.findOne({ 
       where: { id, estudiante: { id: usuario.estudiante.id } }, 
-      relations: ['actividades', 'intensidadHorario'], 
+      relations: ['actividades', 'objetivo', 'intensidadHoraria'], 
       withDeleted: true
     });
     if (!planDeTrabajo) throw new NotFoundException(`PlanDeTrabajo con ID ${id} no encontrado`);
@@ -65,7 +65,7 @@ export class PlanDeTrabajoService {
 
   async findOneByEstudiante(id: string, usuario: Usuario) {
     return this.planDeTrabajoRepository.findOne({ 
-      relations: ['estudiante', 'intensidadHorario'], 
+      relations: ['objetivo', 'actividades', 'intensidadHoraria'], 
       withDeleted: true,
       where: { id, estudiante: { id: usuario.estudiante.id } } 
     });
@@ -74,7 +74,7 @@ export class PlanDeTrabajoService {
   async findOneByEstudianteBySemestreActual(usuario: Usuario) {
     const semestreActual = await this.semestreService.getSemestreActual();
     return this.planDeTrabajoRepository.findOne({ 
-      relations: ['actividades', 'objetivo'], 
+      relations: ['actividades', 'objetivo', 'intensidadHoraria'], 
       withDeleted: true, 
       where: { estudiante: { id: usuario.estudiante.id}, semestre: { id: semestreActual.id } }
     });

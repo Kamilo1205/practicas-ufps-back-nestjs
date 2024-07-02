@@ -4,6 +4,7 @@ import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 import { Semestre } from 'src/semestre/entities/semestre.entity';
 import { Objetivo } from 'src/objetivos/entities/objetivo.entity';
 import { Actividad } from 'src/actividades/entities/actividade.entity';
+import { IntensidadHoraria } from 'src/intensidad-horaria/entities/intensidad-horaria.entity';
 
 @Entity()
 export class PlanDeTrabajo extends BaseEntity {
@@ -17,9 +18,9 @@ export class PlanDeTrabajo extends BaseEntity {
   @ManyToOne(() => Estudiante, (estudiante) => estudiante.planesDeTrabajo)
   estudiante: Estudiante;
 
-  //@OneToOne(() => IntensidadHoraria, { cascade: true })
-  //@JoinColumn()
-  //intensidadHorario: IntensidadHoraria;
+  @OneToOne(() => IntensidadHoraria, (intensidadHoraria) => intensidadHoraria.planDeTrabajo , { cascade: true })
+  @JoinColumn()
+  intensidadHoraria: IntensidadHoraria;
 
   @ManyToOne(() => Semestre, (semestre) => semestre.planesDeTrabajo)
   semestre: Semestre;
