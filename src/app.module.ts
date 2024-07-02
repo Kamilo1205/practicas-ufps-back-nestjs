@@ -44,6 +44,7 @@ import { ObjetivosModule } from './objetivos/objetivos.module';
 import { ActividadesModule } from './actividades/actividades.module';
 import { SubActividadesModule } from './sub-actividades/sub-actividades.module';
 import { IntensidadHorariaModule } from './intensidad-horaria/intensidad-horaria.module';
+import { ComentariosModule } from './comentarios/comentarios.module';
 
 @Module({
   imports: [
@@ -89,7 +90,8 @@ import { IntensidadHorariaModule } from './intensidad-horaria/intensidad-horaria
     ObjetivosModule,
     ActividadesModule,
     SubActividadesModule,
-    IntensidadHorariaModule
+    IntensidadHorariaModule,
+    ComentariosModule
   ],
   controllers: [AppController],
   providers: [

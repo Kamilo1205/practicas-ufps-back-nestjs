@@ -28,8 +28,17 @@ export class PlanDeTrabajoService {
 
   async findAllSemestreActual() {
     const semestreActual = await this.semestreService.getSemestreActual();
-    return this.planDeTrabajoRepository.find({ 
-      relations: ['estudiante', 'actividades', 'objetivo', 'intensidadHoraria'], 
+    return this.planDeTrabajoRepository.findOne({ 
+      relations: [
+        'estudiante', 
+        'actividades',
+        'actividades.comentarios', 
+        'actividades.subActividades', 
+        'actividades.subActividades.comentarios', 
+        'objetivo',
+        'objetivo.comentarios', 
+        'intensidadHoraria'
+      ], 
       withDeleted: true, 
       where: { semestre: { id: semestreActual.id } }
     });
@@ -38,7 +47,16 @@ export class PlanDeTrabajoService {
   async findOne(id: string) {
     const planDeTrabajo = await this.planDeTrabajoRepository.findOne({ 
       where: { id }, 
-      relations: ['estudiante', 'actividades', 'objetivo', 'intensidadHoraria'], 
+      relations: [
+        'estudiante', 
+        'actividades',
+        'actividades.comentarios', 
+        'actividades.subActividades', 
+        'actividades.subActividades.comentarios', 
+        'objetivo',
+        'objetivo.comentarios', 
+        'intensidadHoraria'
+      ], 
       withDeleted: true
     });
     if (!planDeTrabajo) throw new NotFoundException(`PlanDeTrabajo con ID ${id} no encontrado`);
@@ -48,7 +66,16 @@ export class PlanDeTrabajoService {
   async findOneMe(id: string, usuario: Usuario) {
     const planDeTrabajo = await this.planDeTrabajoRepository.findOne({ 
       where: { id, estudiante: { id: usuario.estudiante.id } }, 
-      relations: ['actividades', 'objetivo', 'intensidadHoraria'], 
+      relations: [
+        'estudiante', 
+        'actividades',
+        'actividades.comentarios', 
+        'actividades.subActividades', 
+        'actividades.subActividades.comentarios', 
+        'objetivo',
+        'objetivo.comentarios', 
+        'intensidadHoraria'
+      ], 
       withDeleted: true
     });
     if (!planDeTrabajo) throw new NotFoundException(`PlanDeTrabajo con ID ${id} no encontrado`);

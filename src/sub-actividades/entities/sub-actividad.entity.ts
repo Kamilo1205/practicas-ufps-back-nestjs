@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Actividad } from 'src/actividades/entities/actividade.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
+import { Comentario } from 'src/comentarios/entities/comentario.entity';
 
 @Entity()
 export class SubActividad extends BaseEntity {
@@ -24,4 +25,7 @@ export class SubActividad extends BaseEntity {
 
   @ManyToOne(() => Actividad, (actividad) => actividad.subActividades)
   actividad: Actividad;
+
+  @OneToMany(() => Comentario, (comentario) => comentario.actividad)
+  comentarios: Comentario[];
 }

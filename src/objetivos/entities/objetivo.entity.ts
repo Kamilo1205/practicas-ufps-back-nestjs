@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { PlanDeTrabajo } from 'src/plan-de-trabajo/entities/plan-de-trabajo.entity';
+import { Comentario } from 'src/comentarios/entities/comentario.entity';
 
 @Entity()
 export class Objetivo extends BaseEntity {
@@ -22,6 +23,6 @@ export class Objetivo extends BaseEntity {
   @OneToOne(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.objetivo)
   planDeTrabajo: PlanDeTrabajo;
 
-  //@OneToMany(() => Comentario, (comentario) => comentario.objetivo)
-  //comentarios: Comentario[];
+  @OneToMany(() => Comentario, (comentario) => comentario.objetivo)
+  comentarios: Comentario[];
 }
