@@ -24,4 +24,24 @@ export class CreateActividadeDto {
   @IsNumberString()
   @IsOptional()
   porcentajeCompletado: string;
+
+  @IsString()
+  @IsOptional()
+  estrategiaDesarrollo: string;
+  
+  @IsString()
+  @IsOptional()
+  recursosUtilizados: string;
+  
+  @IsString()
+  @IsOptional()
+  resultadosObtenidos: string;
+  
+  @IsString()
+  @IsOptional()
+  impactosPercibidos: string;
+  
+  @IsString()
+  @IsOptional()
+  limitaciones: string;
 }
