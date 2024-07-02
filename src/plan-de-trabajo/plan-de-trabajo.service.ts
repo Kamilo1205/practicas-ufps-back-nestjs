@@ -100,17 +100,13 @@ export class PlanDeTrabajoService {
 
   async findOneByEstudianteBySemestreActual(usuario: Usuario) {
     const semestreActual = await this.semestreService.getSemestreActual();
-    return this.planDeTrabajoRepository.findOne({ 
-      relations: ['actividades', 'objetivo', 'intensidadHoraria'], 
-      withDeleted: true, 
-      where: { estudiante: { id: usuario.estudiante.id}, semestre: { id: semestreActual.id } }
-    });
+    return this.findOrCreatePlanDeTrabajo(usuario.estudiante.id, semestreActual.id);
   }
 
   async findOrCreatePlanDeTrabajo(estudianteId: string, semestreId: string) {
     let planDeTrabajo = await this.planDeTrabajoRepository.findOne({
       where: { estudiante: { id: estudianteId }, semestre: { id: semestreId } },
-      relations: ['objetivo'],
+      relations: ['actividades', 'objetivo', 'intensidadHoraria'],
     });
 
     if (!planDeTrabajo) {
