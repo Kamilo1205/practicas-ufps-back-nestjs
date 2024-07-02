@@ -6,6 +6,7 @@ import { Rol } from 'src/roles/entities/rol.entity';
 import { Tutor } from 'src/tutores/entities/tutor.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { TutorInstitucional } from 'src/tutor-institucional/entities/tutor-institucional.entity';
+import { Comentario } from 'src/comentarios/entities/comentario.entity';
 
 @Entity() // Define que esta clase es una entidad de la base de datos.
 export class Usuario extends BaseEntity {
@@ -55,6 +56,6 @@ export class Usuario extends BaseEntity {
   @Transform(({ value }) => (value ? value : undefined))
   tutorInstitucional: TutorInstitucional;
 
-  //@OneToMany(() => Comentario, (comentario) => comentario.autor)
-  //comentarios: Comentario[];
+  @OneToMany(() => Comentario, (comentario) => comentario.autor)
+  comentarios: Comentario[];
 }

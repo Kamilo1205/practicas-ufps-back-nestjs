@@ -16,12 +16,18 @@ export class SubActividadesService {
 
   async create(createSubActividadDto: CreateSubActividadDto, usuario: Usuario) {
     const { actividadId } = createSubActividadDto;
-    const actividad = await this.actividadService.findOne(actividadId, usuario);
+    const actividad = await this.actividadService.findOneByUsuario(actividadId, usuario);
     const subActividad = this.subActividadRepository.create({ ...createSubActividadDto, actividad });
     return this.subActividadRepository.save(subActividad);
   }
 
-  async findOne(id: string, usuario: Usuario) {
+  async findOne(id: string) {
+    const subActividad = await this.subActividadRepository.findOne({ where: { id } });
+    if (!subActividad) throw new NotFoundException(`SubActividad con id ${id} no encontrada`);
+    return subActividad;
+  }
+
+  async findOneByUsuario(id: string, usuario: Usuario) {
     const subActividad = await this.subActividadRepository.findOne({ where: { id, actividad: { planDeTrabajo: { estudiante: { id: usuario.estudiante.id } } } } });
     if (!subActividad) throw new NotFoundException(`SubActividad con id ${id} no encontrada`);
     return subActividad;

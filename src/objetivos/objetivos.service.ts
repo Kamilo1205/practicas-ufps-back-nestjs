@@ -30,6 +30,12 @@ export class ObjetivosService {
     return this.objetivoRepository.save(objetivos);
   }
 
+  async findOne(id: string) {
+    const objetivo = await this.objetivoRepository.findOne({ where: { id } });
+    if (!objetivo) throw new NotFoundException(`Objetivos con el id ${id} no encontrados`);
+    return objetivo;
+  }
+
   async update(
     id: string,
     updateObjetivoDto: UpdateObjetivoDto,

@@ -18,7 +18,7 @@ export class SubActividadesController {
   @Get(':id')
   @Roles(Rol.Estudiante)
   findOne(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
-    return this.subActividadesService.findOne(id, usuario);
+    return this.subActividadesService.findOneByUsuario(id, usuario);
   }
 
   @Patch(':id')

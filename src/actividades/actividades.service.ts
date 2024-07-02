@@ -23,7 +23,16 @@ export class ActividadesService {
     return this.actividadRepository.save(actividad);
   }
 
-  async findOne(id: string, usuario: Usuario) {
+  async findOne(id: string) {
+    const actividad = await this.actividadRepository.findOne({ 
+      where: { id },
+      relations: ['subActividades', 'subActividades.comentarios', 'comentarios']
+    });
+    if (!actividad) throw new NotFoundException(`La actividad con el id ${id} no fue encontrada`);
+    return actividad;
+  }
+
+  async findOneByUsuario(id: string, usuario: Usuario) {
     const actividad = await this.actividadRepository.findOne({ 
       where: { id, planDeTrabajo: { estudiante: { id: usuario.estudiante.id } } },
       relations: ['subActividades', 'subActividades.comentarios', 'comentarios']
