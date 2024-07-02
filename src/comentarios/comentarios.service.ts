@@ -44,8 +44,8 @@ export class ComentariosService {
     return this.comentarioRepository.save(comentario);
   }
 
-  async remove(id: string) {
-    const comentario = await this.comentarioRepository.findOne({ where: { id } });
+  async remove(id: string, usuario: Usuario) {
+    const comentario = await this.comentarioRepository.findOne({ where: { id, autor: { id: usuario.id } } });
     if (!comentario) throw new NotFoundException(`Comentario con id ${id} no encontrado`);
     return this.comentarioRepository.delete(id);
   }
