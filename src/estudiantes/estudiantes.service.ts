@@ -148,6 +148,18 @@ export class EstudiantesService {
     });
   }
 
+  async findAllSemestreActual() {
+    const semestreActual = await this.semestreService.getSemestreActual();
+    return this.estudianteRepository.find({
+      where: {
+        semestres: {
+          id: semestreActual.id
+        }
+      },
+      relations: ['semestres', 'areasInteres', 'herramientas']
+    });
+  }
+
   async remove(id: string) {
     const estudiante = await this.estudianteRepository.findOne({ where: { id }, withDeleted: true });
     if (!estudiante) throw new NotFoundException(`El estudiante con el id ${id} no fue encontrado`);

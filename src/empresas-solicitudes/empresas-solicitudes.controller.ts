@@ -40,6 +40,12 @@ export class EmpresasSolicitudesController {
     return this.empresasSolicitudesService.findAll(query);
   }
 
+  @Get(':id/mejores-estudiantes')
+  @Roles(Rol.Administrador, Rol.Coordinador)
+  findBestMatchesForSolicitud(@Param('id') solicitudId: string) {
+    return this.empresasSolicitudesService.findBestMatchesForSolicitud(solicitudId);
+  }
+
   @Get(':id')
   @Roles(Rol.Administrador, Rol.Coordinador, Rol.Director)
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {

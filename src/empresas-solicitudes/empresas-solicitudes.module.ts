@@ -7,6 +7,7 @@ import { EmpresasModule } from 'src/empresas/empresas.module';
 import { SemestreModule } from 'src/semestre/semestre.module';
 import { AreasInteresModule } from 'src/areas-interes/areas-interes.module';
 import { HerramientasModule } from 'src/herramientas/herramientas.module';
+import { EstudiantesModule } from 'src/estudiantes/estudiantes.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { HerramientasModule } from 'src/herramientas/herramientas.module';
     EmpresasModule,
     SemestreModule,
     AreasInteresModule,
-    HerramientasModule
+    HerramientasModule,
+    EstudiantesModule
   ],
   controllers: [EmpresasSolicitudesController],
   providers: [EmpresasSolicitudesService],

@@ -9,6 +9,8 @@ import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { SemestreService } from 'src/semestre/semestre.service';
 import { AreasInteresService } from 'src/areas-interes/areas-interes.service';
 import { HerramientasService } from 'src/herramientas/herramientas.service';
+import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
+import { EstudiantesService } from 'src/estudiantes/estudiantes.service';
 
 @Injectable()
 export class EmpresasSolicitudesService {
@@ -18,7 +20,8 @@ export class EmpresasSolicitudesService {
     private readonly empresaService: EmpresasService,
     private readonly semestreService: SemestreService,
     private readonly areasInteresService: AreasInteresService,
-    private readonly herramientasService: HerramientasService
+    private readonly herramientasService: HerramientasService,
+    private readonly estudiantesService: EstudiantesService
   ) {}
 
   async create(createEmpresasSolicitudeDto: CreateEmpresaSolicitudDto, usuario: Usuario) {
@@ -110,6 +113,40 @@ export class EmpresasSolicitudesService {
       relations: ['areasInteres', 'empresa', 'herramientas', 'semestre', 'asignaciones', 'asignaciones.estudiante', 'asignaciones.tutor'],
       withDeleted: true,
     });
+  }
+
+  async findBestMatchesForSolicitud(solicitudId: string): Promise<{ estudiante: Estudiante; score: number }[]> {
+    const solicitud = await this.empresaSolicitudRepository.findOne({ 
+      where: { id: solicitudId },
+      relations: ['areasInteres', 'herramientas'] 
+    });
+    const estudiantes = await this.estudiantesService.findAllSemestreActual();
+
+    const matches = estudiantes.map(estudiante => ({
+      estudiante,
+      score: this.calculateMatchScore(estudiante, solicitud),
+    }));
+
+    matches.sort((a, b) => b.score - a.score);
+    return matches;
+  }
+
+  calculateMatchScore(estudiante: Estudiante, solicitud: EmpresaSolicitud): number {
+    let score = 0;
+    // Calcular puntaje de áreas de interés
+    for (const estArea of estudiante.estudianteAreaInteres) {
+      const empArea = solicitud.areasInteres.find(area => area.id === estArea.areaInteres.id);
+      if (empArea && estArea.nivelInteres > 3) {
+        score += estArea.nivelInteres; // Nivel de interés del estudiante
+      }
+    }
+    // Calcular puntaje de herramientas
+    for (const estHerramienta of estudiante.herramientas) {
+      if (solicitud.herramientas.some(herr => herr.id === estHerramienta.id)) {
+        score += 1; // Puntuación para herramientas coincidentes
+      }
+    }
+    return score;
   }
 
   async remove(id: string) {
