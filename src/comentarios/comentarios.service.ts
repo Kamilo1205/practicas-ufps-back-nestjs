@@ -22,23 +22,19 @@ export class ComentariosService {
 
   async create(createComentarioDto: CreateComentarioDto, usuario: Usuario) {
     const autor = await this.usuariosService.findOne(usuario.id);
-    const { actividadId, objetivoId, subActividadId } = createComentarioDto;
-    let [actividad, objetivo, subActividad] = [null, null, null];
+    const { seccionActividadesId, objetivoId } = createComentarioDto;
+    let [seccionActividades, objetivo] = [null, null];
     
-    if (actividadId) 
-      actividad = this.actividadesService.findOne(actividadId);
+    if (seccionActividadesId) 
+      seccionActividades = this.actividadesService.findOne(seccionActividadesId);
     
     if (objetivoId) 
       objetivo = this.objetivosService.findOne(objetivoId);
     
-    if (subActividadId) 
-      subActividad = this.subActividadesService.findOne(subActividadId);
-    
     const comentario = this.comentarioRepository.create({
       ...createComentarioDto,
-      actividad, 
+      seccionActividades, 
       objetivo, 
-      subActividad,
       autor
     });
     return this.comentarioRepository.save(comentario);

@@ -11,9 +11,5 @@ export class CreateComentarioDto {
   
   @IsOptional()
   @IsString()
-  actividadId?: string;  
-  
-  @IsOptional()
-  @IsString()
-  subActividadId?: string;
+  seccionActividadesId?: string;  
 }
