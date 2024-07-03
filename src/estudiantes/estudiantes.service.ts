@@ -156,7 +156,7 @@ export class EstudiantesService {
           id: semestreActual.id
         }
       },
-      relations: ['semestres', 'areasInteres', 'herramientas']
+      relations: ['semestres', 'estudianteAreaInteres', 'herramientas']
     });
   }
 
