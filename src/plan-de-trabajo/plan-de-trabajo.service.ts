@@ -31,10 +31,10 @@ export class PlanDeTrabajoService {
     return this.planDeTrabajoRepository.findOne({ 
       relations: [
         'estudiante', 
-        'actividades',
-        'actividades.comentarios', 
-        'actividades.subActividades', 
-        'actividades.subActividades.comentarios', 
+        'seccionActividades',
+        'seccionActividades.comentarios', 
+        'seccionActividades.subActividades', 
+        'seccionActividades.subActividades.comentarios', 
         'objetivo',
         'objetivo.comentarios', 
         'intensidadHoraria'
@@ -49,10 +49,10 @@ export class PlanDeTrabajoService {
       where: { id }, 
       relations: [
         'estudiante', 
-        'actividades',
-        'actividades.comentarios', 
-        'actividades.subActividades', 
-        'actividades.subActividades.comentarios', 
+        'seccionActividades',
+        'seccionActividades.comentarios', 
+        'seccionActividades.subActividades', 
+        'seccionActividades.subActividades.comentarios', 
         'objetivo',
         'objetivo.comentarios', 
         'intensidadHoraria'
@@ -68,10 +68,10 @@ export class PlanDeTrabajoService {
       where: { id, estudiante: { id: usuario.estudiante.id } }, 
       relations: [
         'estudiante', 
-        'actividades',
-        'actividades.comentarios', 
-        'actividades.subActividades', 
-        'actividades.subActividades.comentarios', 
+        'seccionActividades',
+        'seccionActividades.comentarios', 
+        'seccionActividades.actividades',
+        'seccionActividades.actividades.subActividades', 
         'objetivo',
         'objetivo.comentarios', 
         'intensidadHoraria'
@@ -84,7 +84,7 @@ export class PlanDeTrabajoService {
 
   async findAllByEstudiante(usuario: Usuario) {
     return this.planDeTrabajoRepository.find({ 
-      relations: ['actividades', 'objetivo'], 
+      relations: ['seccionActividades', 'objetivo'], 
       withDeleted: true,
       where: { estudiante: { id: usuario.estudiante.id } } 
     });
@@ -92,7 +92,7 @@ export class PlanDeTrabajoService {
 
   async findOneByEstudiante(id: string, usuario: Usuario) {
     return this.planDeTrabajoRepository.findOne({ 
-      relations: ['objetivo', 'actividades', 'intensidadHoraria'], 
+      relations: ['objetivo', 'seccionActividades', 'intensidadHoraria'], 
       withDeleted: true,
       where: { id, estudiante: { id: usuario.estudiante.id } } 
     });
@@ -106,7 +106,7 @@ export class PlanDeTrabajoService {
   async findOrCreatePlanDeTrabajo(estudianteId: string, semestreId: string) {
     let planDeTrabajo = await this.planDeTrabajoRepository.findOne({
       where: { estudiante: { id: estudianteId }, semestre: { id: semestreId } },
-      relations: ['actividades', 'objetivo', 'intensidadHoraria'],
+      relations: ['seccionActividades', 'objetivo', 'intensidadHoraria'],
     });
 
     if (!planDeTrabajo) {

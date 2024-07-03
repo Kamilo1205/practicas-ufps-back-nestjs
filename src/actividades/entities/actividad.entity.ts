@@ -3,6 +3,7 @@ import { BaseEntity } from 'src/common/entities/base.entity';
 import { PlanDeTrabajo } from 'src/plan-de-trabajo/entities/plan-de-trabajo.entity';
 import { SubActividad } from 'src/sub-actividades/entities/sub-actividad.entity';
 import { Comentario } from 'src/comentarios/entities/comentario.entity';
+import { SeccionActividades } from './seccion-actividades.entity';
 
 @Entity()
 export class Actividad extends BaseEntity {
@@ -24,15 +25,6 @@ export class Actividad extends BaseEntity {
   @Column({ type: 'text', default: '0' })
   porcentajeCompletado: string;
 
-  @ManyToOne(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.actividades)
-  planDeTrabajo: PlanDeTrabajo;
-
-  @OneToMany(() => SubActividad, (subActividad) => subActividad.actividad)
-  subActividades: SubActividad[];
-
-  @OneToMany(() => Comentario, (comentario) => comentario.actividad)
-  comentarios: Comentario[];
-
   @Column({ type: 'text', nullable: true })
   estrategiaDesarrollo: string;
 
@@ -47,4 +39,10 @@ export class Actividad extends BaseEntity {
 
   @Column({ type: 'text', nullable: true })
   limitaciones: string;
+
+  @OneToMany(() => SubActividad, (subActividad) => subActividad.actividad)
+  subActividades: SubActividad[];
+
+  @ManyToOne(() => SeccionActividades, (seccionActividades) => seccionActividades.actividades)
+  seccionActividades: SeccionActividades;
 }

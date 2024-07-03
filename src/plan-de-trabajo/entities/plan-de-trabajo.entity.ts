@@ -3,8 +3,8 @@ import { BaseEntity } from 'src/common/entities/base.entity';
 import { Estudiante } from 'src/estudiantes/entities/estudiante.entity';
 import { Semestre } from 'src/semestre/entities/semestre.entity';
 import { Objetivo } from 'src/objetivos/entities/objetivo.entity';
-import { Actividad } from 'src/actividades/entities/actividade.entity';
 import { IntensidadHoraria } from 'src/intensidad-horaria/entities/intensidad-horaria.entity';
+import { SeccionActividades } from 'src/actividades/entities/seccion-actividades.entity';
 
 @Entity()
 export class PlanDeTrabajo extends BaseEntity {
@@ -12,8 +12,9 @@ export class PlanDeTrabajo extends BaseEntity {
   @JoinColumn()
   objetivo: Objetivo;
 
-  @OneToMany(() => Actividad, (actividad) => actividad.planDeTrabajo)
-  actividades: Actividad[];
+  @OneToOne(() => SeccionActividades, (seccionActividades) => seccionActividades.planDeTrabajo)
+  @JoinColumn()
+  seccionActividades: SeccionActividades;
 
   @ManyToOne(() => Estudiante, (estudiante) => estudiante.planesDeTrabajo)
   estudiante: Estudiante;

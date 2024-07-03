@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { Actividad } from 'src/actividades/entities/actividade.entity';
+import { Actividad } from 'src/actividades/entities/actividad.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Comentario } from 'src/comentarios/entities/comentario.entity';
 
