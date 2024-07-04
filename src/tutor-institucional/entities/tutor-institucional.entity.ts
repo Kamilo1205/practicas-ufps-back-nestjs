@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
@@ -11,5 +11,6 @@ export class TutorInstitucional extends BaseEntity {
   apellidos: string;
 
   @OneToOne(() => Usuario, (usuario) => usuario, { eager: true })
+  @JoinColumn()
   usuario: Usuario;
 }
