@@ -28,9 +28,10 @@ export class GrupoPracticasController {
   @Patch(':grupoId/tutor/:tutorId')
   async asignarTutor(
     @Param('grupoId', new ParseUUIDPipe()) grupoId: string, 
-    @Param('tutorId', new ParseUUIDPipe()) tutorId: string
+    @Param('tutorId') tutorId: string
   ) {
-    return this.grupoPracticasService.asignarTutor(grupoId, tutorId);
+    const tutorIdValue = tutorId === 'null' ? null : tutorId;
+    return this.grupoPracticasService.asignarTutor(grupoId, tutorIdValue);
   }
 
   @Patch(':id')

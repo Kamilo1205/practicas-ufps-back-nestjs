@@ -30,11 +30,14 @@ export class GrupoPracticasService {
     return grupoPractica;
   }
 
-  async asignarTutor(grupoId: string, tutorId: string) {
+  async asignarTutor(grupoId: string, tutorId: string | null) {
     const grupoPractica = await this.grupoPracticaRepository.findOne({ where: { id: grupoId } });
     if (!grupoPractica) throw new NotFoundException(`El grupo de practicas con id ${grupoId} no encontrado`);
 
-    const tutor = await this.tutorInstitucionalService.findOne(tutorId);
+    let tutor = null;
+    if (tutorId !== null) { 
+      tutor = await this.tutorInstitucionalService.findOne(tutorId);
+    }
     return this.grupoPracticaRepository.update(grupoId, { tutor });
   }
 
