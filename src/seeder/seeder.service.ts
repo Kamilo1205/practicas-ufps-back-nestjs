@@ -93,29 +93,29 @@ export class SeederService {
 
   private async createEstudiante() {
     //const estudiantes = await this.estudiantesService.findAll('');
-    const usuarios = await this.usuariosService.findAll();
-    
-    console.log(usuarios);
-    const usuario = usuarios.data.find((usuario) => 
-      usuario.roles.some(rol => rol.nombre == 'estudiante')
-    );
-    console.log(usuario);
-    
-    const paises = await this.paisesService.findAll();
-    let pais = null;
-    if (paises.length == 0) {
-      pais = await this.paisesService.create({ nombre: 'Colombia '});
-    } else {
-      pais = paises[0];
-    }
-    
-    const departamentos = await this.departamentoService.findAll();
-    let departamento = null;
-    if (departamentos.length == 0) {
-      departamento = await this.departamentoService.create({ nombre: 'Norte de Santander', paisId: pais.id });
-    } else {
-      departamento = departamentos[0];
-    }
+    //const usuarios = await this.usuariosService.findAll();
+    //
+    //console.log(usuarios);
+    //const usuario = usuarios.data.find((usuario) => 
+    //  usuario.roles.some(rol => rol.nombre == 'estudiante')
+    //);
+    //console.log(usuario);
+    //
+    //const paises = await this.paisesService.findAll();
+    //let pais = null;
+    //if (paises.length == 0) {
+    //  pais = await this.paisesService.create({ nombre: 'Colombia '});
+    //} else {
+    //  pais = paises[0];
+    //}
+    //
+    //const departamentos = await this.departamentoService.findAll();
+    //let departamento = null;
+    //if (departamentos.length == 0) {
+    //  departamento = await this.departamentoService.create({ nombre: 'Norte de Santander', paisId: pais.id });
+    //} else {
+    //  departamento = departamentos[0];
+    //}
     
     //const ciudades = (await this.ciudadesService.findAll()).data.length;
     //let ciudad = null;
