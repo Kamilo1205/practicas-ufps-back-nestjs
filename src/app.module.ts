@@ -47,7 +47,6 @@ import { IntensidadHorariaModule } from './intensidad-horaria/intensidad-horaria
 import { ComentariosModule } from './comentarios/comentarios.module';
 import { GrupoPracticasModule } from './grupo-practicas/grupo-practicas.module';
 import { DirectorModule } from './director/director.module';
-import { PlanDeTrabajoObjetivosModule } from './plan-de-trabajo-objetivos/plan-de-trabajo-objetivos.module';
 import { InformeModule } from './informe/informe.module';
 
 @Module({
@@ -98,7 +97,6 @@ import { InformeModule } from './informe/informe.module';
     ComentariosModule,
     GrupoPracticasModule,
     DirectorModule,
-    PlanDeTrabajoObjetivosModule,
     InformeModule
   ],
   controllers: [AppController],
