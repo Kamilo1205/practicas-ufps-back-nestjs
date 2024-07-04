@@ -26,7 +26,7 @@ export class TutorInstitucionalController {
     return this.tutorInstitucionalService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch(':id/restore')
   @Roles(Rol.Administrador, Rol.Coordinador)
   restore(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.tutorInstitucionalService.restore(id);
