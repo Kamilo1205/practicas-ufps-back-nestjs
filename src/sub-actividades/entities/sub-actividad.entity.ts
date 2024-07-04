@@ -25,7 +25,4 @@ export class SubActividad extends BaseEntity {
 
   @ManyToOne(() => Actividad, (actividad) => actividad.subActividades)
   actividad: Actividad;
-
-  @OneToMany(() => Comentario, (comentario) => comentario.actividad)
-  comentarios: Comentario[];
 }
