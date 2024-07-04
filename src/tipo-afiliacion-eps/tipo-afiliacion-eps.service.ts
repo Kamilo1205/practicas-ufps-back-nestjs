@@ -16,7 +16,7 @@ export class TipoAfiliacionEpsService {
     const { nombre } = createTipoAfiliacionEpsDto;
     const tipoAfiliacion = await this.tipoAfiliacionEpsRepository.findOneBy({ nombre });
     if (tipoAfiliacion) throw new TipoAfiliacionEpsExistsException(nombre);
-    return this.tipoAfiliacionEpsRepository.create(createTipoAfiliacionEpsDto);
+    return this.tipoAfiliacionEpsRepository.save(createTipoAfiliacionEpsDto);
   }
 
   findAll() {
