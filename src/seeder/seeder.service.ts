@@ -92,62 +92,36 @@ export class SeederService {
   }
 
   private async createEstudiante() {
-    //const estudiantes = await this.estudiantesService.findAll('');
-    //const usuarios = await this.usuariosService.findAll();
-    //
-    //console.log(usuarios);
-    //const usuario = usuarios.data.find((usuario) => 
-    //  usuario.roles.some(rol => rol.nombre == 'estudiante')
-    //);
-    //console.log(usuario);
-    //
-    //const paises = await this.paisesService.findAll();
-    //let pais = null;
-    //if (paises.length == 0) {
-    //  pais = await this.paisesService.create({ nombre: 'Colombia '});
-    //} else {
-    //  pais = paises[0];
-    //}
-    //
-    //const departamentos = await this.departamentoService.findAll();
-    //let departamento = null;
-    //if (departamentos.length == 0) {
-    //  departamento = await this.departamentoService.create({ nombre: 'Norte de Santander', paisId: pais.id });
-    //} else {
-    //  departamento = departamentos[0];
-    //}
-    
-    //const ciudades = (await this.ciudadesService.findAll()).data.length;
-    //let ciudad = null;
-    //if (ciudades.length == 0) {
-    //  await this.ciudadesService.create({ nombre: 'Cucuta', departamentoId: departamento.id });
-    //} else {
-    //  ciudad = ciudades[0];
-    //}
-    
-    //if (estudiantes.length === 0) {
-    //  await this.estudiantesService.create({
-    //    codigo: 147852,
-    //    direccionResidencia: 'Av 8 # 28 - 107',
-    //    epsId: 'a7sd-8wf5s-dw85df',
-    //    fechaAfiliacionEps: new Date(),
-    //    fechaExpedicionDocumento: new Date(),
-    //    fechaNacimiento: new Date(),
-    //    genero: 'masculino',
-    //    lugarExpedicionDocumentoId: '1485-845s-sdf',
-    //    ciudadResidenciaId: ciudad.id,
-    //    numeroDocumento: '1478523690',
-    //    apellidos: 'Leal Diaz',
-    //    nombre: 'Guillermo Duran',
-    //    semestreMatriculado: 9,
-    //    telefono: '+573012859624',
-    //    tipoDocumentoId: '147852369',
-    //    grupoMatriculado: 'Grupo A',
-    //    tipoAfiliacionEpsId: '',
-    //    areasInteres: [],
-    //    herramientas: []
-    //  }, usuario, []);
-    //}
+    try {
+      const pais = await this.paisesService.create({ nombre: 'Colombia '});
+      const departamento = await this.departamentoService.create({ nombre: 'Norte de Santander', paisId: pais.id });
+      const ciudad = await this.ciudadesService.create({ nombre: 'Cucuta', departamentoId: departamento.id });
+      
+      const usuario = await this.usuariosService.findOneByEmail("estudiante@correo.com");
+      await this.estudiantesService.create({
+          codigo: 147852,
+          direccionResidencia: 'Av 8 # 28 - 107',
+          epsId: 'a7sd-8wf5s-dw85df',
+          fechaAfiliacionEps: new Date(),
+          fechaExpedicionDocumento: new Date(),
+          fechaNacimiento: new Date(),
+          genero: 'masculino',
+          lugarExpedicionDocumentoId: '1485-845s-sdf',
+          ciudadResidenciaId: ciudad.id,
+          numeroDocumento: '1478523690',
+          apellidos: 'Leal Diaz',
+          nombre: 'Guillermo Duran',
+          semestreMatriculado: 9,
+          telefono: '+573012859624',
+          tipoDocumentoId: '147852369',
+          grupoMatriculado: 'Grupo A',
+          tipoAfiliacionEpsId: '',
+          areasInteres: [],
+          herramientas: []
+        }, usuario, []);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 }
