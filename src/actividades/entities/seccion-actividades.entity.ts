@@ -12,6 +12,6 @@ export class SeccionActividades extends BaseEntity {
   @OneToOne(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.seccionActividades)
   planDeTrabajo: PlanDeTrabajo;
   
-  @OneToMany(() => Comentario, (comentario) => comentario.actividad)
+  @OneToMany(() => Comentario, (comentario) => comentario.seccionActividades)
   comentarios: Comentario[];
 }
