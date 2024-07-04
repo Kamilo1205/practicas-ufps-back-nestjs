@@ -10,6 +10,6 @@ export class TutorInstitucional extends BaseEntity {
   @Column()
   apellidos: string;
 
-  @OneToOne(() => Usuario, (usuario) => usuario)
+  @OneToOne(() => Usuario, (usuario) => usuario, { eager: true })
   usuario: Usuario;
 }
