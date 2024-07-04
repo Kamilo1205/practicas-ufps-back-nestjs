@@ -48,6 +48,7 @@ import { ComentariosModule } from './comentarios/comentarios.module';
 import { GrupoPracticasModule } from './grupo-practicas/grupo-practicas.module';
 import { DirectorModule } from './director/director.module';
 import { PlanDeTrabajoObjetivosModule } from './plan-de-trabajo-objetivos/plan-de-trabajo-objetivos.module';
+import { InformeModule } from './informe/informe.module';
 
 @Module({
   imports: [
@@ -97,7 +98,8 @@ import { PlanDeTrabajoObjetivosModule } from './plan-de-trabajo-objetivos/plan-d
     ComentariosModule,
     GrupoPracticasModule,
     DirectorModule,
-    PlanDeTrabajoObjetivosModule
+    PlanDeTrabajoObjetivosModule,
+    InformeModule
   ],
   controllers: [AppController],
   providers: [
