@@ -25,19 +25,9 @@ export class CiudadesService {
     return this.ciudadRepository.save(ciudad);
   }
 
-  findAll(query: PaginateQuery) {
-    return paginate(query, this.ciudadRepository, {
-      sortableColumns: ['id', 'nombre', 'codigoGubernamental', 'fechaCreacion', 'fechaActualizacion', 'fechaEliminacion', 'departamento.nombre', 'departamento.pais.nombre'],
-      nullSort: 'last',
-      searchableColumns: ['nombre'],
-      select: ['id', 'nombre', 'codigoGubernamental', 'fechaCreacion', 'fechaActualizacion', 'fechaEliminacion', 'departamento.id', 'departamento.nombre', 'departamento.pais.id', 'departamento.pais.nombre'],
-      relations: ['departamento', 'departamento.pais', 'empresas', 'representantesLegales'],
-      withDeleted: true,
-      filterableColumns: {
-        nombre: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
-        "departamento.id": [FilterOperator.EQ],
-        "departamento.nombre": [FilterOperator.EQ, FilterOperator.CONTAINS]
-      },
+  findAll() {
+    return this.ciudadRepository.find({
+      relations: ['departamento', 'departamento.pais', 'empresas', 'representantesLegales']
     });
   } 
 

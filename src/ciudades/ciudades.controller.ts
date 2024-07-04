@@ -16,8 +16,8 @@ export class CiudadesController {
   }
 
   @Get()
-  findAll(@Paginate() query: PaginateQuery) {
-    return this.ciudadesService.findAll(query);
+  findAll() {
+    return this.ciudadesService.findAll();
   }
 
   @Get('departamento/:departamentoId')
