@@ -12,5 +12,6 @@ import { UsuariosModule } from 'src/usuarios/usuarios.module';
   ],
   controllers: [TutorInstitucionalController],
   providers: [TutorInstitucionalService],
+  exports: [TutorInstitucionalService]
 })
 export class TutorInstitucionalModule {}

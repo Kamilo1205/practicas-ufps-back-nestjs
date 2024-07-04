@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { GrupoPractica } from 'src/grupo-practicas/entities/grupo-practica.entity';
 
 @Entity()
 export class TutorInstitucional extends BaseEntity {
@@ -13,4 +14,7 @@ export class TutorInstitucional extends BaseEntity {
   @OneToOne(() => Usuario, (usuario) => usuario, { eager: true })
   @JoinColumn()
   usuario: Usuario;
+
+  @OneToMany(() => GrupoPractica, (grupoPractica) => grupoPractica.tutor)
+  gruposPracticas: GrupoPractica[];
 }

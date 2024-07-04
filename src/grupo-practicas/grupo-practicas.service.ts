@@ -3,12 +3,14 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateGrupoPracticaDto, UpdateGrupoPracticaDto } from './dto';
 import { GrupoPractica } from './entities/grupo-practica.entity';
+import { TutorInstitucionalService } from 'src/tutor-institucional/tutor-institucional.service';
 
 @Injectable()
 export class GrupoPracticasService {
   constructor(
     @InjectRepository(GrupoPractica)
     private readonly grupoPracticaRepository: Repository<GrupoPractica>,
+    private readonly tutorInstitucionalService: TutorInstitucionalService
   ) {}
 
   async create(createGrupoPracticaDto: CreateGrupoPracticaDto) {
@@ -26,6 +28,14 @@ export class GrupoPracticasService {
     const grupoPractica = await this.grupoPracticaRepository.findOne({ where: { id } });
     if (!grupoPractica) throw new NotFoundException(`El grupo de practicas con id ${id} no encontrado`);
     return grupoPractica;
+  }
+
+  async asignarTutor(grupoId: string, tutorId: string) {
+    const grupoPractica = await this.grupoPracticaRepository.findOne({ where: { id: grupoId } });
+    if (!grupoPractica) throw new NotFoundException(`El grupo de practicas con id ${grupoId} no encontrado`);
+
+    const tutor = await this.tutorInstitucionalService.findOne(tutorId);
+    return this.grupoPracticaRepository.update(grupoId, { tutor });
   }
 
   async update(id: string, updateGrupoPracticaDto: UpdateGrupoPracticaDto) {

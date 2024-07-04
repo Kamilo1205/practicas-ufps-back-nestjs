@@ -25,6 +25,14 @@ export class GrupoPracticasController {
     return this.grupoPracticasService.findOne(id);
   }
 
+  @Patch(':grupoId/tutor/:tutorId')
+  async asignarTutor(
+    @Param('grupoId', new ParseUUIDPipe()) grupoId: string, 
+    @Param('tutorId', new ParseUUIDPipe()) tutorId: string
+  ) {
+    return this.grupoPracticasService.asignarTutor(grupoId, tutorId);
+  }
+
   @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
   update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateGrupoPracticaDto: UpdateGrupoPracticaDto) {
