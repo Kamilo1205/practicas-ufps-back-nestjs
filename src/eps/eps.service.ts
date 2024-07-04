@@ -16,7 +16,7 @@ export class EpsService {
     const { nit } = createEpsDto;
     const eps = await this.epsRepository.findOneBy({ nit });
     if (eps) throw new EpsExistsException(nit);
-    return this.epsRepository.create(createEpsDto);
+    return this.epsRepository.save(createEpsDto);
   }
 
   findAll() {
