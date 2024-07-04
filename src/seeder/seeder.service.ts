@@ -99,12 +99,12 @@ export class SeederService {
 
   private async createEstudiante() {
     try {
-      const pais = await this.paisesService.create({ nombre: 'Colombia '});
-      const departamento = await this.departamentoService.create({ nombre: 'Norte de Santander', paisId: pais.id });
-      const ciudad = await this.ciudadesService.create({ nombre: 'Cucuta', departamentoId: departamento.id });
-      const nuevaEps = await this.epsService.create({ nit: '147-852-369', nombre: 'Nueva Eps' });
-      const tipoDocumento = await this.tipoDocumentoService.create({ nombre: 'Docuemento de Identidad' });
-      const tipoAfiliacion = await this.tipoAfiliacionEpsService.create({ nombre: 'Contributivo' });
+      const pais = await this.paisesService.create({ nombre: 'Estados Unidos'});
+      const departamento = await this.departamentoService.create({ nombre: 'California', paisId: pais.id });
+      const ciudad = await this.ciudadesService.create({ nombre: 'Los Angeles', departamentoId: departamento.id });
+      const nuevaEps = await this.epsService.create({ nit: '147-852-369-A4F', nombre: 'E.P.S Sanitas' });
+      const tipoDocumento = await this.tipoDocumentoService.create({ nombre: 'Cedula' });
+      const tipoAfiliacion = await this.tipoAfiliacionEpsService.create({ nombre: 'Subsidiado' });
       
       const usuario = await this.usuariosService.findOneByEmail("estudiante@correo.com");
       await this.estudiantesService.create({
