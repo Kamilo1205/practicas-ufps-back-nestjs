@@ -3,11 +3,14 @@ import { AreasInteresService } from 'src/areas-interes/areas-interes.service';
 import { AreaInteres } from 'src/areas-interes/entities/area-interes.entity';
 import { CiudadesService } from 'src/ciudades/ciudades.service';
 import { DepartamentosService } from 'src/departamentos/departamentos.service';
+import { EpsService } from 'src/eps/eps.service';
 import { CreateEstudianteDto } from 'src/estudiantes/dto';
 import { EstudiantesService } from 'src/estudiantes/estudiantes.service';
 import { HerramientasService } from 'src/herramientas/herramientas.service';
 import { PaisesService } from 'src/paises/paises.service';
 import { RolesService } from 'src/roles/roles.service';
+import { TipoAfiliacionEpsService } from 'src/tipo-afiliacion-eps/tipo-afiliacion-eps.service';
+import { TipoDocumentoService } from 'src/tipo-documento/tipo-documento.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 
@@ -21,7 +24,10 @@ export class SeederService {
     private readonly estudiantesService: EstudiantesService,
     private readonly paisesService: PaisesService,
     private readonly departamentoService: DepartamentosService,
-    private readonly ciudadesService: CiudadesService
+    private readonly ciudadesService: CiudadesService,
+    private readonly epsService: EpsService,
+    private readonly tipoDocumentoService: TipoDocumentoService,
+    private readonly tipoAfiliacionEpsService: TipoAfiliacionEpsService
   ) {}
 
   async seed() {
@@ -96,26 +102,29 @@ export class SeederService {
       const pais = await this.paisesService.create({ nombre: 'Colombia '});
       const departamento = await this.departamentoService.create({ nombre: 'Norte de Santander', paisId: pais.id });
       const ciudad = await this.ciudadesService.create({ nombre: 'Cucuta', departamentoId: departamento.id });
+      const nuevaEps = await this.epsService.create({ nit: '147-852-369', nombre: 'Nueva Eps' });
+      const tipoDocumento = await this.tipoDocumentoService.create({ nombre: 'Docuemento de Identidad' });
+      const tipoAfiliacion = await this.tipoAfiliacionEpsService.create({ nombre: 'Contributivo' });
       
       const usuario = await this.usuariosService.findOneByEmail("estudiante@correo.com");
       await this.estudiantesService.create({
           codigo: 147852,
           direccionResidencia: 'Av 8 # 28 - 107',
-          epsId: 'a7sd-8wf5s-dw85df',
+          epsId: nuevaEps.id,
           fechaAfiliacionEps: new Date(),
           fechaExpedicionDocumento: new Date(),
           fechaNacimiento: new Date(),
           genero: 'masculino',
-          lugarExpedicionDocumentoId: '1485-845s-sdf',
+          lugarExpedicionDocumentoId: ciudad.id,
           ciudadResidenciaId: ciudad.id,
           numeroDocumento: '1478523690',
           apellidos: 'Leal Diaz',
           nombre: 'Guillermo Duran',
           semestreMatriculado: 9,
           telefono: '+573012859624',
-          tipoDocumentoId: '147852369',
+          tipoDocumentoId: tipoDocumento.id,
           grupoMatriculado: 'Grupo A',
-          tipoAfiliacionEpsId: '',
+          tipoAfiliacionEpsId: tipoAfiliacion.id,
           areasInteres: [],
           herramientas: []
         }, usuario, []);

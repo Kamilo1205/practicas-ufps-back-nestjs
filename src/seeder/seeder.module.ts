@@ -9,6 +9,9 @@ import { EstudiantesModule } from 'src/estudiantes/estudiantes.module';
 import { PaisesModule } from 'src/paises/paises.module';
 import { DepartamentosModule } from 'src/departamentos/departamentos.module';
 import { CiudadesModule } from 'src/ciudades/ciudades.module';
+import { EpsModule } from 'src/eps/eps.module';
+import { TipoDocumentoModule } from 'src/tipo-documento/tipo-documento.module';
+import { TipoAfiliacionEpsModule } from 'src/tipo-afiliacion-eps/tipo-afiliacion-eps.module';
 
 @Module({
   imports: [
@@ -19,7 +22,10 @@ import { CiudadesModule } from 'src/ciudades/ciudades.module';
     EstudiantesModule,
     PaisesModule,
     DepartamentosModule,
-    CiudadesModule
+    CiudadesModule,
+    EpsModule,
+    TipoDocumentoModule,
+    TipoAfiliacionEpsModule
   ],
   providers: [SeederService],
   controllers: [SeederController]
