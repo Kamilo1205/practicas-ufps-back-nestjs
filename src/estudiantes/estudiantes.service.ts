@@ -16,6 +16,7 @@ import { SemestreService } from 'src/semestre/semestre.service';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 import { HerramientasService } from 'src/herramientas/herramientas.service';
 import { FilterOperator, FilterSuffix, PaginateQuery, paginate } from 'nestjs-paginate';
+import { GrupoPractica } from 'src/grupo-practicas/entities/grupo-practica.entity';
 
 @Injectable()
 export class EstudiantesService {
@@ -34,7 +35,23 @@ export class EstudiantesService {
     private readonly herramientasService: HerramientasService
   ) {}
 
-  async create(createEstudianteDto: CreateEstudianteDto, usuario: Usuario, files: any) {
+  async createEstudiante(usuario: Usuario, grupoMatriculado: GrupoPractica) {
+    const semestreActual = await this.semestreService.getSemestreActual();
+    const estudiante = this.estudianteRepository.create({ 
+      id: usuario.id,
+      usuario,
+      grupoMatriculado,
+      semestres: [semestreActual]
+    });
+    return this.estudianteRepository.save(estudiante);
+  }
+
+  async registro(createEstudianteDto: CreateEstudianteDto, usuario: Usuario, files: any) {
+    const estudianteBd = await this.estudianteRepository.findOne({ 
+      where: { id: usuario.estudiante.id }, 
+      relations: ['usuario', 'grupoMatriculado', 'semestres']
+    });
+
     const [
       ciudadResidencia, 
       eps, 
@@ -57,7 +74,7 @@ export class EstudiantesService {
 
     const folderNombre = `${createEstudianteDto.nombre} ${createEstudianteDto.apellidos} - ${createEstudianteDto.codigo}`;
     
-    const grupoFolderId = await this.googleDriveService.createFolderIfNotExist(createEstudianteDto.grupoMatriculado, semestreActual.googleDriveFolderId);
+    const grupoFolderId = await this.googleDriveService.createFolderIfNotExist(estudianteBd.grupoMatriculado.nombre, semestreActual.googleDriveFolderId);
     const folderEstudianteId = await this.googleDriveService.createFolderIfNotExist(folderNombre, grupoFolderId);
     
     const [ certificadoAfiliacionEpsUrl, documentoIdentidadUrl, hojaDeVidaUrl, horarioClaseUrl ] = await Promise.all([
@@ -75,6 +92,7 @@ export class EstudiantesService {
     );
 
     const estudiante = this.estudianteRepository.create({ 
+      ...estudianteBd,
       ...createEstudianteDto, 
       primerNombre, 
       segundoNombre,
@@ -89,7 +107,6 @@ export class EstudiantesService {
       horarioClaseUrl,
       tipoAfiliacionEps,
       tipoDocumento,
-      usuario,
       herramientas
     });
     await this.usuariosService.update(usuario.id, { displayName: `${createEstudianteDto.nombre} ${createEstudianteDto.apellidos}`, estaRegistrado: true });
@@ -107,6 +124,16 @@ export class EstudiantesService {
     }
 
     return savedEstudiante;
+  }
+
+  async agregarEstudianteASemestre(estudianteId: string) {
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { id: estudianteId },
+      relations: ['semestres'],
+    });
+    const semestre = await this.semestreService.getSemestreActual();
+    estudiante.semestres.push(semestre);
+    return this.estudianteRepository.save(estudiante);
   }
 
   findAll(query: PaginateQuery) {

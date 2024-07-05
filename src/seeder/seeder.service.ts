@@ -107,7 +107,7 @@ export class SeederService {
       const tipoAfiliacion = await this.tipoAfiliacionEpsService.create({ nombre: 'Subsidiado' });
       
       const usuario = await this.usuariosService.findOneByEmail("estudiante@correo.com");
-      await this.estudiantesService.create({
+      /* await this.estudiantesService.create({
           codigo: 147852,
           direccionResidencia: 'Av 8 # 28 - 107',
           epsId: nuevaEps.id,
@@ -127,7 +127,7 @@ export class SeederService {
           tipoAfiliacionEpsId: tipoAfiliacion.id,
           areasInteres: [],
           herramientas: []
-        }, usuario, []);
+        }, usuario, []); */
     } catch (error) {
       console.log(error);
     }

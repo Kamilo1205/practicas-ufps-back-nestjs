@@ -10,101 +10,103 @@ import { Herramienta } from 'src/herramientas/entities/herramienta.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Asignacion } from 'src/asignacion/entities/asignacion.entity';
 import { PlanDeTrabajo } from 'src/plan-de-trabajo/entities/plan-de-trabajo.entity';
+import { GrupoPractica } from 'src/grupo-practicas/entities/grupo-practica.entity';
 
 @Entity()
 export class Estudiante extends BaseEntity {
-  @Column()
+  @Column({ nullable: true })
   primerNombre: string;
 
-  @Column()
+  @Column({ nullable: true })
   segundoNombre: string;
 
-  @Column()
+  @Column({ nullable: true })
   primerApellido: string;
 
-  @Column()
+  @Column({ nullable: true })
   segundoApellido: string;
 
-  @Column()
+  @Column({ nullable: true })
   genero: string;
 
   @Column({ default: '', nullable: true })
   direccionResidencia: string;
 
-  @Column()
+  @Column({ nullable: true })
   telefono: string;
 
-  @Column({ default: 'GrupoA' })
-  grupoMatriculado: string;
+  @OneToOne(() => GrupoPractica)
+  @JoinColumn()
+  grupoMatriculado: GrupoPractica;
 
-  @ManyToOne(() => Ciudad)
+  @ManyToOne(() => Ciudad, { nullable: true })
   @JoinTable()
   ciudadResidencia: Ciudad;
 
-  @Column({ type: 'date'})
+  @Column({ type: 'date', nullable: true })
   fechaNacimiento: Date;
 
-  @Column()
+  @Column({ nullable: true })
   numeroDocumento: string;
   
-  @ManyToOne(() => Ciudad)
+  @ManyToOne(() => Ciudad, { nullable: true })
   @JoinTable()
   lugarExpedicionDocumento: Ciudad;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'date', nullable: true })
   fechaExpedicionDocumento: Date;
     
-  @Column({ type: 'date' })
+  @Column({ type: 'date', nullable: true })
   fechaAfiliacionEps: Date;
 
-  @Column()
+  @Column({ nullable: true })
   semestreMatriculado: number;
 
-  @Column({ default: null })
+  @Column({ default: null, nullable: true })
   certificadoAfiliacionEpsUrl: string;
   
-  @Column({ default: null })
+  @Column({ default: null, nullable: true })
   documentoIdentidadUrl: string;
   
-  @Column({ default: null })
+  @Column({ default: null, nullable: true })
   hojaDeVidaUrl: string;
   
-  @Column({ default: null })
+  @Column({ default: null, nullable: true })
   horarioClaseUrl: string;
 
-  @Column()
+  @Column({ nullable: true })
   codigo: number;
 
   @OneToOne(() => Usuario, (usuario) => usuario.estudiante)
   @JoinColumn()
   usuario: Usuario;
 
-  @ManyToOne(() => TipoDocumento, (tipoDocumento) => tipoDocumento.estudiantes)
+  @ManyToOne(() => TipoDocumento, (tipoDocumento) => tipoDocumento.estudiantes, { nullable: true })
   @JoinColumn()
   tipoDocumento: TipoDocumento;
 
-  @ManyToOne(() => Eps, (eps) => eps.estudiantes)
+  @ManyToOne(() => Eps, (eps) => eps.estudiantes, { nullable: true })
   @JoinColumn()
   eps: Eps;
 
-  @ManyToOne(() => TipoAfiliacionEps, (tipoAfiliacionEps) => tipoAfiliacionEps.estudiantes)
+  @ManyToOne(() => TipoAfiliacionEps, (tipoAfiliacionEps) => tipoAfiliacionEps.estudiantes, { nullable: true })
   @JoinColumn()
   tipoAfiliacionEps: TipoAfiliacionEps;
 
-  @ManyToMany(() => Semestre, (semestre) => semestre.estudiantes)
+  @ManyToMany(() => Semestre, (semestre) => semestre.estudiantes, { nullable: true })
   @JoinTable({ name: 'estudiante_semestre' })
   semestres: Semestre[];
 
-  @OneToMany(() => EstudianteAreaInteres, (estudianteAreaInteres) => estudianteAreaInteres.estudiante)
+  @OneToMany(() => EstudianteAreaInteres, (estudianteAreaInteres) => estudianteAreaInteres.estudiante, { nullable: true })
   estudianteAreaInteres: EstudianteAreaInteres[];
 
-  @ManyToMany(() => Herramienta, (herramienta) => herramienta.estudiantes)
+  @ManyToMany(() => Herramienta, (herramienta) => herramienta.estudiantes, { nullable: true })
   @JoinTable({ name: 'estudiante_herramienta' })
   herramientas: Herramienta[];
 
-  @OneToMany(() => Asignacion, (asignacion) => asignacion.estudiante)
+  @OneToMany(() => Asignacion, (asignacion) => asignacion.estudiante, { nullable: true })
   asignaciones: Asignacion[];
 
-  @OneToMany(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.estudiante)
+  @OneToMany(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.estudiante, { nullable: true })
   planesDeTrabajo: PlanDeTrabajo[];
 }

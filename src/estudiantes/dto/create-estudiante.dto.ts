@@ -67,10 +67,6 @@ export class CreateEstudianteDto {
   @IsNumberString()
   codigo: number; 
 
-  @IsNotEmpty()
-  @IsString()
-  grupoMatriculado: string;
-
   @ValidateNested({ each: true })
   @Type(() => CreateEstudianteAreaInteresDto)
   @IsArray()

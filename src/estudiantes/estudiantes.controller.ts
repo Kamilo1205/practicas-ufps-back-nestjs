@@ -12,7 +12,7 @@ import { Paginate, PaginateQuery } from 'nestjs-paginate';
 export class EstudiantesController {
   constructor(private readonly estudiantesService: EstudiantesService) {}
 
-  @Post('/registro')
+  @Patch('/registro')
   @Roles(Rol.Estudiante)
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -35,7 +35,7 @@ export class EstudiantesController {
     if (!files?.certificadoAfiliacionEps || !files?.documentoIdentidad || !files?.hojaDeVida || !files?.horarioClase) {
       throw new BadRequestException('Todos los archivos son requeridos');
     }
-    return this.estudiantesService.create(createEstudianteDto, usuario, files);
+    return this.estudiantesService.registro(createEstudianteDto, usuario, files);
   }
 
   @Get('/perfil')

@@ -33,6 +33,20 @@ export class EmpresasController {
     return this.empresasService.create(createEmpresaDto, usuario, files);
   }
 
+  @Get('estado/:id')
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  async findEstadoById(@Param('id', new ParseUUIDPipe()) id: string) {
+    var data = await this.empresasService.findOne(id);
+    var estado = true;
+    if(data.usuario.estaActivo){
+      estado= false;
+    }else{
+      estado= true;
+    }
+    this.empresasService.updateEstadoUsuario(data.usuario.id, estado);
+    return true;
+  }
+
   @Get('perfil')
   @Roles(Rol.Empresa)
   findOneByUsuarioId(@GetUser() usuario: Usuario) {

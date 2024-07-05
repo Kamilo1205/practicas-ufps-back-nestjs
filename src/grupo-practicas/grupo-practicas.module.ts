@@ -12,5 +12,6 @@ import { TutorInstitucionalModule } from 'src/tutor-institucional/tutor-instituc
   ],
   controllers: [GrupoPracticasController],
   providers: [GrupoPracticasService],
+  exports: [GrupoPracticasService]
 })
 export class GrupoPracticasModule {}

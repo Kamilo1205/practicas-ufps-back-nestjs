@@ -128,6 +128,10 @@ export class EmpresasService {
     return empresa.tutores;
   }
 
+  async updateEstadoUsuario(id: string, estado: boolean) {
+    return await this.usuariosService.update(id, { estaActivo: estado });
+  }
+
   async update(id: string, updateEmpresaDto: UpdateEmpresaDto) {
     const empresa = await this.empresasRepository.findOne({ where: { id }, relations: ['usuario', 'ciudad', 'industria'] });
     if (!empresa) throw new EmpresaNotFoundException(id);
