@@ -21,11 +21,14 @@ export class GrupoPracticasService {
   }
 
   findAll() {
-    return this.grupoPracticaRepository.find({ withDeleted: true });
+    return this.grupoPracticaRepository.find({ 
+      withDeleted: true,
+      relations: ['tutor'] 
+    });
   }
 
   async findOne(id: string) {
-    const grupoPractica = await this.grupoPracticaRepository.findOne({ where: { id } });
+    const grupoPractica = await this.grupoPracticaRepository.findOne({ where: { id }, relations: ['tutor'] });
     if (!grupoPractica) throw new NotFoundException(`El grupo de practicas con id ${id} no encontrado`);
     return grupoPractica;
   }
