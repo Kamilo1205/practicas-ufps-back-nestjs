@@ -23,12 +23,15 @@ export class GrupoPracticasService {
   findAll() {
     return this.grupoPracticaRepository.find({ 
       withDeleted: true,
-      relations: ['tutor'] 
+      relations: ['tutor', 'tutor.usuario'] 
     });
   }
 
   async findOne(id: string) {
-    const grupoPractica = await this.grupoPracticaRepository.findOne({ where: { id }, relations: ['tutor'] });
+    const grupoPractica = await this.grupoPracticaRepository.findOne({ 
+      where: { id }, 
+      relations: ['tutor', 'tutor.usuario'] 
+    });
     if (!grupoPractica) throw new NotFoundException(`El grupo de practicas con id ${id} no encontrado`);
     return grupoPractica;
   }
