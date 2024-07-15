@@ -5,13 +5,15 @@ import { UsuariosModule } from 'src/usuarios/usuarios.module';
 import { RolesModule } from 'src/roles/roles.module';
 import { EstudiantesModule } from 'src/estudiantes/estudiantes.module';
 import { SemestreModule } from 'src/semestre/semestre.module';
+import { GrupoPracticasModule } from 'src/grupo-practicas/grupo-practicas.module';
 
 @Module({
   imports: [
     UsuariosModule,
     RolesModule,
     EstudiantesModule,
-    SemestreModule
+    SemestreModule,
+    GrupoPracticasModule
   ],
   controllers: [CsvController],
   providers: [CsvService],
