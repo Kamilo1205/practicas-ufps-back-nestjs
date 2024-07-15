@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { CiudadesService } from './ciudades.service';
 import { CreateCiudadDto, UpdateCiudadDto } from './dto';
-import { Roles } from 'src/auth/decorators';
+import { Public, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 
 @Controller('ciudades')
@@ -16,6 +16,7 @@ export class CiudadesController {
   }
 
   @Get()
+  @Public()
   findAll() {
     return this.ciudadesService.findAll();
   }

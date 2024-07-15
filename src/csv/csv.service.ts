@@ -1,13 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { parse } from 'csv-parse';
+import { Rol } from 'src/auth/enums';
+import { EstudiantesService } from 'src/estudiantes/estudiantes.service';
+import { GrupoPracticasService } from 'src/grupo-practicas/grupo-practicas.service';
+import { RolesService } from 'src/roles/roles.service';
+import { SemestreService } from 'src/semestre/semestre.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 
 @Injectable()
 export class CsvService {
-  constructor(private usuariosService: UsuariosService) {}
+  constructor(
+    private readonly usuariosService: UsuariosService,
+    private readonly grupoPracticasService: GrupoPracticasService,
+    private readonly estudiantesService: EstudiantesService,
+  ) {}
 
-  async readCsvFile(file: Express.Multer.File) {
+  async readCsvFile(grupoId: string, file: Express.Multer.File) {
     const csvContent: Buffer = file.buffer;
     const parsedData: any = await new Promise((resolve, reject) => {
       parse(
@@ -24,22 +33,17 @@ export class CsvService {
       });
     });
     
+    const grupoPractica = await this.grupoPracticasService.findOne(grupoId);
     for await (const email of parsedData[0]) {
       let usuario: Usuario = await this.usuariosService.findOneByEmail(email);
+      let estudiante = null;
       if (usuario) {
-        await this.usuariosService.update(usuario.id, { estaActivo: true });
+        await this.usuariosService.update(usuario.id, { estaActivo: true });;
+        await this.estudiantesService.agregarEstudianteASemestre(usuario.estudiante.id); 
       } else {
-        usuario = await this.usuariosService.create({
-          email,
-          password: null,
-          imagenUrl: null,
-          displayName: null,
-          estaActivo: true,
-          emailConfirmado: undefined,
-          estaRegistrado: false,
-          rolesIds: []
-        });
-      }
+        usuario = await this.usuariosService.createEstudiante(email);
+        estudiante = await this.estudiantesService.createEstudiante(usuario, grupoPractica);
+      } 
       console.log(usuario);
     }
   }

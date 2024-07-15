@@ -1,4 +1,4 @@
-import { Controller, Post, UseInterceptors, BadRequestException, UploadedFile, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, BadRequestException, UploadedFile, InternalServerErrorException, Param, ParseUUIDPipe } from '@nestjs/common';
 import { CsvService } from './csv.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
@@ -7,7 +7,7 @@ import { memoryStorage } from 'multer';
 export class CsvController {
   constructor(private readonly csvService: CsvService) {}
 
-  @Post('estudiantes')
+  @Post('estudiantes/:grupoId')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: memoryStorage(),
@@ -23,9 +23,9 @@ export class CsvController {
       },
     }),
   )
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(@Param('grupoId', new ParseUUIDPipe()) grupoId: string, @UploadedFile() file: Express.Multer.File) {
     try {
-      const response = await this.csvService.readCsvFile(file);
+      const response = await this.csvService.readCsvFile(grupoId, file);
     } catch (error) {
       throw new InternalServerErrorException(error?.message || 'Internal Server Error');
     }
