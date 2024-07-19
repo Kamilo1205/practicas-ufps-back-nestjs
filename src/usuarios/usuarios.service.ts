@@ -96,7 +96,7 @@ export class UsuariosService {
       roles: [rol],
       displayName: '',
       estaActivo: true,
-      estaRegistrado: true,    
+      estaRegistrado: false,    
     });
     return this.usuariosRepository.save(usaurio);
   }

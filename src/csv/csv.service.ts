@@ -21,10 +21,10 @@ export class CsvService {
     const parsedData: any = await new Promise((resolve, reject) => {
       parse(
         csvContent, {
-          columns: false,
-          relax_quotes: true,
-          skip_empty_lines: true,
-          cast: true
+          columns: false,          // Mantén esto en false si no hay encabezados
+          relax_quotes: true,      // Permite comillas flexibles
+          skip_empty_lines: true,  // Omite líneas vacías
+          trim: true               // Recorta espacios en blanco alrededor de las entradas
         }, (err, records) => {
         if (err) { 
           return reject(err);
