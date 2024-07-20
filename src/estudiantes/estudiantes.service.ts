@@ -171,6 +171,7 @@ export class EstudiantesService {
         'semestres',
         'estudianteAreaInteres',
         'herramientas'
+        'asignaciones'
       ] 
     });
   }
