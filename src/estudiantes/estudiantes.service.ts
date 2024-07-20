@@ -170,8 +170,8 @@ export class EstudiantesService {
         'tipoAfiliacionEps',
         'semestres',
         'estudianteAreaInteres',
-        'herramientas'
-        'asignaciones'
+        'herramientas',
+        'asignaciones',
       ] 
     });
   }
