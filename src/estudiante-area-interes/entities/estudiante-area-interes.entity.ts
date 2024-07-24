@@ -13,6 +13,6 @@ export class EstudianteAreaInteres {
   @ManyToOne(() => Estudiante, (estudiante) => estudiante.estudianteAreaInteres, { onDelete: 'CASCADE' })
   estudiante: Estudiante;
 
-  @ManyToOne(() => AreaInteres, (areaInteres) => areaInteres.estudianteAreaInteres, { onDelete: 'CASCADE' })
+  @ManyToOne(() => AreaInteres, (areaInteres) => areaInteres.estudianteAreaInteres, { onDelete: 'CASCADE', eager: true })
   areaInteres: AreaInteres;
 }
