@@ -134,6 +134,10 @@ export class EmpresasSolicitudesService {
   calculateMatchScore(estudiante: Estudiante, solicitud: EmpresaSolicitud): number {
     let score = 0;
     // Calcular puntaje de áreas de interés
+
+    if ( !estudiante.estudianteAreaInteres || estudiante.estudianteAreaInteres.length === 0 || 
+         !solicitud.areasInteres || solicitud.areasInteres.length === 0) return 0;
+
     for (const estArea of estudiante.estudianteAreaInteres) {
       const empArea = solicitud.areasInteres.find(area => area.id === estArea.areaInteres.id);
       if (empArea && estArea.nivelInteres > 3) {
