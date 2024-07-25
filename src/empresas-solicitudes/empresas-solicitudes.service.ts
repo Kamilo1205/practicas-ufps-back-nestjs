@@ -137,6 +137,9 @@ export class EmpresasSolicitudesService {
 
     if ( !estudiante.estudianteAreaInteres || estudiante.estudianteAreaInteres.length === 0 || 
          !solicitud.areasInteres || solicitud.areasInteres.length === 0) return 0;
+         
+    console.log(estudiante);
+    console.log(solicitud);
 
     for (const estArea of estudiante.estudianteAreaInteres) {
       if (!estArea.areaInteres) return 0;
