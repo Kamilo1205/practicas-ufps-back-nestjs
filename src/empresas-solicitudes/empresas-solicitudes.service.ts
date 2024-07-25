@@ -116,6 +116,7 @@ export class EmpresasSolicitudesService {
   }
 
   async findBestMatchesForSolicitud(solicitudId: string): Promise<{ estudiante: Estudiante; score: number }[]> {
+    console.log({ solicitudId });
     const solicitud = await this.empresaSolicitudRepository.findOne({ 
       where: { id: solicitudId },
       relations: ['areasInteres', 'herramientas'] 
