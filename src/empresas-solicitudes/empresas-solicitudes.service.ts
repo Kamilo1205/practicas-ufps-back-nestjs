@@ -120,6 +120,7 @@ export class EmpresasSolicitudesService {
       where: { id: solicitudId },
       relations: ['areasInteres', 'herramientas'] 
     });
+    if (!solicitud) throw new NotFoundException(`Solicitud con id ${solicitudId} no fue encontrado`);
     const estudiantes = await this.estudiantesService.findAllSemestreActual();
 
     const matches = estudiantes.map(estudiante => ({

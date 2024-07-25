@@ -40,7 +40,6 @@ export class UsuariosService {
       email: normalizedEmail, 
       password: hashedPassword, 
       roles: [rol],
-      displayName,
       estaActivo: true,
       estaRegistrado: true,    
     });
@@ -58,7 +57,6 @@ export class UsuariosService {
       email: normalizedEmail, 
       password: hashedPassword, 
       roles: [rol],
-      displayName,
       estaActivo: true,
       estaRegistrado: true,    
     });
@@ -76,7 +74,6 @@ export class UsuariosService {
       email: normalizedEmail, 
       password: hashedPassword, 
       roles: [rol],
-      displayName,
       estaActivo: true,
       estaRegistrado: true,    
     });
@@ -94,7 +91,6 @@ export class UsuariosService {
       email: normalizedEmail, 
       password: hashedPassword, 
       roles: [rol],
-      displayName: '',
       estaActivo: true,
       estaRegistrado: false,    
     });
