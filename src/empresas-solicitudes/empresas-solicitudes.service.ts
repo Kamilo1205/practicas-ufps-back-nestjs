@@ -139,6 +139,7 @@ export class EmpresasSolicitudesService {
          !solicitud.areasInteres || solicitud.areasInteres.length === 0) return 0;
 
     for (const estArea of estudiante.estudianteAreaInteres) {
+      if (!estArea.areaInteres) return 0;
       const empArea = solicitud.areasInteres.find(area => area.id === estArea.areaInteres.id);
       if (empArea && estArea.nivelInteres > 3) {
         score += estArea.nivelInteres; // Nivel de interés del estudiante
