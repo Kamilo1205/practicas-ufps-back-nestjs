@@ -115,13 +115,12 @@ export class EmpresasSolicitudesService {
     });
   }
 
-  async findBestMatchesForSolicitud(solicitudId: string): Promise<{ estudiante: Estudiante; score: number }[]> {
-    console.log({ solicitudId });
+  async findBestMatchesForSolicitud(id: string): Promise<{ estudiante: Estudiante; score: number }[]> {
     const solicitud = await this.empresaSolicitudRepository.findOne({ 
-      where: { id: solicitudId },
+      where: { id },
       relations: ['areasInteres', 'herramientas'] 
     });
-    if (!solicitud) throw new NotFoundException(`Solicitud con id ${solicitudId} no fue encontrado`);
+    if (!solicitud) throw new NotFoundException(`Solicitud con id ${id} no fue encontrado`);
     const estudiantes = await this.estudiantesService.findAllSemestreActual();
 
     const matches = estudiantes.map(estudiante => ({
