@@ -18,6 +18,5 @@ export class CreateEmpresaSolicitudDto {
   
   @IsBooleanString()
   @IsNotEmpty()
-  @Transform(({ value }) => value === 'true', { toClassOnly: true })
-  esRenumerado: boolean;
+  esRenumerado: string;
 }

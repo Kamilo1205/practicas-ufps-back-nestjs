@@ -27,7 +27,7 @@ export class EmpresaSolicitud extends BaseEntity{
   cantidadPracticantes: number;
 
   @Column()
-  esRenumerado: boolean;
+  esRenumerado: string;
 
   @OneToMany(() => Asignacion, (asignaciones) => asignaciones.solicitud)
   asignaciones: Asignacion;
