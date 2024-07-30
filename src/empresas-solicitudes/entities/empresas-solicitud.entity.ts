@@ -26,7 +26,7 @@ export class EmpresaSolicitud extends BaseEntity{
   @Column()
   cantidadPracticantes: number;
 
-  @Column()
+  @Column({ nullable: true })
   esRenumerado: string;
 
   @OneToMany(() => Asignacion, (asignaciones) => asignaciones.solicitud)
