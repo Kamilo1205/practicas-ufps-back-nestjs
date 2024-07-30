@@ -9,8 +9,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  const seeder = app.get(SeederService);
-  await seeder.seed();
+  //const seeder = app.get(SeederService);
+  //await seeder.seed();
 
   app.enableCors({
     origin: configService.get<string>('URL_FRONTEND'), // Reemplaza con el origen de tu aplicación Angular
