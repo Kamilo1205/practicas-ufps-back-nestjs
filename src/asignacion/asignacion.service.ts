@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FilterOperator, FilterSuffix, PaginateQuery, paginate } from 'nestjs-paginate';
-import { AsignarTutorDto, CreateAsignacionDto } from './dto';
+import { AsignarTutorDto, CreateAsignacionDto, DesasignarDto } from './dto';
 import { Asignacion } from './entities/asignacion.entity';
 import { TutoresService } from 'src/tutores/tutores.service';
 import { EstudiantesService } from 'src/estudiantes/estudiantes.service';
@@ -39,6 +39,13 @@ export class AsignacionService {
       estado: 'Pendiente de Tutor',
     });
     return this.asignacionRepository.save(asignacion);
+  }
+
+  async unassignFromApplication(desasignarDto: DesasignarDto) {
+    const asignacion = await this.asignacionRepository.findOne({ where: { id: desasignarDto.solicitudId } });
+    if (asignacion.estudiante.id == desasignarDto.estudianteId) {
+      await this.asignacionRepository.save({ ...asignacion, estudiante: null });
+    }
   }
 
   async findAll(query: PaginateQuery) {

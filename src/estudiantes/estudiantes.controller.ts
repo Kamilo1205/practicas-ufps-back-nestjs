@@ -44,7 +44,6 @@ export class EstudiantesController {
     return this.estudiantesService.findOne(usuario.estudiante.id);
   }
 
-
   @Get()
   @Roles(Rol.Coordinador, Rol.Administrador)
   findAll(@Paginate() query: PaginateQuery) {
