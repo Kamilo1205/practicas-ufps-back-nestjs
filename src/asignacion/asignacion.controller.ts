@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { AsignacionService } from './asignacion.service';
-import { CreateAsignacionDto } from './dto';
+import { CreateAsignacionDto, DesasignarDto } from './dto';
 import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 import { AsignarTutorDto } from './dto/asignar-tutor.dto';
@@ -15,6 +15,11 @@ export class AsignacionController {
   @Roles(Rol.Administrador, Rol.Coordinador)
   create(@Body() createAsignacionDto: CreateAsignacionDto) {
     return this.asignacionService.create(createAsignacionDto);
+  }
+
+  @Delete('desasignar')
+  unassignStudent(@Body() unassignStudentDto: DesasignarDto) {
+    return this.asignacionService.unassignFromApplication(unassignStudentDto);
   }
 
   @Get()

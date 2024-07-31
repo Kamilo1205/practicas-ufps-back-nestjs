@@ -1,4 +1,4 @@
-import { IsArray, ArrayMinSize, ArrayMaxSize, IsNumberString, IsNotEmpty } from 'class-validator';
+import { IsArray, ArrayMinSize, ArrayMaxSize, IsNumberString, IsNotEmpty, IsInt, Min } from 'class-validator';
 
 export class CreateIntensidadHorariaDto {
   @IsArray()
@@ -6,7 +6,8 @@ export class CreateIntensidadHorariaDto {
   @ArrayMaxSize(8)
   readonly horario: boolean[][];
 
-  @IsNumberString()
+  @IsInt()
   @IsNotEmpty()
+  @Min(1) 
   readonly cantidadSemanas: number;
 }
