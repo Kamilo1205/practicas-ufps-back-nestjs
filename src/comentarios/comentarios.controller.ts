@@ -15,11 +15,11 @@ export class ComentariosController {
     return this.comentariosService.create(createComentarioDto, usuario);
   }
 
-  // @Patch(':id')
-  // @Roles(Rol.Coordinador, Rol.Tutor, Rol.Administrador)
-  // update(@Param('id') id: string, @Body() updateComentarioDto: UpdateComentarioDto, @GetUser() usuario: Usuario) {
-  //   return this.comentariosService.update(id, updateComentarioDto, usuario);
-  // }
+  @Patch(':id')
+  @Roles(Rol.Coordinador, Rol.Tutor, Rol.Administrador)
+  update(@Param('id') id: string, @Body() updateComentarioDto: UpdateComentarioDto, @GetUser() usuario: Usuario) {
+    return this.comentariosService.update(id, updateComentarioDto, usuario);
+  }
 
   @Delete(':id')
   @Roles(Rol.Coordinador, Rol.Tutor, Rol.Administrador)

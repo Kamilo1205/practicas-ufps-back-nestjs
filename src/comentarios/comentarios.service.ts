@@ -40,6 +40,11 @@ export class ComentariosService {
     return this.comentarioRepository.save(comentario);
   }
 
+  async update(id: string, updateComentario: UpdateComentarioDto, usuario: Usuario) {
+    const comentario = await this.comentarioRepository.findOne({ where: { id, autor: { id: usuario.id } } });   
+    return this.comentarioRepository.save({ ...comentario, comentario: updateComentario.comentario });
+  }
+
   async remove(id: string, usuario: Usuario) {
     const comentario = await this.comentarioRepository.findOne({ where: { id, autor: { id: usuario.id } } });
     if (!comentario) throw new NotFoundException(`Comentario con id ${id} no encontrado`);
