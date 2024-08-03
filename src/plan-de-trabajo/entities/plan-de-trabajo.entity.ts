@@ -16,7 +16,7 @@ export class PlanDeTrabajo extends BaseEntity {
   @JoinColumn()
   seccionActividades: SeccionActividades;
 
-  @ManyToOne(() => Estudiante, (estudiante) => estudiante.planesDeTrabajo, { eager: true })
+  @ManyToOne(() => Estudiante, (estudiante) => estudiante.planesDeTrabajo)
   estudiante: Estudiante;
 
   @OneToOne(() => IntensidadHoraria, (intensidadHoraria) => intensidadHoraria.planDeTrabajo , { cascade: true, eager: true })
