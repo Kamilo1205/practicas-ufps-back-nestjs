@@ -12,7 +12,7 @@ export class Asignacion extends BaseEntity {
   @ManyToOne(() => EmpresaSolicitud, (empresaSolicitud) => empresaSolicitud.asignaciones)
   solicitud: EmpresaSolicitud;
   
-  @ManyToOne(() => Tutor, (tutor) => tutor.asignaciones)
+  @ManyToOne(() => Tutor, (tutor) => tutor.asignaciones, { eager: true })
   tutor: Tutor;
 
   @Column()
