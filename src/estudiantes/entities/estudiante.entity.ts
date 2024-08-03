@@ -77,36 +77,36 @@ export class Estudiante extends BaseEntity {
   @Column({ nullable: true })
   codigo: number;
 
-  @OneToOne(() => Usuario, (usuario) => usuario.estudiante)
+  @OneToOne(() => Usuario, (usuario) => usuario.estudiante, { eager: true })
   @JoinColumn()
   usuario: Usuario;
 
-  @ManyToOne(() => TipoDocumento, (tipoDocumento) => tipoDocumento.estudiantes, { nullable: true })
+  @ManyToOne(() => TipoDocumento, (tipoDocumento) => tipoDocumento.estudiantes, { nullable: true, eager: true })
   @JoinColumn()
   tipoDocumento: TipoDocumento;
 
-  @ManyToOne(() => Eps, (eps) => eps.estudiantes, { nullable: true })
+  @ManyToOne(() => Eps, (eps) => eps.estudiantes, { nullable: true, eager: true })
   @JoinColumn()
   eps: Eps;
 
-  @ManyToOne(() => TipoAfiliacionEps, (tipoAfiliacionEps) => tipoAfiliacionEps.estudiantes, { nullable: true })
+  @ManyToOne(() => TipoAfiliacionEps, (tipoAfiliacionEps) => tipoAfiliacionEps.estudiantes, { nullable: true, eager: true })
   @JoinColumn()
   tipoAfiliacionEps: TipoAfiliacionEps;
 
-  @ManyToMany(() => Semestre, (semestre) => semestre.estudiantes, { nullable: true })
+  @ManyToMany(() => Semestre, (semestre) => semestre.estudiantes, { nullable: true, eager: true })
   @JoinTable({ name: 'estudiante_semestre' })
   semestres: Semestre[];
 
-  @OneToMany(() => EstudianteAreaInteres, (estudianteAreaInteres) => estudianteAreaInteres.estudiante, { nullable: true })
+  @OneToMany(() => EstudianteAreaInteres, (estudianteAreaInteres) => estudianteAreaInteres.estudiante, { nullable: true, eager: true })
   estudianteAreaInteres: EstudianteAreaInteres[];
 
-  @ManyToMany(() => Herramienta, (herramienta) => herramienta.estudiantes, { nullable: true })
+  @ManyToMany(() => Herramienta, (herramienta) => herramienta.estudiantes, { nullable: true, eager: true })
   @JoinTable({ name: 'estudiante_herramienta' })
   herramientas: Herramienta[];
 
   @OneToMany(() => Asignacion, (asignacion) => asignacion.estudiante, { eager: true })
   asignaciones: Asignacion[];
 
-  @OneToMany(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.estudiante, { nullable: true })
+  @OneToMany(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.estudiante, { nullable: true, eager: true })
   planesDeTrabajo: PlanDeTrabajo[];
 }
