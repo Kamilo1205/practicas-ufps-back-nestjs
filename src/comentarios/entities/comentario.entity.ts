@@ -15,6 +15,6 @@ export class Comentario extends BaseEntity {
   @ManyToOne(() => SeccionActividades, (seccionActividades) => seccionActividades.comentarios, { nullable: true })
   seccionActividades: SeccionActividades;
 
-  @ManyToOne(() => Usuario, usuario => usuario.comentarios)
+  @ManyToOne(() => Usuario, usuario => usuario.comentarios, { eager: true })
   autor: Usuario;
 }

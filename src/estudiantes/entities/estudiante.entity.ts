@@ -104,7 +104,7 @@ export class Estudiante extends BaseEntity {
   @JoinTable({ name: 'estudiante_herramienta' })
   herramientas: Herramienta[];
 
-  @OneToMany(() => Asignacion, (asignacion) => asignacion.estudiante, { nullable: true })
+  @OneToMany(() => Asignacion, (asignacion) => asignacion.estudiante, { eager: true })
   asignaciones: Asignacion[];
 
   @OneToMany(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.estudiante, { nullable: true })
