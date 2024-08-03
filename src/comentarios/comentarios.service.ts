@@ -30,10 +30,19 @@ export class ComentariosService {
     if (!seccionActividadesId && !objetivoId) 
       throw new BadGatewayException('Debe proporcionar al menos un ID de objetivo o actividad.');
 
-    if (seccionActividadesId) await this.actividadesService.findOne(seccionActividadesId);
-    if (objetivoId) await this.objetivosService.findOne(objetivoId);
+    let seccionActividades = null;
+    let objetivo = null;
+
+    if (seccionActividadesId) seccionActividades = await this.actividadesService.findOne(seccionActividadesId);
+    if (objetivoId) objetivo = await this.objetivosService.findOne(objetivoId);
     
-    const comentario = this.comentarioRepository.create({...createComentarioDto, autor});
+    const comentario = this.comentarioRepository.create({
+      ...createComentarioDto,
+      autor,
+      seccionActividades,
+      objetivo,
+    });
+
     return this.comentarioRepository.save(comentario);
   }
 
