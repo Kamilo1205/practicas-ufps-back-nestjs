@@ -172,6 +172,7 @@ export class EstudiantesService {
         'estudianteAreaInteres',
         'herramientas',
         'asignaciones',
+        'planesDeTrabajo'
       ] 
     });
   }

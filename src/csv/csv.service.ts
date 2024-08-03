@@ -44,7 +44,6 @@ export class CsvService {
         usuario = await this.usuariosService.createEstudiante(email);
         estudiante = await this.estudiantesService.createEstudiante(usuario, grupoPractica);
       } 
-      console.log(usuario);
     }
   }
 }
