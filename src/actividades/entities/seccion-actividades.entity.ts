@@ -6,12 +6,12 @@ import { Actividad } from './actividad.entity';
 
 @Entity()
 export class SeccionActividades extends BaseEntity { 
-  @OneToMany(() => Actividad, (actividad) => actividad.seccionActividades)
+  @OneToMany(() => Actividad, (actividad) => actividad.seccionActividades, { eager: true })
   actividades: Actividad[];
     
   @OneToOne(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.seccionActividades)
   planDeTrabajo: PlanDeTrabajo;
   
-  @OneToMany(() => Comentario, (comentario) => comentario.seccionActividades)
+  @OneToMany(() => Comentario, (comentario) => comentario.seccionActividades, { eager: true })
   comentarios: Comentario[];
 }

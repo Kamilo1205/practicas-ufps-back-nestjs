@@ -8,21 +8,21 @@ import { SeccionActividades } from 'src/actividades/entities/seccion-actividades
 
 @Entity()
 export class PlanDeTrabajo extends BaseEntity {
-  @OneToOne(() => Objetivo, (objetivo) => objetivo.planDeTrabajo)
+  @OneToOne(() => Objetivo, (objetivo) => objetivo.planDeTrabajo, { eager: true })
   @JoinColumn()
   objetivo: Objetivo;
 
-  @OneToOne(() => SeccionActividades, (seccionActividades) => seccionActividades.planDeTrabajo)
+  @OneToOne(() => SeccionActividades, (seccionActividades) => seccionActividades.planDeTrabajo, { eager: true })
   @JoinColumn()
   seccionActividades: SeccionActividades;
 
-  @ManyToOne(() => Estudiante, (estudiante) => estudiante.planesDeTrabajo)
+  @ManyToOne(() => Estudiante, (estudiante) => estudiante.planesDeTrabajo, { eager: true })
   estudiante: Estudiante;
 
-  @OneToOne(() => IntensidadHoraria, (intensidadHoraria) => intensidadHoraria.planDeTrabajo , { cascade: true })
+  @OneToOne(() => IntensidadHoraria, (intensidadHoraria) => intensidadHoraria.planDeTrabajo , { cascade: true, eager: true })
   @JoinColumn()
   intensidadHoraria: IntensidadHoraria;
 
-  @ManyToOne(() => Semestre, (semestre) => semestre.planesDeTrabajo)
+  @ManyToOne(() => Semestre, (semestre) => semestre.planesDeTrabajo, { eager: true })
   semestre: Semestre;
 }
