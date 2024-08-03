@@ -142,7 +142,7 @@ export class EstudiantesService {
       nullSort: 'last',
       defaultSortBy: [['id', 'DESC']],
       searchableColumns: ['primerNombre', 'segundoNombre', 'primerApellido', 'segundoApellido', 'grupoMatriculado', 'usuario.email', 'codigo', 'eps.nombre', 'usuario.estaActivo', 'tipoAfiliacionEps.nombre', 'ciudadResidencia.nombre', 'numeroDocumento'],
-      relations: ['usuario', 'ciudadResidencia', 'eps', 'lugarExpedicionDocumento', 'tipoAfiliacionEps', 'tipoDocumento', 'estudianteAreaInteres', 'herramientas', 'semestres'],
+      relations: ['usuario', 'ciudadResidencia', 'eps', 'lugarExpedicionDocumento', 'tipoAfiliacionEps', 'tipoDocumento', 'estudianteAreaInteres', 'herramientas', 'semestres', 'asignaciones'],
       withDeleted: true,
       filterableColumns: {
         primerNombre: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
