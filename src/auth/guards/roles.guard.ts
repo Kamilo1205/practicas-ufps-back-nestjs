@@ -25,7 +25,7 @@ export class RolesGuard implements CanActivate {
 
     const { user } = context.switchToHttp().getRequest();
     const hasRequiredRole = requiredRoles ? user.roles.some(rol => requiredRoles.includes(rol.nombre)) : true;
-    if (!hasRequiredRole) throw new UnauthorizedException('Acceso Denegado: Rol o permiso inválido')
+    if (!hasRequiredRole) throw new UnauthorizedException('Acceso Denegado: Rol inválido')
     return true;
   }
 }
