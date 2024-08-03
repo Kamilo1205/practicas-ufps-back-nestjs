@@ -149,7 +149,7 @@ export class EstudiantesService {
         segundoNombre: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
         primerApellido: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
         segundoApellido: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
-        grupoMatriculado: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
+        "grupoMatriculado.nombre": [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
         "usuario.estaActivo": [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
         "usuario.email": [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
         "semestres.id": [FilterOperator.EQ],
