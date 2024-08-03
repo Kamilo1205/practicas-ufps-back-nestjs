@@ -13,6 +13,9 @@ export class Semestre extends BaseEntity{
   
   @Column()
   semestre: number;
+
+  @Column({ default: false })
+  actual: boolean;
   
   @Column()
   googleDriveFolderId: string;
