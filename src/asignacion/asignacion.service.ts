@@ -62,9 +62,9 @@ export class AsignacionService {
         'tutor.nombre',
         'tutor.usuario.email',
         'solicitud.empresa.nombreComercial',
-        'solicitud.empresa.nombreLegal'
+        'solicitud.empresa.nombreLegal',
       ],
-      relations: ['estudiante', 'solicitud', 'tutor'],
+      relations: ['estudiante', 'solicitud', 'tutor', 'tutor.usuario'],
       filterableColumns: {
         estado: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
         'estudiante.nombre': [FilterOperator.EQ, FilterOperator.CONTAINS],
