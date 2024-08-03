@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateComentarioDto, UpdateComentarioDto } from './dto';
 import { Comentario } from './entities/comentario.entity';
@@ -22,21 +22,18 @@ export class ComentariosService {
 
   async create(createComentarioDto: CreateComentarioDto, usuario: Usuario) {
     const autor = await this.usuariosService.findOne(usuario.id);
-    const { seccionActividadesId, objetivoId } = createComentarioDto;
-    let [seccionActividades, objetivo] = [null, null];
+    const { seccionActividadesId, objetivoId } = createComentarioDto;  
+
+    if (seccionActividadesId && objetivoId) 
+      throw new BadGatewayException('Debe proporcionar solo un ID de objetivo o actividad.');
     
-    if (seccionActividadesId) 
-      seccionActividades = this.actividadesService.findOne(seccionActividadesId);
+    if (!seccionActividadesId && !objetivoId) 
+      throw new BadGatewayException('Debe proporcionar al menos un ID de objetivo o actividad.');
+
+    if (seccionActividadesId) await this.actividadesService.findOne(seccionActividadesId);
+    if (objetivoId) await this.objetivosService.findOne(objetivoId);
     
-    if (objetivoId) 
-      objetivo = this.objetivosService.findOne(objetivoId);
-    
-    const comentario = this.comentarioRepository.create({
-      ...createComentarioDto,
-      seccionActividades, 
-      objetivo, 
-      autor
-    });
+    const comentario = this.comentarioRepository.create({...createComentarioDto, autor});
     return this.comentarioRepository.save(comentario);
   }
 
