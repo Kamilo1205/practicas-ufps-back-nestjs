@@ -11,7 +11,7 @@ export class EmpresaSolicitud extends BaseEntity{
   @ManyToOne(() => Empresa, (empresa) => empresa.solicitudes)
   empresa: Empresa;
 
-  @ManyToOne(() => Semestre, (semestre) => semestre.empresaSolicitudes)
+  @ManyToOne(() => Semestre, (semestre) => semestre.empresaSolicitudes, { eager: true })
   @JoinColumn()
   semestre: Semestre;
 
