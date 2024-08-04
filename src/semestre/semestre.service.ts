@@ -24,7 +24,8 @@ export class SemestreService {
     if( semestreExiste ) throw new BadRequestException({ semestre: `El semestre ${ semestre } del año ${anio} ya existe` });
     
     const googleDriveFolderId = await this.googleDriveService.createFolder(`Semestre ${createSemestreDto.semestre}`, anio.googleDriveFolderId);
-    const nuevoSemestre = this.semestreRepository.create({ ...createSemestreDto, anio, googleDriveFolderId });
+    await this.semestreRepository.update({ actual: true }, { actual: false });
+    const nuevoSemestre = this.semestreRepository.create({ ...createSemestreDto, anio, googleDriveFolderId, actual: true });
     return this.semestreRepository.save(nuevoSemestre);
   }
 
