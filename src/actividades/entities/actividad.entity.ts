@@ -40,7 +40,7 @@ export class Actividad extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   limitaciones: string;
 
-  @OneToMany(() => SubActividad, (subActividad) => subActividad.actividad)
+  @OneToMany(() => SubActividad, (subActividad) => subActividad.actividad, { eager: true })
   subActividades: SubActividad[];
 
   @ManyToOne(() => SeccionActividades, (seccionActividades) => seccionActividades.actividades)
