@@ -42,6 +42,7 @@ export class UsuariosService {
       roles: [rol],
       estaActivo: true,
       estaRegistrado: true,    
+      displayName
     });
     return this.usuariosRepository.save(usaurio);
   }

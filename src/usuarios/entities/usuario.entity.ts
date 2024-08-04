@@ -18,14 +18,8 @@ export class Usuario extends BaseEntity {
   @Exclude({ toPlainOnly: true })
   password?: string | null; // Contraseña del usuario.
 
-  //@Column({ nullable: true })
-  //displayName: string;
-
-  get getDisplayName() {
-    return this.empresa.nombreLegal || 
-    `${this.estudiante.primerNombre} ${this.estudiante.segundoNombre} 
-     ${this.estudiante.primerApellido} ${this.estudiante.segundoApellido}`
-  }
+  @Column({ nullable: true })
+  displayName: string;
 
   @Column({ nullable: true })
   imagenUrl: string;
