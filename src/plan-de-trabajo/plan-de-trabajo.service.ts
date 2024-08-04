@@ -38,7 +38,6 @@ export class PlanDeTrabajoService {
         'seccionActividades',
         'seccionActividades.comentarios', 
         'seccionActividades.subActividades', 
-        'seccionActividades.subActividades', 
         'objetivo',
         'objetivo.comentarios', 
         'intensidadHoraria'
@@ -55,7 +54,6 @@ export class PlanDeTrabajoService {
         'estudiante', 
         'seccionActividades',
         'seccionActividades.comentarios', 
-        'seccionActividades.subActividades', 
         'seccionActividades.subActividades', 
         'objetivo',
         'objetivo.comentarios', 
