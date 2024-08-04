@@ -23,6 +23,6 @@ export class Objetivo extends BaseEntity {
   @OneToOne(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.objetivo)
   planDeTrabajo: PlanDeTrabajo;
 
-  @OneToMany(() => Comentario, (comentario) => comentario.objetivo)
+  @OneToMany(() => Comentario, (comentario) => comentario.objetivo, { eager: true })
   comentarios: Comentario[];
 }
