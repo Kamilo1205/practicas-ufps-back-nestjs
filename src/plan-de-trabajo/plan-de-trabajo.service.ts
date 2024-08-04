@@ -6,6 +6,8 @@ import { PlanDeTrabajo } from './entities/plan-de-trabajo.entity';
 import { EstudiantesService } from 'src/estudiantes/estudiantes.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { SemestreService } from 'src/semestre/semestre.service';
+import { TutorInstitucionalService } from 'src/tutor-institucional/tutor-institucional.service';
+import { TutoresService } from 'src/tutores/tutores.service';
 
 @Injectable()
 export class PlanDeTrabajoService {
@@ -13,7 +15,9 @@ export class PlanDeTrabajoService {
     @InjectRepository(PlanDeTrabajo)
     private readonly planDeTrabajoRepository: Repository<PlanDeTrabajo>,
     private readonly estudiantesService: EstudiantesService,
-    private readonly semestreService: SemestreService
+    private readonly semestreService: SemestreService,
+    private readonly tutorInstitucionalService: TutorInstitucionalService,
+    private readonly tutorEmpresarialService: TutoresService
   ) {}
 
   async findAll(query: PaginateQuery) {
@@ -135,5 +139,18 @@ export class PlanDeTrabajoService {
     }
 
     return planDeTrabajo;
+  }
+
+  async aprobarPorTutorEmpresarial(id: string, tutorEmpresarialId: string) {
+    const planTrabajo = await this.findOne(id);
+    const tutorEmpresarial = await this.tutorEmpresarialService.findOne(tutorEmpresarialId);
+    return this.planDeTrabajoRepository.save({ ...planTrabajo, tutorEmpresarial });
+  }
+
+  // Aprobar el plan de trabajo por el tutor institucional
+  async aprobarPorTutorInstitucional(id: string, tutorInstitucionalId: string)  {
+    const planTrabajo = await this.findOne(id);
+    const tutorInstitucional = await this.tutorInstitucionalService.findOne(tutorInstitucionalId);
+    return this.planDeTrabajoRepository.save({ ...planTrabajo, tutorInstitucional });
   }
 }

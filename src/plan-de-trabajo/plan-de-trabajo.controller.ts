@@ -44,4 +44,14 @@ export class PlanDeTrabajoController {
   findOneByEstudiante(@GetUser() usuario: Usuario, @Param('id', new ParseUUIDPipe()) id: string) {
     return this.planDeTrabajoService.findOneByEstudiante(id, usuario);
   }
+
+  @Patch(':id/aprobacion-tutor-empresarial')
+  async aprobarPorTutorEmpresarial(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
+    return this.planDeTrabajoService.aprobarPorTutorEmpresarial(id, usuario.tutor.id);
+  }
+
+  @Patch(':id/aprobacion-tutor-institucional')
+  async aprobarPorTutorInstitucional(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
+    return this.planDeTrabajoService.aprobarPorTutorInstitucional(id, usuario.tutorInstitucional.id);
+  }
 }
