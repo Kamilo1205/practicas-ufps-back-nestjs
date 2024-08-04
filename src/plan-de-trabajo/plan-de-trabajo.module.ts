@@ -7,6 +7,7 @@ import { EstudiantesModule } from 'src/estudiantes/estudiantes.module';
 import { SemestreModule } from 'src/semestre/semestre.module';
 import { TutoresModule } from 'src/tutores/tutores.module';
 import { TutorInstitucionalModule } from 'src/tutor-institucional/tutor-institucional.module';
+import { AsignacionModule } from 'src/asignacion/asignacion.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TutorInstitucionalModule } from 'src/tutor-institucional/tutor-instituc
     SemestreModule,
     TutoresModule,
     TutorInstitucionalModule,
+    AsignacionModule
   ],
   controllers: [PlanDeTrabajoController],
   providers: [PlanDeTrabajoService],

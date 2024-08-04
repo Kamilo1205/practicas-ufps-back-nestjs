@@ -8,6 +8,7 @@ import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { SemestreService } from 'src/semestre/semestre.service';
 import { TutorInstitucionalService } from 'src/tutor-institucional/tutor-institucional.service';
 import { TutoresService } from 'src/tutores/tutores.service';
+import { AsignacionService } from 'src/asignacion/asignacion.service';
 
 @Injectable()
 export class PlanDeTrabajoService {
@@ -17,12 +18,13 @@ export class PlanDeTrabajoService {
     private readonly estudiantesService: EstudiantesService,
     private readonly semestreService: SemestreService,
     private readonly tutorInstitucionalService: TutorInstitucionalService,
-    private readonly tutorEmpresarialService: TutoresService
+    private readonly tutorEmpresarialService: TutoresService,
+    private readonly asignacionService: AsignacionService
   ) {}
 
   async findAll(query: PaginateQuery) {
     return paginate(query, this.planDeTrabajoRepository, {
-      sortableColumns: ['id', 'estudiante.id', 'semestre.id', 'semestre.anio.actual'],
+      sortableColumns: ['id', 'estudiante.id', 'semestre.id', 'semestre.anio.actual', 'asignacion'],
       nullSort: 'last',
       relations: ['estudiante', 'semestre'],
       defaultSortBy: [['id', 'DESC']],
@@ -40,7 +42,8 @@ export class PlanDeTrabajoService {
         'seccionActividades.subActividades', 
         'objetivo',
         'objetivo.comentarios', 
-        'intensidadHoraria'
+        'intensidadHoraria',
+        'asignacion'
       ], 
       withDeleted: true, 
       where: { semestre: { id: semestreActual.id } }
@@ -57,7 +60,8 @@ export class PlanDeTrabajoService {
         'seccionActividades.subActividades', 
         'objetivo',
         'objetivo.comentarios', 
-        'intensidadHoraria'
+        'intensidadHoraria',
+        'asignacion'
       ], 
       withDeleted: true
     });
@@ -90,7 +94,8 @@ export class PlanDeTrabajoService {
         'seccionActividades', 
         'seccionActividades.comentarios', 
         'objetivo',
-        'objetivo.comentarios'
+        'objetivo.comentarios', 
+        'asignacion'
       ], 
       withDeleted: true,
       where: { estudiante: { id: usuario.estudiante.id } } 
@@ -104,7 +109,8 @@ export class PlanDeTrabajoService {
         'seccionActividades', 
         'seccionActividades.comentarios', 
         'objetivo',
-        'objetivo.comentarios'
+        'objetivo.comentarios',
+        'asignacion'
       ], 
       withDeleted: true,
       where: { id, estudiante: { id: usuario.estudiante.id } } 
@@ -124,15 +130,17 @@ export class PlanDeTrabajoService {
         'seccionActividades', 
         'seccionActividades.comentarios', 
         'objetivo',
-        'objetivo.comentarios'
+        'objetivo.comentarios',
+        'asignacion'
       ],
     });
 
     if (!planDeTrabajo) {
       const estudiante = await this.estudiantesService.findOne(estudianteId);
       const semestre = await this.semestreService.findOne(semestreId);
+      const asignacion = await this.asignacionService.findEstudianteIdAndSemestreActual(estudianteId);
 
-      planDeTrabajo = this.planDeTrabajoRepository.create({ estudiante, semestre });
+      planDeTrabajo = this.planDeTrabajoRepository.create({ estudiante, semestre, asignacion });
       planDeTrabajo = await this.planDeTrabajoRepository.save(planDeTrabajo);
     }
 

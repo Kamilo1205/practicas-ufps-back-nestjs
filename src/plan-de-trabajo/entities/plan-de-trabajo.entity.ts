@@ -7,6 +7,7 @@ import { IntensidadHoraria } from 'src/intensidad-horaria/entities/intensidad-ho
 import { SeccionActividades } from 'src/actividades/entities/seccion-actividades.entity';
 import { Tutor } from 'src/tutores/entities/tutor.entity';
 import { TutorInstitucional } from 'src/tutor-institucional/entities/tutor-institucional.entity';
+import { Asignacion } from 'src/asignacion/entities/asignacion.entity';
 
 @Entity()
 export class PlanDeTrabajo extends BaseEntity {
@@ -33,4 +34,7 @@ export class PlanDeTrabajo extends BaseEntity {
 
   @ManyToOne(() => Semestre, (semestre) => semestre.planesDeTrabajo, { eager: true })
   semestre: Semestre;
+
+  @OneToOne(() => Asignacion, (asignacion) => asignacion.planDeTrabajo)
+  asignacion: Asignacion;
 }

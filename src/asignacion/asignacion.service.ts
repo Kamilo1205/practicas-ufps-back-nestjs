@@ -62,9 +62,9 @@ export class AsignacionService {
         'tutor.nombre',
         'tutor.usuario.email',
         'solicitud.empresa.nombreComercial',
-        'solicitud.empresa.nombreLegal',
+        'solicitud.empresa.nombreLegal'
       ],
-      relations: ['estudiante', 'solicitud', 'tutor', 'tutor.usuario'],
+      relations: ['estudiante', 'solicitud', 'tutor', 'tutor.usuario', 'planDeTrabajo'],
       filterableColumns: {
         estado: [FilterOperator.EQ, FilterOperator.CONTAINS, FilterSuffix.NOT],
         'estudiante.nombre': [FilterOperator.EQ, FilterOperator.CONTAINS],
@@ -79,13 +79,13 @@ export class AsignacionService {
   }
 
   async findOne(id: string) {
-    const asigancion = await this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'tutor'] });
+    const asigancion = await this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'tutor', 'planDeTrabajo'] });
     if (!asigancion) throw new NotFoundException('Asignación no encontrada');
     return asigancion;
   }
   
   async asignarTutor(id: string, usuario: Usuario, asignarTutorDto: AsignarTutorDto) {
-    const asignacion = await this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'tutor'] });
+    const asignacion = await this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'tutor', 'planDeTrabajo'] });
     if (!asignacion) throw new NotFoundException('Asignación no encontrada');
 
     // Verificar que la solicitud pertenece a la empresa
@@ -101,7 +101,13 @@ export class AsignacionService {
     }
 
     await this.asignacionRepository.update(id, { tutor });
-    return this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'tutor'] });
+    return this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'tutor', 'planDeTrabajo'] });
+  }
+
+  async findEstudianteIdAndSemestreActual(estudianteId: string) {
+    return await this.asignacionRepository.findOne({ 
+      where: { estudiante: { id: estudianteId }, solicitud: { semestre: { actual: true } } }
+    });
   }
 
   async remove(id: string) {
