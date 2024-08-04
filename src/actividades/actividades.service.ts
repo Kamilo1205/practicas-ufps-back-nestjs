@@ -32,7 +32,7 @@ export class ActividadesService {
   async findOne(id: string) {
     const actividad = await this.actividadRepository.findOne({ 
       where: { id },
-      relations: ['subActividades', 'subActividades', 'comentarios']
+      relations: ['subActividades', 'subActividades']
     });
     if (!actividad) throw new NotFoundException(`La actividad con el id ${id} no fue encontrada`);
     return actividad;
@@ -41,7 +41,7 @@ export class ActividadesService {
   async findOneByUsuario(id: string, usuario: Usuario) {
     const actividad = await this.actividadRepository.findOne({ 
       where: { id, seccionActividades: { planDeTrabajo: { estudiante: { id: usuario.estudiante.id } } }},
-      relations: ['subActividades', 'subActividades', 'comentarios']
+      relations: ['subActividades', 'subActividades']
     });
     if (!actividad) throw new NotFoundException(`La actividad con el id ${id} no fue encontrada`);
     return actividad;
