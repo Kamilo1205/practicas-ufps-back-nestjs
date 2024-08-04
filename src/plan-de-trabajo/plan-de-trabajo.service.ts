@@ -34,7 +34,7 @@ export class PlanDeTrabajoService {
         'seccionActividades',
         'seccionActividades.comentarios', 
         'seccionActividades.subActividades', 
-        'seccionActividades.subActividades.comentarios', 
+        'seccionActividades.subActividades', 
         'objetivo',
         'objetivo.comentarios', 
         'intensidadHoraria'
@@ -52,7 +52,7 @@ export class PlanDeTrabajoService {
         'seccionActividades',
         'seccionActividades.comentarios', 
         'seccionActividades.subActividades', 
-        'seccionActividades.subActividades.comentarios', 
+        'seccionActividades.subActividades', 
         'objetivo',
         'objetivo.comentarios', 
         'intensidadHoraria'
@@ -84,7 +84,12 @@ export class PlanDeTrabajoService {
 
   async findAllByEstudiante(usuario: Usuario) {
     return this.planDeTrabajoRepository.find({ 
-      relations: ['seccionActividades', 'objetivo'], 
+      relations: [
+        'seccionActividades', 
+        'seccionActividades.comentarios', 
+        'objetivo',
+        'objetivo.comentarios'
+      ], 
       withDeleted: true,
       where: { estudiante: { id: usuario.estudiante.id } } 
     });
@@ -92,7 +97,13 @@ export class PlanDeTrabajoService {
 
   async findOneByEstudiante(id: string, usuario: Usuario) {
     return this.planDeTrabajoRepository.findOne({ 
-      relations: ['objetivo', 'seccionActividades', 'intensidadHoraria'], 
+      relations: [
+        'intensidadHoraria',
+        'seccionActividades', 
+        'seccionActividades.comentarios', 
+        'objetivo',
+        'objetivo.comentarios'
+      ], 
       withDeleted: true,
       where: { id, estudiante: { id: usuario.estudiante.id } } 
     });
@@ -106,7 +117,13 @@ export class PlanDeTrabajoService {
   async findOrCreatePlanDeTrabajo(estudianteId: string, semestreId: string) {
     let planDeTrabajo = await this.planDeTrabajoRepository.findOne({
       where: { estudiante: { id: estudianteId }, semestre: { id: semestreId } },
-      relations: ['seccionActividades', 'objetivo', 'intensidadHoraria'],
+      relations: [
+        'intensidadHoraria',
+        'seccionActividades', 
+        'seccionActividades.comentarios', 
+        'objetivo',
+        'objetivo.comentarios'
+      ],
     });
 
     if (!planDeTrabajo) {
