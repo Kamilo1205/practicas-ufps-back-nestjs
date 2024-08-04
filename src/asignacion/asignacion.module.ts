@@ -18,5 +18,6 @@ import { SemestreModule } from 'src/semestre/semestre.module';
   ],
   controllers: [AsignacionController],
   providers: [AsignacionService],
+  exports: [AsignacionService]
 })
 export class AsignacionModule {}
