@@ -39,7 +39,8 @@ export class PlanDeTrabajoService {
         'estudiante', 
         'seccionActividades',
         'seccionActividades.comentarios', 
-        'seccionActividades.subActividades', 
+        'seccionActividades.actividades',
+        'seccionActividades.actividades.subActividades', 
         'objetivo',
         'objetivo.comentarios', 
         'intensidadHoraria',
@@ -57,7 +58,8 @@ export class PlanDeTrabajoService {
         'estudiante', 
         'seccionActividades',
         'seccionActividades.comentarios', 
-        'seccionActividades.subActividades', 
+        'seccionActividades.actividades',
+        'seccionActividades.actividades.subActividades', 
         'objetivo',
         'objetivo.comentarios', 
         'intensidadHoraria',
@@ -91,8 +93,10 @@ export class PlanDeTrabajoService {
   async findAllByEstudiante(usuario: Usuario) {
     return this.planDeTrabajoRepository.find({ 
       relations: [
-        'seccionActividades', 
-        'seccionActividades.comentarios', 
+        'seccionActividades',
+        'seccionActividades.actividades', 
+        'seccionActividades.actividades.subActividades',
+        'seccionActividades.comentarios',
         'objetivo',
         'objetivo.comentarios', 
         'asignacion'
@@ -106,7 +110,9 @@ export class PlanDeTrabajoService {
     return this.planDeTrabajoRepository.findOne({ 
       relations: [
         'intensidadHoraria',
-        'seccionActividades', 
+        'seccionActividades',
+        'seccionActividades.actividades', 
+        'seccionActividades.actividades.subActividades',
         'seccionActividades.comentarios', 
         'objetivo',
         'objetivo.comentarios',
