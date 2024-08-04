@@ -128,6 +128,8 @@ export class PlanDeTrabajoService {
       relations: [
         'intensidadHoraria',
         'seccionActividades', 
+        'seccionActividades.actividades',
+        'seccionActividades.actividades.subActividades', 
         'seccionActividades.comentarios', 
         'objetivo',
         'objetivo.comentarios',
