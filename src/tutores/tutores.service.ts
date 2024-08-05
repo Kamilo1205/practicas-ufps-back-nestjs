@@ -16,13 +16,13 @@ export class TutoresService {
   ) {}
   
   async create(empresaId: string, createTutorDto: CreateTutorDto) {
-    const { email, nombre, apellidos } = createTutorDto;
+    const { email, nombre, apellidos, telefono, direccionTrabajo } = createTutorDto;
     const displayName = `${nombre} ${apellidos}`;
 
     const usuario = await this.usuariosService.createTutor(email, displayName);
     const empresa = await this.empresasService.findOne(empresaId);
     
-    const tutor = this.tutorRepository.create({ ...createTutorDto, usuario, empresa });
+    const tutor = this.tutorRepository.create({ nombre, apellidos, telefono, direccionTrabajo, usuario, empresa });
     return this.tutorRepository.save(tutor);
   }
 

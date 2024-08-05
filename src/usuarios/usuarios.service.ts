@@ -36,7 +36,7 @@ export class UsuariosService {
 
     const rol = await this.rolesService.findOneByNombre(Rol.Tutor);
     const hashedPassword = await bcrypt.hash(crypto.randomBytes(8).toString('hex'), 10);
-    const usaurio = this.usuariosRepository.create({ 
+    const usuario = this.usuariosRepository.create({ 
       email: normalizedEmail, 
       password: hashedPassword, 
       roles: [rol],
@@ -44,7 +44,7 @@ export class UsuariosService {
       estaRegistrado: true,    
       displayName
     });
-    return this.usuariosRepository.save(usaurio);
+    return this.usuariosRepository.save(usuario);
   }
 
   async createTutorInstitucional(email: string, displayName: string) {
