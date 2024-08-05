@@ -7,7 +7,6 @@ import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 import { ObjetivosService } from 'src/objetivos/objetivos.service';
 import { ActividadesService } from 'src/actividades/actividades.service';
-import { SubActividadesService } from 'src/sub-actividades/sub-actividades.service';
 
 @Injectable()
 export class ComentariosService {
@@ -17,7 +16,6 @@ export class ComentariosService {
     private readonly usuariosService: UsuariosService,
     private readonly objetivosService: ObjetivosService,
     private readonly actividadesService: ActividadesService,
-    private readonly subActividadesService: SubActividadesService,
   ) {}
 
   async create(createComentarioDto: CreateComentarioDto, usuario: Usuario) {
@@ -33,7 +31,7 @@ export class ComentariosService {
     let seccionActividades = null;
     let objetivo = null;
 
-    if (seccionActividadesId) seccionActividades = await this.actividadesService.findOne(seccionActividadesId);
+    if (seccionActividadesId) seccionActividades = await this.actividadesService.findSeccionActividadById(seccionActividadesId);
     if (objetivoId) objetivo = await this.objetivosService.findOne(objetivoId);
     
     const comentario = this.comentarioRepository.create({

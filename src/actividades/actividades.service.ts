@@ -58,4 +58,10 @@ export class ActividadesService {
     if (!actividad) throw new NotFoundException(`La actividad con el id ${id} no fue encontrada`);
     return this.actividadRepository.delete(id);
   }
+
+  async findSeccionActividadById(seccionActividadId: string) {
+    const seccionActividades = await this.seccionActividadesRepository.findOne({ where: { id: seccionActividadId } });
+    if (!seccionActividades) throw new NotFoundException(`Seccion de actividades con id ${seccionActividadId} no fue encontrado`);
+    return seccionActividades;
+  }
 }
