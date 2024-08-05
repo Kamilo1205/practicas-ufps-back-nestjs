@@ -31,6 +31,12 @@ export class SemestreController {
     return this.semestreService.findOne(id);
   }
 
+  @Patch('actual')
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  actual(@Body() updateSemestreDto: UpdateSemestreDto) {
+    return this.semestreService.updateActual(updateSemestreDto);
+  }
+
   @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
   update(@Param('id') id: string, @Body() updateSemestreDto: UpdateSemestreDto) {

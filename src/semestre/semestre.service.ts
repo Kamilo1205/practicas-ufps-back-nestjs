@@ -46,6 +46,12 @@ export class SemestreService {
     return this.semestreRepository.findOne({ where: { id } });
   }
 
+  async updateActual(updateSemestreDto: UpdateSemestreDto) {
+    const semestre = await this.semestreRepository.findOne({ where: { actual: true }, relations: ['anio'] });
+    if (semestre) throw new NotFoundException(`El semestre actual no fue encontrado`);
+    return this.semestreRepository.update(semestre.id, updateSemestreDto);
+  }
+
   async remove(id: string) {
     const semestre = await this.semestreRepository.findOne({ where: { id }, relations: ['anio'] });
     if (semestre) throw new NotFoundException(`El semestre con id ${ id } no fue encontrado`);
