@@ -9,27 +9,20 @@ import { EmpresasService } from 'src/empresas/empresas.service';
 @Injectable()
 export class TutoresService {
   constructor(
-    @InjectRepository(Tutor)
-    private readonly tutorRepository: Repository<Tutor>,
+    @InjectRepository(Tutor) private readonly tutorRepository: Repository<Tutor>,
     private readonly usuariosService: UsuariosService,
     private readonly empresasService: EmpresasService
   ) {}
   
   async create(empresaId: string, createTutorDto: CreateTutorDto) {
-    const { email, nombre, apellidos, telefono, direccionTrabajo } = createTutorDto;
+    const { email, nombre, apellidos } = createTutorDto;
     const displayName = `${nombre} ${apellidos}`;
 
     const usuario = await this.usuariosService.createTutor(email, displayName);
-    console.log(usuario);
     const empresa = await this.empresasService.findOne(empresaId);
-    console.log(empresa);
-
-    const tutor = this.tutorRepository.create({ nombre, apellidos, telefono, direccionTrabajo, usuario, empresa });
-    try {
-      return this.tutorRepository.save(tutor);
-    } catch (error) {
-      console.log(error);
-    }
+    
+    const tutor = this.tutorRepository.create({ ...createTutorDto, usuario, empresa });
+    return this.tutorRepository.save(tutor);
   }
 
   async findAll() {

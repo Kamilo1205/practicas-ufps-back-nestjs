@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
@@ -19,7 +19,7 @@ export class Tutor extends BaseEntity {
   direccionTrabajo: string;
 
   @OneToOne(() => Usuario, (usuario) => usuario.tutor)
-  @JoinTable()
+  @JoinColumn()
   usuario: Usuario;
 
   @ManyToOne(() => Empresa, (empresa) => empresa.tutores)
