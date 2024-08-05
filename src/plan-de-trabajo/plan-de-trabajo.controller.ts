@@ -4,7 +4,7 @@ import { PlanDeTrabajoService } from './plan-de-trabajo.service';
 import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
-import { CreateResultadoDto, UpdatePlanDeTrabajoDto } from './dto';
+import { CreateResultadoDto, CreateResultadosDto, UpdatePlanDeTrabajoDto } from './dto';
 
 @Controller('plan-trabajo')
 export class PlanDeTrabajoController {
@@ -60,8 +60,8 @@ export class PlanDeTrabajoController {
 
   @Patch(':id/agregar-resultado')
   @Roles(Rol.Tutor)
-  async agregarResultado(@Param('id', new ParseUUIDPipe()) id: string, @Body() createResultadoDto: CreateResultadoDto) {
-    return this.planDeTrabajoService.agregarResultados(id, createResultadoDto);
+  async agregarResultado(@Param('id', new ParseUUIDPipe()) id: string, @Body() createResultadosDto: CreateResultadosDto) {
+    return this.planDeTrabajoService.agregarResultados(id, createResultadosDto);
   }
 
   @Patch(':id')

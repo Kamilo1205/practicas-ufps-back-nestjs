@@ -10,7 +10,7 @@ import { TutorInstitucionalService } from 'src/tutor-institucional/tutor-institu
 import { TutoresService } from 'src/tutores/tutores.service';
 import { AsignacionService } from 'src/asignacion/asignacion.service';
 import { Resultado } from './entities/resultados.entity';
-import { CreateResultadoDto, UpdatePlanDeTrabajoDto } from './dto';
+import { CreateResultadoDto, CreateResultadosDto, UpdatePlanDeTrabajoDto } from './dto';
 
 @Injectable()
 export class PlanDeTrabajoService {
@@ -172,10 +172,13 @@ export class PlanDeTrabajoService {
     return this.planDeTrabajoRepository.save({ ...planTrabajo, tutorInstitucional });
   }
 
-  async agregarResultados(planDeTrabajoId: string, createResultadoDto: CreateResultadoDto) {
+  async agregarResultados(planDeTrabajoId: string, createResultadosDto: CreateResultadosDto) {
     const planDeTrabajo = await this.findOne(planDeTrabajoId);
-    const resultado = this.resultadoRepository.create({ ...createResultadoDto, planDeTrabajo });
-    return this.resultadoRepository.save(resultado);
+
+    const resultados = createResultadosDto.resultados.map((createResultadoDto) => {
+      return this.resultadoRepository.create({ ...createResultadoDto, planDeTrabajo });
+    });
+    return this.resultadoRepository.save(resultados);
   }
 
   async update(planDeTrabajoId: string, updatePlanDeTrabajoDto: UpdatePlanDeTrabajoDto) {
