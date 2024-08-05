@@ -5,6 +5,4 @@ import { Column, Entity } from 'typeorm';
 export class NuevaResponsabilidad extends BaseEntity {
   @Column()
   nombre: string;
-
-  
 }
