@@ -53,12 +53,6 @@ export class EmpresasController {
     return this.empresasService.findOne(usuario?.empresa?.id);
   }
 
-  @Post('/tutores')
-  @Roles(Rol.Empresa)
-  createTutor(@Body() createTutorDto: Omit<CreateTutorDto, 'empresaId'>, @GetUser() usuario: Usuario) {
-    return this.empresasService.createTutor(usuario?.id, createTutorDto);
-  }
-
   @Get('/tutores')
   @Roles(Rol.Empresa)
   findTutoresByEmpresaId(@GetUser() usuario: Usuario) {
@@ -93,6 +87,12 @@ export class EmpresasController {
   @Roles(Rol.Coordinador, Rol.Administrador)
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.empresasService.findOne(id);
+  }
+
+  @Get(':id/practicantes')
+  @Roles(Rol.Coordinador, Rol.Administrador)
+  findPracticantesByEmpresaId(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.empresasService.findPracticantesByEmpresaId(id);
   }
 
   @Delete(':id')

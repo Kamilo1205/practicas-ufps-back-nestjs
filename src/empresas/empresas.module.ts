@@ -9,7 +9,6 @@ import { RepresentanteLegalModule } from 'src/representante-legal/representante-
 import { CiudadesModule } from 'src/ciudades/ciudades.module';
 import { IndustriasModule } from 'src/industrias/industrias.module';
 import { MailModule } from 'src/mail/mail.module';
-import { TutoresModule } from 'src/tutores/tutores.module';
 
 @Module({
   imports: [
@@ -19,8 +18,7 @@ import { TutoresModule } from 'src/tutores/tutores.module';
     RepresentanteLegalModule,
     IndustriasModule,
     CiudadesModule,
-    MailModule,
-    TutoresModule
+    MailModule
   ],
   controllers: [EmpresasController],
   providers: [EmpresasService],

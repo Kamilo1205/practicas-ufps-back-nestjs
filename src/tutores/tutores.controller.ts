@@ -2,17 +2,18 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TutoresService } from './tutores.service';
 import { CreateTutorDto } from './dto/create-tutor.dto';
 import { UpdateTutorDto } from './dto/update-tutor.dto';
-import { Roles } from 'src/auth/decorators';
+import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Controller('tutores')
 export class TutoresController {
   constructor(private readonly tutoresService: TutoresService) {}
 
   @Post()
-  @Roles(Rol.Coordinador, Rol.Administrador)
-  create(@Body() createTutorDto: CreateTutorDto) {
-    return this.tutoresService.create(createTutorDto);
+  @Roles(Rol.Empresa)
+  create(@Body() createTutorDto: CreateTutorDto, @GetUser() usuario: Usuario) {
+    return this.tutoresService.create(usuario.empresa.id, createTutorDto);
   }
 
   @Get()

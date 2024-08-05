@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateTutorDto, UpdateTutorDto } from './dto';
 import { Tutor } from './entities/tutor.entity';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
+import { EmpresasService } from 'src/empresas/empresas.service';
 
 @Injectable()
 export class TutoresService {
@@ -11,14 +12,17 @@ export class TutoresService {
     @InjectRepository(Tutor)
     private readonly tutorRepository: Repository<Tutor>,
     private readonly usuariosService: UsuariosService,
+    private readonly empresasService: EmpresasService
   ) {}
-
-  async create(createTutorDto: CreateTutorDto) {
+  
+  async create(empresaId: string, createTutorDto: CreateTutorDto) {
     const { email, nombre, apellidos } = createTutorDto;
     const displayName = `${nombre} ${apellidos}`;
+
     const usuario = await this.usuariosService.createTutor(email, displayName);
+    const empresa = await this.empresasService.findOne(empresaId);
     
-    const tutor = this.tutorRepository.create({ ...createTutorDto, usuario });
+    const tutor = this.tutorRepository.create({ ...createTutorDto, usuario, empresa });
     return this.tutorRepository.save(tutor);
   }
 

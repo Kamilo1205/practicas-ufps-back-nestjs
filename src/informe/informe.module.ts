@@ -9,5 +9,6 @@ import { NuevaResponsabilidad } from './entities/nueva-responsabilidad.entity';
   imports: [TypeOrmModule.forFeature([Informe, NuevaResponsabilidad])],
   controllers: [InformeController],
   providers: [InformeService],
+  exports: [InformeService]
 })
 export class InformeModule {}

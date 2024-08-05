@@ -39,11 +39,11 @@ export class PlanDeTrabajo extends BaseEntity {
   @OneToOne(() => Asignacion, (asignacion) => asignacion.planDeTrabajo)
   asignacion: Asignacion;
 
-  //@JoinColumn()
   //@OneToOne(() => Informe, (informe) => informe.primerInforme, { eager: true })
+  //@JoinColumn()
   //primerInforme: Informe;
   //
-  //@JoinColumn()
   //@OneToOne(() => Informe, (informe) => informe.informeFinal, { eager: true })
+  //@JoinColumn()
   //primerFinal: Informe;
 }

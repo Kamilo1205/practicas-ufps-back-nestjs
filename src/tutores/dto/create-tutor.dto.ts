@@ -20,8 +20,4 @@ export class CreateTutorDto {
   @IsString()
   @IsNotEmpty()
   direccionTrabajo: string;
-
-  @IsUUID('4')
-  @IsNotEmpty()
-  empresaId: string;
 }

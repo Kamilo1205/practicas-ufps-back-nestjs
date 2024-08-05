@@ -13,8 +13,6 @@ import { RepresentanteLegalService } from 'src/representante-legal/representante
 import { CiudadesService } from 'src/ciudades/ciudades.service';
 import { IndustriasService } from 'src/industrias/industrias.service';
 import { MailService } from 'src/mail/mail.service';
-import { CreateTutorDto } from 'src/tutores/dto';
-import { TutoresService } from 'src/tutores/tutores.service';
 import { PaginateQuery, paginate } from 'nestjs-paginate';
 
 @Injectable()
@@ -29,8 +27,7 @@ export class EmpresasService {
     private readonly representanteLegalService: RepresentanteLegalService,
     private readonly ciudadesService: CiudadesService,
     private readonly industriasService: IndustriasService,
-    private readonly mailService: MailService,
-    private readonly tutoresService: TutoresService
+    private readonly mailService: MailService
   ) {}
 
   async create(createEmpresaDto: CreateEmpresaDto, usuario: Usuario, files: UploadedFilesInterfaz) {
@@ -81,14 +78,6 @@ export class EmpresasService {
 
     this.mailService.sendSolicitudConvenioEmail(empresa, emailAttachments);
     return this.empresasRepository.findOne({ where: { id: usuario.id }, relations: ['representanteLegal', 'usuario'] });
-  }
-
-  async createTutor(id: string, createTutorDto: Omit<CreateTutorDto, 'empresaId'>) {
-    const empresa = await this.empresasRepository.findOne({ where: { id }, relations: ['tutores']});
-    if (!empresa) throw new EmpresaNotFoundException(id);
-
-    const tutor = await this.tutoresService.create({ ...createTutorDto, empresaId: empresa.id });
-    return this.empresasRepository.update(id, { tutores: [ ...empresa.tutores, tutor ] });
   }
 
   findAll(query: PaginateQuery) {
@@ -172,5 +161,10 @@ export class EmpresasService {
     const empresa = await this.empresasRepository.findOne({ where: { id }, withDeleted: true });
     if (!empresa) throw new EmpresaNotFoundException(id);
     return this.empresasRepository.restore(id);
+  }
+
+  async findPracticantesByEmpresaId(empresaId: string) {
+    const empresa = await this.findOne(empresaId);
+    
   }
 }
