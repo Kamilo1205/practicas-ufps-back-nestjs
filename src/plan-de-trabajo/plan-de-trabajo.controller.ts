@@ -46,11 +46,13 @@ export class PlanDeTrabajoController {
   }
 
   @Patch(':id/aprobacion-tutor-empresarial')
+  @Roles(Rol.Coordinador)
   async aprobarPorTutorEmpresarial(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
     return this.planDeTrabajoService.aprobarPorTutorEmpresarial(id, usuario.tutor.id);
   }
 
   @Patch(':id/aprobacion-tutor-institucional')
+  @Roles(Rol.Tutor)
   async aprobarPorTutorInstitucional(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
     return this.planDeTrabajoService.aprobarPorTutorInstitucional(id, usuario.tutorInstitucional.id);
   }
