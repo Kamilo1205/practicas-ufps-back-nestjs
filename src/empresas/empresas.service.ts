@@ -165,6 +165,7 @@ export class EmpresasService {
 
   async findPracticantesByEmpresaId(empresaId: string) {
     const empresa = await this.findOne(empresaId);
-    
+    const solicitudes = empresa.solicitudes.filter((solicitud) => solicitud.semestre.actual);
+    return solicitudes.flatMap((solicitud) => solicitud.asignaciones.estudiante);;
   }
 }
