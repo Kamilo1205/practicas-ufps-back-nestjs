@@ -40,7 +40,7 @@ export class PlanDeTrabajo extends BaseEntity {
   @OneToOne(() => Asignacion, (asignacion) => asignacion.planDeTrabajo)
   asignacion: Asignacion;
 
-  @Column()
+  @Column({ nullable: true })
   requerimientosTecnicos: string;
 
   @OneToMany(() => Resultado, (resultado) => resultado.planDeTrabajo)

@@ -47,7 +47,6 @@ import { IntensidadHorariaModule } from './intensidad-horaria/intensidad-horaria
 import { ComentariosModule } from './comentarios/comentarios.module';
 import { GrupoPracticasModule } from './grupo-practicas/grupo-practicas.module';
 import { DirectorModule } from './director/director.module';
-import { SeccionRequerimientosModule } from './seccion-requerimientos/seccion-requerimientos.module';
 
 @Module({
   imports: [
@@ -97,7 +96,6 @@ import { SeccionRequerimientosModule } from './seccion-requerimientos/seccion-re
     ComentariosModule,
     GrupoPracticasModule,
     DirectorModule,
-    SeccionRequerimientosModule
   ],
   controllers: [AppController],
   providers: [
