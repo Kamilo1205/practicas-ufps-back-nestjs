@@ -20,10 +20,16 @@ export class TutoresService {
     const displayName = `${nombre} ${apellidos}`;
 
     const usuario = await this.usuariosService.createTutor(email, displayName);
+    console.log(usuario);
     const empresa = await this.empresasService.findOne(empresaId);
-    
+    console.log(empresa);
+
     const tutor = this.tutorRepository.create({ nombre, apellidos, telefono, direccionTrabajo, usuario, empresa });
-    return this.tutorRepository.save(tutor);
+    try {
+      return this.tutorRepository.save(tutor);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async findAll() {
