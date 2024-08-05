@@ -9,6 +9,7 @@ import { Tutor } from 'src/tutores/entities/tutor.entity';
 import { TutorInstitucional } from 'src/tutor-institucional/entities/tutor-institucional.entity';
 import { Asignacion } from 'src/asignacion/entities/asignacion.entity';
 import { Informe } from 'src/informe/entities/informe.entity';
+import { Resultado } from './resultados.entity';
 
 @Entity()
 export class PlanDeTrabajo extends BaseEntity {
@@ -38,6 +39,12 @@ export class PlanDeTrabajo extends BaseEntity {
 
   @OneToOne(() => Asignacion, (asignacion) => asignacion.planDeTrabajo)
   asignacion: Asignacion;
+
+  @Column()
+  requerimientosTecnicos: string;
+
+  @OneToMany(() => Resultado, (resultado) => resultado.planDeTrabajo)
+  resultados: Resultado[];
 
   //@OneToOne(() => Informe, (informe) => informe.primerInforme, { eager: true })
   //@JoinColumn()

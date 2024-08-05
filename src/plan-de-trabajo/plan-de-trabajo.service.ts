@@ -9,12 +9,16 @@ import { SemestreService } from 'src/semestre/semestre.service';
 import { TutorInstitucionalService } from 'src/tutor-institucional/tutor-institucional.service';
 import { TutoresService } from 'src/tutores/tutores.service';
 import { AsignacionService } from 'src/asignacion/asignacion.service';
+import { Resultado } from './entities/resultados.entity';
+import { CreateResultadoDto, UpdatePlanDeTrabajoDto } from './dto';
 
 @Injectable()
 export class PlanDeTrabajoService {
   constructor(
     @InjectRepository(PlanDeTrabajo)
     private readonly planDeTrabajoRepository: Repository<PlanDeTrabajo>,
+    @InjectRepository(Resultado)
+    private readonly resultadoRepository: Repository<Resultado>,
     private readonly estudiantesService: EstudiantesService,
     private readonly semestreService: SemestreService,
     private readonly tutorInstitucionalService: TutorInstitucionalService,
@@ -166,5 +170,16 @@ export class PlanDeTrabajoService {
     const planTrabajo = await this.findOne(id);
     const tutorInstitucional = await this.tutorInstitucionalService.findOne(tutorInstitucionalId);
     return this.planDeTrabajoRepository.save({ ...planTrabajo, tutorInstitucional });
+  }
+
+  async agregarResultados(planDeTrabajoId: string, createResultadoDto: CreateResultadoDto) {
+    const planDeTrabajo = await this.findOne(planDeTrabajoId);
+    const resultado = this.resultadoRepository.create({ ...createResultadoDto, planDeTrabajo });
+    return this.resultadoRepository.save(resultado);
+  }
+
+  async update(planDeTrabajoId: string, updatePlanDeTrabajoDto: UpdatePlanDeTrabajoDto) {
+    const planDeTrabajo = await this.findOne(planDeTrabajoId);
+    return this.planDeTrabajoRepository.save({ ...planDeTrabajo, updatePlanDeTrabajoDto });
   }
 }

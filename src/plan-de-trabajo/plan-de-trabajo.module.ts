@@ -8,10 +8,11 @@ import { SemestreModule } from 'src/semestre/semestre.module';
 import { TutoresModule } from 'src/tutores/tutores.module';
 import { TutorInstitucionalModule } from 'src/tutor-institucional/tutor-institucional.module';
 import { AsignacionModule } from 'src/asignacion/asignacion.module';
+import { Resultado } from './entities/resultados.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PlanDeTrabajo]),
+    TypeOrmModule.forFeature([PlanDeTrabajo, Resultado]),
     EstudiantesModule,
     SemestreModule,
     TutoresModule,

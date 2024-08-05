@@ -1,9 +1,10 @@
-import { Controller, Get, Patch, Param, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Patch, Param, ParseUUIDPipe, Body } from '@nestjs/common';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { PlanDeTrabajoService } from './plan-de-trabajo.service';
 import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { CreateResultadoDto, UpdatePlanDeTrabajoDto } from './dto';
 
 @Controller('plan-trabajo')
 export class PlanDeTrabajoController {
@@ -55,5 +56,17 @@ export class PlanDeTrabajoController {
   @Roles(Rol.Tutor)
   async aprobarPorTutorInstitucional(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
     return this.planDeTrabajoService.aprobarPorTutorInstitucional(id, usuario.tutorInstitucional.id);
+  }
+
+  @Patch(':id/agregar-resultado')
+  @Roles(Rol.Tutor)
+  async agregarResultado(@Param('id', new ParseUUIDPipe()) id: string, @Body() createResultadoDto: CreateResultadoDto) {
+    return this.planDeTrabajoService.agregarResultados(id, createResultadoDto);
+  }
+
+  @Patch(':id')
+  @Roles(Rol.Tutor)
+  async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updatePlanDeTrabajoDto: UpdatePlanDeTrabajoDto) {
+    return this.planDeTrabajoService.update(id, updatePlanDeTrabajoDto);
   }
 }
