@@ -10,7 +10,7 @@ import { TutorInstitucionalService } from 'src/tutor-institucional/tutor-institu
 import { TutoresService } from 'src/tutores/tutores.service';
 import { AsignacionService } from 'src/asignacion/asignacion.service';
 import { Resultado } from './entities/resultados.entity';
-import { CreateResultadoDto, CreateResultadosDto, UpdatePlanDeTrabajoDto } from './dto';
+import { CreateResultadoDto, CreateResultadosDto, UpdatePlanDeTrabajoDto, UpdateResultadoDto } from './dto';
 
 @Injectable()
 export class PlanDeTrabajoService {
@@ -188,5 +188,9 @@ export class PlanDeTrabajoService {
 
   eliminarResultados(resultadoId: string) {
     return this.resultadoRepository.delete(resultadoId);
+  }
+
+  updateResultados(resultadoId: string, updateResultadoDto: UpdateResultadoDto) {
+    return this.resultadoRepository.update(resultadoId, updateResultadoDto);
   }
 }

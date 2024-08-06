@@ -4,7 +4,7 @@ import { PlanDeTrabajoService } from './plan-de-trabajo.service';
 import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
-import { CreateResultadoDto, CreateResultadosDto, UpdatePlanDeTrabajoDto } from './dto';
+import { CreateResultadoDto, CreateResultadosDto, UpdatePlanDeTrabajoDto, UpdateResultadoDto } from './dto';
 
 @Controller('plan-trabajo')
 export class PlanDeTrabajoController {
@@ -44,6 +44,12 @@ export class PlanDeTrabajoController {
   @Roles(Rol.Estudiante)
   findOneByEstudiante(@GetUser() usuario: Usuario, @Param('id', new ParseUUIDPipe()) id: string) {
     return this.planDeTrabajoService.findOneByEstudiante(id, usuario);
+  }
+
+  @Patch('actualizar-resultado/:id')
+  @Roles(Rol.Tutor)
+  async updateResultado(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateResultadoDto: UpdateResultadoDto) {
+    return this.planDeTrabajoService.updateResultado(id, updateResultadoDto);
   }
 
   @Patch(':id/aprobacion-tutor-empresarial')
