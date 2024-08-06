@@ -90,7 +90,7 @@ export class EmpresasController {
   }
 
   @Get(':id/practicantes')
-  @Roles(Rol.Coordinador, Rol.Administrador)
+  @Roles(Rol.Coordinador, Rol.Administrador, Rol.Empresa)
   findPracticantesByEmpresaId(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.empresasService.findPracticantesByEmpresaId(id);
   }
