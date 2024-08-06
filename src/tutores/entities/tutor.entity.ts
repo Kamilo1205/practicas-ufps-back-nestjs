@@ -18,7 +18,7 @@ export class Tutor extends BaseEntity {
   @Column()
   direccionTrabajo: string;
 
-  @OneToOne(() => Usuario, (usuario) => usuario.tutor)
+  @OneToOne(() => Usuario, (usuario) => usuario.tutor, { eager: true })
   @JoinColumn()
   usuario: Usuario;
 
