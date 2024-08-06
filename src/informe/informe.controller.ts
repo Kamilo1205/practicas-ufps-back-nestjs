@@ -34,7 +34,7 @@ export class InformeController {
     return this.informeService.createNuevasResponsabilidades(informeId, createNuevaResponsabilidadDto);
   }
 
-  @Delete('/responsabilidad/:id')
+  @Delete('responsabilidad/:id')
   @Roles(Rol.Estudiante)
   eliminarResponsabilidad(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.informeService.eliminarNuevaResponsabilidad(id);
