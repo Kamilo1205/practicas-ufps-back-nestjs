@@ -66,16 +66,8 @@ export class SemestreService {
     if (!anioActual) throw new NotFoundException('No hay año actual disponible');
     const numeroSemestre = mesActual >= 1 && mesActual <= 6 ? 1: 2;
 
-    let semestreActual = await this.semestreRepository.findOne({
-      where: {
-        semestre: numeroSemestre,
-        anio: { id: anioActual.id },
-      },
-      relations: ['anio'],
-    });
-    
+    let semestreActual = await this.semestreRepository.findOne({ where: { actual: true } });
     if (!semestreActual) semestreActual = await this.create({ anioId: anioActual.id, semestre: numeroSemestre });
-    
     return semestreActual;
   }
 
