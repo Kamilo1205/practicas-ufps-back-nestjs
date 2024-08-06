@@ -190,7 +190,7 @@ export class PlanDeTrabajoService {
     return this.resultadoRepository.delete(resultadoId);
   }
 
-  updateResultados(resultadoId: string, updateResultadoDto: UpdateResultadoDto) {
+  updateResultado(resultadoId: string, updateResultadoDto: UpdateResultadoDto) {
     return this.resultadoRepository.update(resultadoId, updateResultadoDto);
   }
 }
