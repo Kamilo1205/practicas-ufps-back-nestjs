@@ -43,7 +43,7 @@ export class PlanDeTrabajo extends BaseEntity {
   @Column({ nullable: true })
   requerimientosTecnicos: string;
 
-  @OneToMany(() => Resultado, (resultado) => resultado.planDeTrabajo)
+  @OneToMany(() => Resultado, (resultado) => resultado.planDeTrabajo, { eager: true })
   resultados: Resultado[];
 
   //@OneToOne(() => Informe, (informe) => informe.primerInforme, { eager: true })

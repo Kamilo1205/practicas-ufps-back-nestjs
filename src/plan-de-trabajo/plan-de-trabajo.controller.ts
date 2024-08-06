@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Param, ParseUUIDPipe, Body } from '@nestjs/common';
+import { Controller, Get, Patch, Param, ParseUUIDPipe, Body, Delete } from '@nestjs/common';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { PlanDeTrabajoService } from './plan-de-trabajo.service';
 import { GetUser, Roles } from 'src/auth/decorators';
@@ -62,6 +62,12 @@ export class PlanDeTrabajoController {
   @Roles(Rol.Tutor)
   async agregarResultado(@Param('id', new ParseUUIDPipe()) id: string, @Body() createResultadosDto: CreateResultadosDto) {
     return this.planDeTrabajoService.agregarResultados(id, createResultadosDto);
+  }
+
+  @Delete('eliminar-resultado/:id')
+  @Roles(Rol.Tutor)
+  async eliminarResultado(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.planDeTrabajoService.eliminarResultados(id);
   }
 
   @Patch(':id')

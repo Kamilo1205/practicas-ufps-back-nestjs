@@ -185,4 +185,8 @@ export class PlanDeTrabajoService {
     const planDeTrabajo = await this.findOne(planDeTrabajoId);
     return this.planDeTrabajoRepository.save({ ...planDeTrabajo, updatePlanDeTrabajoDto });
   }
+
+  eliminarResultados(resultadoId: string) {
+    return this.resultadoRepository.delete(resultadoId);
+  }
 }
