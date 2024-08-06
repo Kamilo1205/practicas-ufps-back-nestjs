@@ -1,10 +1,11 @@
-import { Controller, Get, Patch, Param, ParseUUIDPipe, Body, Delete } from '@nestjs/common';
+import { Controller, Get, Patch, Param, ParseUUIDPipe, Body, Delete, Post } from '@nestjs/common';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { PlanDeTrabajoService } from './plan-de-trabajo.service';
 import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { CreateResultadoDto, CreateResultadosDto, UpdatePlanDeTrabajoDto, UpdateResultadoDto } from './dto';
+import { CreateInformeDto } from 'src/informe/dto/create-informe.dto';
 
 @Controller('plan-trabajo')
 export class PlanDeTrabajoController {
@@ -47,38 +48,50 @@ export class PlanDeTrabajoController {
   }
 
   @Patch('actualizar-resultado/:id')
-  @Roles(Rol.Tutor)
+  @Roles(Rol.Estudiante)
   async updateResultado(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateResultadoDto: UpdateResultadoDto) {
     return this.planDeTrabajoService.updateResultado(id, updateResultadoDto);
   }
 
   @Patch(':id/aprobacion-tutor-empresarial')
-  @Roles(Rol.Coordinador)
+  @Roles(Rol.Tutor)
   async aprobarPorTutorEmpresarial(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
     return this.planDeTrabajoService.aprobarPorTutorEmpresarial(id, usuario.tutor.id);
   }
 
   @Patch(':id/aprobacion-tutor-institucional')
-  @Roles(Rol.Tutor)
+  @Roles(Rol.Coordinador)
   async aprobarPorTutorInstitucional(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
     return this.planDeTrabajoService.aprobarPorTutorInstitucional(id, usuario.tutorInstitucional.id);
   }
 
   @Patch(':id/agregar-resultado')
-  @Roles(Rol.Tutor)
+  @Roles(Rol.Estudiante)
   async agregarResultado(@Param('id', new ParseUUIDPipe()) id: string, @Body() createResultadosDto: CreateResultadosDto) {
     return this.planDeTrabajoService.agregarResultados(id, createResultadosDto);
   }
 
   @Delete('eliminar-resultado/:id')
-  @Roles(Rol.Tutor)
+  @Roles(Rol.Estudiante)
   async eliminarResultado(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.planDeTrabajoService.eliminarResultados(id);
   }
 
   @Patch(':id')
-  @Roles(Rol.Tutor)
+  @Roles(Rol.Estudiante)
   async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updatePlanDeTrabajoDto: UpdatePlanDeTrabajoDto) {
     return this.planDeTrabajoService.update(id, updatePlanDeTrabajoDto);
+  }
+
+  @Post('primer-informe')
+  @Roles(Rol.Estudiante)
+  createPrimerInforme(@Body() createInformeDto: CreateInformeDto, @GetUser() usuario: Usuario) {
+    return this.planDeTrabajoService.createPrimerInforme(createInformeDto, usuario);
+  }
+
+  @Post('informe-final')
+  @Roles(Rol.Estudiante)
+  createInformeFinal(@Body() createInformeDto: CreateInformeDto, @GetUser() usuario: Usuario) {
+    return this.planDeTrabajoService.createInformeFinal(createInformeDto, usuario);
   }
 }

@@ -11,6 +11,8 @@ import { TutoresService } from 'src/tutores/tutores.service';
 import { AsignacionService } from 'src/asignacion/asignacion.service';
 import { Resultado } from './entities/resultados.entity';
 import { CreateResultadoDto, CreateResultadosDto, UpdatePlanDeTrabajoDto, UpdateResultadoDto } from './dto';
+import { CreateInformeDto } from 'src/informe/dto/create-informe.dto';
+import { InformeService } from 'src/informe/informe.service';
 
 @Injectable()
 export class PlanDeTrabajoService {
@@ -23,7 +25,8 @@ export class PlanDeTrabajoService {
     private readonly semestreService: SemestreService,
     private readonly tutorInstitucionalService: TutorInstitucionalService,
     private readonly tutorEmpresarialService: TutoresService,
-    private readonly asignacionService: AsignacionService
+    private readonly asignacionService: AsignacionService,
+    private readonly informeService: InformeService
   ) {}
 
   async findAll(query: PaginateQuery) {
@@ -192,5 +195,17 @@ export class PlanDeTrabajoService {
 
   updateResultado(resultadoId: string, updateResultadoDto: UpdateResultadoDto) {
     return this.resultadoRepository.update(resultadoId, updateResultadoDto);
+  }
+
+  async createPrimerInforme(createPrimerInformeDto: CreateInformeDto, usuario: Usuario) {
+    const planDeTrabajo = await this.findOneByEstudianteBySemestreActual(usuario);
+    const primerInforme = await this.informeService.create(createPrimerInformeDto);
+    return this.planDeTrabajoRepository.save({ ...planDeTrabajo, primerInforme });
+  }
+
+  async createInformeFinal(createPrimerInformeDto: CreateInformeDto, usuario: Usuario) {
+    const planDeTrabajo = await this.findOneByEstudianteBySemestreActual(usuario);
+    const informeFinal = await this.informeService.create(createPrimerInformeDto);
+    return this.planDeTrabajoRepository.save({ ...planDeTrabajo, informeFinal });
   }
 }

@@ -9,6 +9,7 @@ import { TutoresModule } from 'src/tutores/tutores.module';
 import { TutorInstitucionalModule } from 'src/tutor-institucional/tutor-institucional.module';
 import { AsignacionModule } from 'src/asignacion/asignacion.module';
 import { Resultado } from './entities/resultados.entity';
+import { InformeModule } from 'src/informe/informe.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { Resultado } from './entities/resultados.entity';
     SemestreModule,
     TutoresModule,
     TutorInstitucionalModule,
-    AsignacionModule
+    AsignacionModule,
+    InformeModule
   ],
   controllers: [PlanDeTrabajoController],
   providers: [PlanDeTrabajoService],

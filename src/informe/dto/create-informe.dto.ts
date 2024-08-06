@@ -1,1 +1,19 @@
-export class CreateInformeDto {}
+import { IsNotEmpty, IsString } from 'class-validator';
+
+export class CreateInformeDto {
+  @IsString()
+  @IsNotEmpty()
+  adaptacion: string;
+  
+  @IsString()
+  @IsNotEmpty()
+  tolerancia: string;
+  
+  @IsString()
+  @IsNotEmpty()
+  compromisoEficiencia: string;
+  
+  @IsString()
+  @IsNotEmpty()
+  conclusion: string;
+}
