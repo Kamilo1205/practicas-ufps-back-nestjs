@@ -46,11 +46,11 @@ export class PlanDeTrabajo extends BaseEntity {
   @OneToMany(() => Resultado, (resultado) => resultado.planDeTrabajo, { eager: true })
   resultados: Resultado[];
 
-  //@OneToOne(() => Informe, (informe) => informe.primerInforme, { eager: true })
-  //@JoinColumn()
-  //primerInforme: Informe;
-  //
-  //@OneToOne(() => Informe, (informe) => informe.informeFinal, { eager: true })
-  //@JoinColumn()
-  //primerFinal: Informe;
+  @OneToOne(() => Informe, (informe) => informe.primerInforme, { eager: true })
+  @JoinColumn()
+  primerInforme: Informe;
+  
+  @OneToOne(() => Informe, (informe) => informe.informeFinal, { eager: true })
+  @JoinColumn()
+  primerFinal: Informe;
 }
