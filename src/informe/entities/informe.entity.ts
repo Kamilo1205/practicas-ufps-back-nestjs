@@ -18,6 +18,9 @@ export class Informe extends BaseEntity {
 
   @Column()
   conclusion: string; 
+
+  @Column()
+  fueronAsumidas: string;
   
   @OneToOne(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.primerInforme)
   primerInforme: PlanDeTrabajo;

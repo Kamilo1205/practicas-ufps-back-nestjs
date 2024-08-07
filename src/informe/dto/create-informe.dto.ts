@@ -16,4 +16,12 @@ export class CreateInformeDto {
   @IsString()
   @IsNotEmpty()
   conclusion: string;
+
+  @IsString()
+  @IsNotEmpty()
+  nuevasResponsabilidades: string;
+  
+  @IsString()
+  @IsNotEmpty()
+  fueronAsumidas: string;
 }
