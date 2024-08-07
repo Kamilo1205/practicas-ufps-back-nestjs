@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { EvaluacionEstudiante } from './entities/evaluacion-estudiante.entity';
-import { CreateEvaluacionEstudianteDto } from './dto/create-evaluacion-estudiante.dto';
+import { CreateEvaluacionEstudianteDto, UpdateEvaluacionEstudianteDto } from './dto';
 
 @Injectable()
 export class EvaluacionEstudianteService {
@@ -17,7 +17,7 @@ export class EvaluacionEstudianteService {
     return this.evaluacionEstudianteRepository.save(evaluacionEstudiante);
   }
 
-  async update(id: string, updateEvaluacionEstudianteDto: CreateEvaluacionEstudianteDto) {
+  async update(id: string, updateEvaluacionEstudianteDto: UpdateEvaluacionEstudianteDto) {
     const evaluacionEstudiante = this.evaluacionEstudianteRepository.findOne({ where: { id } });
     if (!evaluacionEstudiante) throw new NotFoundException(`Evaluacion de estudiante con id ${id} no encontrado`);
     return this.evaluacionEstudianteRepository.save({ evaluacionEstudiante, ...updateEvaluacionEstudianteDto });

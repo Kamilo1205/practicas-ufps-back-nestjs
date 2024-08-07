@@ -12,7 +12,7 @@ import { AsignacionService } from 'src/asignacion/asignacion.service';
 import { CreateResultadosDto, UpdatePlanDeTrabajoDto } from './dto';
 import { CreateInformeDto } from 'src/informe/dto/create-informe.dto';
 import { InformeService } from 'src/informe/informe.service';
-import { CreateEvaluacionEstudianteDto } from 'src/evaluacion-estudiante/dto/create-evaluacion-estudiante.dto';
+import { CreateEvaluacionEstudianteDto, UpdateEvaluacionEstudianteDto } from 'src/evaluacion-estudiante/dto';
 import { EvaluacionEstudianteService } from 'src/evaluacion-estudiante/evaluacion-estudiante.service';
 
 @Injectable()
@@ -200,8 +200,12 @@ export class PlanDeTrabajoService {
 
   async createEvaluacionEstudiante(createEvaluacionEstudianteDto: CreateEvaluacionEstudianteDto, usuario: Usuario) {
     const planDeTrabajo = await this.findOneByEstudianteBySemestreActual(usuario);
-    let evaluacion = null;
-    if (!planDeTrabajo.evaluacion) evaluacion = await this.evaluacionEstudianteService.create(createEvaluacionEstudianteDto);
+    const evaluacion = await this.evaluacionEstudianteService.create(createEvaluacionEstudianteDto);
     return this.planDeTrabajoRepository.save({ ...planDeTrabajo, evaluacion });
+  }
+
+  async updateEvaluacionEstudiante(updateEvaluacionEstudianteDto: UpdateEvaluacionEstudianteDto, usuario: Usuario) {
+    const planDeTrabajo = await this.findOneByEstudianteBySemestreActual(usuario);
+    return this.evaluacionEstudianteService.update(planDeTrabajo.evaluacion.id, updateEvaluacionEstudianteDto);
   }
 }

@@ -89,4 +89,10 @@ export class PlanDeTrabajoController {
   createEvaluacionEstudiante(@Body() createEvaluacionEstudianteDto: CreateEvaluacionEstudianteDto, @GetUser() usuario: Usuario) {
     return this.planDeTrabajoService.createEvaluacionEstudiante(createEvaluacionEstudianteDto, usuario);
   }
+
+  @Patch('evaluacion-estudiante')
+  @Roles(Rol.Estudiante)
+  updateEvaluacionEstudiante(@Body() createEvaluacionEstudianteDto: CreateEvaluacionEstudianteDto, @GetUser() usuario: Usuario) {
+    return this.planDeTrabajoService.updateEvaluacionEstudiante(createEvaluacionEstudianteDto, usuario);
+  }
 }

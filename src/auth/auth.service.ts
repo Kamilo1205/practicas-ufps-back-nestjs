@@ -55,7 +55,7 @@ export class AuthService {
     if (!usuario) throw new UserNotFoundException();
     if (usuario.password === null) throw new NullPasswordException();
     if (!bcrypt.compareSync(password, usuario.password)) throw new IncorrectPasswordException();
-    
+    if (!usuario.estaActivo) return null;
     return usuario;
   }
 
