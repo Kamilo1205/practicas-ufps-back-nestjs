@@ -92,7 +92,8 @@ export class AsignacionService {
     if (asignacion.solicitud.empresa.id !== usuario.empresa.id) {
       throw new ForbiddenException('No tienes permiso para asignar un tutor a esta solicitud');
     }
-
+    
+    console.log(asignarTutorDto);
     const tutor = await this.tutoresService.findOne(asignarTutorDto.tutorId);
     return this.asignacionRepository.save({ ...asignacion, tutor });
   }

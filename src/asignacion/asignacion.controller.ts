@@ -36,7 +36,7 @@ export class AsignacionController {
 
   @Patch(':id/asignar-tutor')
   @Roles(Rol.Empresa)
-  asignarTutor(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario, asignarTutorDto: AsignarTutorDto) {
+  asignarTutor(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario, @Body() asignarTutorDto: AsignarTutorDto) {
     return this.asignacionService.asignarTutor(id, usuario, asignarTutorDto);
   }
 
