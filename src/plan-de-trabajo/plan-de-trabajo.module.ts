@@ -13,7 +13,7 @@ import { InformeModule } from 'src/informe/informe.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PlanDeTrabajo, Resultado]),
+    TypeOrmModule.forFeature([PlanDeTrabajo]),
     EstudiantesModule,
     SemestreModule,
     TutoresModule,

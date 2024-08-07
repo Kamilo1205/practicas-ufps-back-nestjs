@@ -19,8 +19,6 @@ export class PlanDeTrabajoService {
   constructor(
     @InjectRepository(PlanDeTrabajo)
     private readonly planDeTrabajoRepository: Repository<PlanDeTrabajo>,
-    @InjectRepository(Resultado)
-    private readonly resultadoRepository: Repository<Resultado>,
     private readonly estudiantesService: EstudiantesService,
     private readonly semestreService: SemestreService,
     private readonly tutorInstitucionalService: TutorInstitucionalService,
@@ -177,24 +175,12 @@ export class PlanDeTrabajoService {
 
   async agregarResultados(planDeTrabajoId: string, createResultadosDto: CreateResultadosDto) {
     const planDeTrabajo = await this.findOne(planDeTrabajoId);
-
-    const resultados = createResultadosDto.resultados.map((createResultadoDto) => {
-      return this.resultadoRepository.create({ ...createResultadoDto, planDeTrabajo });
-    });
-    return this.resultadoRepository.save(resultados);
+    return this.planDeTrabajoRepository.save({ ...planDeTrabajo, resultados: createResultadosDto.resultados });
   }
 
   async update(planDeTrabajoId: string, updatePlanDeTrabajoDto: UpdatePlanDeTrabajoDto) {
     const planDeTrabajo = await this.findOne(planDeTrabajoId);
     return this.planDeTrabajoRepository.save({ ...planDeTrabajo, updatePlanDeTrabajoDto });
-  }
-
-  eliminarResultados(resultadoId: string) {
-    return this.resultadoRepository.delete(resultadoId);
-  }
-
-  updateResultado(resultadoId: string, updateResultadoDto: UpdateResultadoDto) {
-    return this.resultadoRepository.update(resultadoId, updateResultadoDto);
   }
 
   async createPrimerInforme(createPrimerInformeDto: CreateInformeDto, usuario: Usuario) {

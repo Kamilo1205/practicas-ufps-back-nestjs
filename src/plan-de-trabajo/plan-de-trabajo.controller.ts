@@ -47,12 +47,6 @@ export class PlanDeTrabajoController {
     return this.planDeTrabajoService.findOneByEstudiante(id, usuario);
   }
 
-  @Patch('actualizar-resultado/:id')
-  @Roles(Rol.Estudiante)
-  async updateResultado(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateResultadoDto: UpdateResultadoDto) {
-    return this.planDeTrabajoService.updateResultado(id, updateResultadoDto);
-  }
-
   @Patch(':id/aprobacion-tutor-empresarial')
   @Roles(Rol.Tutor)
   async aprobarPorTutorEmpresarial(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
@@ -65,16 +59,10 @@ export class PlanDeTrabajoController {
     return this.planDeTrabajoService.aprobarPorTutorInstitucional(id, usuario.tutorInstitucional.id);
   }
 
-  @Patch(':id/agregar-resultados')
+  @Post(':id/agregar-resultados')
   @Roles(Rol.Estudiante)
   async agregarResultado(@Param('id', new ParseUUIDPipe()) id: string, @Body() createResultadosDto: CreateResultadosDto) {
     return this.planDeTrabajoService.agregarResultados(id, createResultadosDto);
-  }
-
-  @Delete('eliminar-resultado/:id')
-  @Roles(Rol.Estudiante)
-  async eliminarResultado(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.planDeTrabajoService.eliminarResultados(id);
   }
 
   @Patch(':id')
