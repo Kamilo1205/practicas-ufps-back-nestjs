@@ -94,14 +94,7 @@ export class AsignacionService {
     }
 
     const tutor = await this.tutoresService.findOne(asignarTutorDto.tutorId);
-
-    // Verificar que el tutor pertenece a la empresa
-    if (tutor.empresa.id !== usuario.id) {
-      throw new ForbiddenException('No tienes permiso para asignar este tutor');
-    }
-
-    await this.asignacionRepository.update(id, { tutor });
-    return this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'tutor', 'planDeTrabajo'] });
+    return this.asignacionRepository.save({ ...asignacion, tutor });
   }
 
   async findEstudianteIdAndSemestreActual(estudianteId: string) {
