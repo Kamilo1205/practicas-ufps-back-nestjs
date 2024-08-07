@@ -36,6 +36,6 @@ export class InformeService {
 
   async aprobarInforme(id: string, usuario: Usuario) {
     const informe = await this.findOne(id);
-    return this.informeRepository.save({ ...informe, tutorAprobo: usuario.tutor  });
+    return this.informeRepository.save({ ...informe, tutorAprobo: usuario.tutor });
   }
 }

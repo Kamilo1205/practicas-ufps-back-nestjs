@@ -30,7 +30,7 @@ export class InformeController {
   @Patch(':id/aprobar')
   @Roles(Rol.Tutor)
   aprobar(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
-    return this.informeService.aprovarInforme(id, usuario);
+    return this.informeService.aprobarInforme(id, usuario);
   }
 
 }
