@@ -100,4 +100,10 @@ export class EmpresasController {
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.empresasService.remove(id);
   }
+
+  @Patch('/deshabilitar-tutor/:tutorId')
+  @Roles(Rol.Empresa)
+  async deshabilitarTutor(@Param('tutorId', new ParseUUIDPipe()) tutorId: string, @GetUser() usuario: Usuario): Promise<void> {
+    await this.empresasService.deshabilitarTutor(usuario.empresa.id, tutorId);
+  }
 }

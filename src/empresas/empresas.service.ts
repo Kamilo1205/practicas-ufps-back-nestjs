@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
@@ -169,5 +169,13 @@ export class EmpresasService {
     const empresa = await this.findOne(empresaId);
     const solicitudes = empresa.solicitudes.filter((solicitud) => solicitud.semestre.actual);
     return solicitudes.flatMap(solicitud => solicitud.asignaciones.map(asignacion => asignacion.estudiante));
+  }
+
+  async desahibilitarTutor(empresaId: string, tutorId: string) {
+    const empresa = await this.empresasRepository.findOne({ where: { id: empresaId }, relations: ['tutores']});
+    
+    const tutor = empresa.tutores.find(t => t.id === tutorId);
+    if (!tutor) throw new UnauthorizedException('El tutor no pertenece a esta empresa');
+    await this.usuariosService.update(tutorId, { estaActivo: false });
   }
 }
