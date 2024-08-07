@@ -34,16 +34,22 @@ export class CsvService {
     });
     
     const grupoPractica = await this.grupoPracticasService.findOne(grupoId);
-    for await (const email of parsedData[0]) {
+
+    const emails = parsedData[0];
+
+    const promises = emails.map(async (email: string) => {
       let usuario: Usuario = await this.usuariosService.findOneByEmail(email);
       let estudiante = null;
+
       if (usuario) {
-        await this.usuariosService.update(usuario.id, { estaActivo: true });;
-        await this.estudiantesService.agregarEstudianteASemestre(usuario.estudiante.id); 
+        await this.usuariosService.update(usuario.id, { estaActivo: true });
+        await this.estudiantesService.agregarEstudianteASemestre(usuario.estudiante.id);
       } else {
         usuario = await this.usuariosService.createEstudiante(email);
         estudiante = await this.estudiantesService.createEstudiante(usuario, grupoPractica);
-      } 
-    }
+      }
+    });
+
+    await Promise.all(promises);
   }
 }
