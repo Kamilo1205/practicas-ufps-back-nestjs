@@ -179,7 +179,7 @@ export class PlanDeTrabajoService {
 
   async update(planDeTrabajoId: string, updatePlanDeTrabajoDto: UpdatePlanDeTrabajoDto) {
     const planDeTrabajo = await this.findOne(planDeTrabajoId);
-    return this.planDeTrabajoRepository.save({ ...planDeTrabajo, ...updatePlanDeTrabajoDto });
+    return this.planDeTrabajoRepository.save({ ...planDeTrabajo, requerimientosTecnicos: updatePlanDeTrabajoDto.requerimientosTecnicos });
   }
 
   async createPrimerInforme(createPrimerInformeDto: CreateInformeDto, usuario: Usuario) {

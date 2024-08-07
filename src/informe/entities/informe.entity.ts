@@ -1,6 +1,5 @@
 import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from 'src/common/entities/base.entity';
-import { NuevaResponsabilidad } from './nueva-responsabilidad.entity';
 import { PlanDeTrabajo } from 'src/plan-de-trabajo/entities/plan-de-trabajo.entity';
 
 @Entity()
@@ -11,8 +10,8 @@ export class Informe extends BaseEntity {
   @Column()
   tolerancia: string;
 
-  @OneToMany(() => NuevaResponsabilidad, (nuevaResponsabilidad) => nuevaResponsabilidad.informe)
-  nuevasResponsabilidades: NuevaResponsabilidad[];
+  @Column()
+  nuevasResponsabilidades: string;
 
   @Column()
   compromisoEficiencia: string;
