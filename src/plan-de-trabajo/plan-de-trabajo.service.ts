@@ -9,8 +9,7 @@ import { SemestreService } from 'src/semestre/semestre.service';
 import { TutorInstitucionalService } from 'src/tutor-institucional/tutor-institucional.service';
 import { TutoresService } from 'src/tutores/tutores.service';
 import { AsignacionService } from 'src/asignacion/asignacion.service';
-import { Resultado } from './entities/resultados.entity';
-import { CreateResultadoDto, CreateResultadosDto, UpdatePlanDeTrabajoDto, UpdateResultadoDto } from './dto';
+import { CreateResultadosDto, UpdatePlanDeTrabajoDto } from './dto';
 import { CreateInformeDto } from 'src/informe/dto/create-informe.dto';
 import { InformeService } from 'src/informe/informe.service';
 
