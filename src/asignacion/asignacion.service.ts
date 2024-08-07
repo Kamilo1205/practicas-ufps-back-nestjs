@@ -85,11 +85,11 @@ export class AsignacionService {
   }
   
   async asignarTutor(id: string, usuario: Usuario, asignarTutorDto: AsignarTutorDto) {
-    const asignacion = await this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'tutor', 'planDeTrabajo'] });
+    const asignacion = await this.asignacionRepository.findOne({ where: { id }, relations: ['estudiante', 'solicitud', 'solicitud.empresa', 'tutor', 'planDeTrabajo'] });
     if (!asignacion) throw new NotFoundException('Asignación no encontrada');
 
     // Verificar que la solicitud pertenece a la empresa
-    if (asignacion.solicitud.empresa.id !== usuario.id) {
+    if (asignacion.solicitud.empresa.id !== usuario.empresa.id) {
       throw new ForbiddenException('No tienes permiso para asignar un tutor a esta solicitud');
     }
 
