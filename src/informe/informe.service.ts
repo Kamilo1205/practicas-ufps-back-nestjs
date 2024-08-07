@@ -34,8 +34,13 @@ export class InformeService {
     await this.informeRepository.delete(id);
   }
 
-  async aprobarInforme(id: string, usuario: Usuario) {
+  async aprobarInformeTutorEmpresarial(id: string, usuario: Usuario) {
     const informe = await this.findOne(id);
     return this.informeRepository.save({ ...informe, tutorAprobo: usuario.tutor });
+  }
+
+  async aprobarInformeTutorInstitucional(id: string, usuario: Usuario) {
+    const informe = await this.findOne(id);
+    return this.informeRepository.save({ ...informe, tutorAprobo: usuario.tutorInstitucional });
   }
 }

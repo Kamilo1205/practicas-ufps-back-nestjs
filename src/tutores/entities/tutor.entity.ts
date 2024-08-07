@@ -29,6 +29,6 @@ export class Tutor extends BaseEntity {
   @OneToMany(() => Asignacion, (asignacion) => asignacion.tutor)
   asignaciones: Asignacion[];
 
-  @OneToMany(() => Informe, (informe) => informe.tutorAprobo)
+  @OneToMany(() => Informe, (informe) => informe.tutorEmpresarialAprobo)
   informesAprobados: Informe[];
 }

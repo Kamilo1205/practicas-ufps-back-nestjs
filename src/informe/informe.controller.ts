@@ -27,10 +27,16 @@ export class InformeController {
     return this.informeService.remove(id);
   }
 
-  @Patch(':id/aprobar')
+  @Patch(':id/aprobar-tutor-empresarial')
   @Roles(Rol.Tutor)
-  aprobar(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
-    return this.informeService.aprobarInforme(id, usuario);
+  aprobarTutorEmpresarial(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
+    return this.informeService.aprobarInformeTutorEmpresarial(id, usuario);
+  }
+
+  @Patch(':id/aprobar-tutor-institucional')
+  @Roles(Rol.Tutor)
+  aprobarTutorInstitcional(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
+    return this.informeService.aprobarInformeTutorInstitucional(id, usuario);
   }
 
 }
