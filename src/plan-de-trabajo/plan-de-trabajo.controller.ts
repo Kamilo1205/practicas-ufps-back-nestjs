@@ -4,7 +4,7 @@ import { PlanDeTrabajoService } from './plan-de-trabajo.service';
 import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
-import { CreateResultadoDto, CreateResultadosDto, UpdatePlanDeTrabajoDto, UpdateResultadoDto } from './dto';
+import { CreateResultadosDto, UpdatePlanDeTrabajoDto } from './dto';
 import { CreateInformeDto } from 'src/informe/dto/create-informe.dto';
 
 @Controller('plan-trabajo')
@@ -59,7 +59,7 @@ export class PlanDeTrabajoController {
     return this.planDeTrabajoService.aprobarPorTutorInstitucional(id, usuario.tutorInstitucional.id);
   }
 
-  @Post(':id/agregar-resultados')
+  @Patch(':id/agregar-resultados')
   @Roles(Rol.Estudiante)
   async agregarResultado(@Param('id', new ParseUUIDPipe()) id: string, @Body() createResultadosDto: CreateResultadosDto) {
     return this.planDeTrabajoService.agregarResultados(id, createResultadosDto);
