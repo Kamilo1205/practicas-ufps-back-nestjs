@@ -6,6 +6,7 @@ import { Rol } from 'src/auth/enums';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { CreateResultadosDto, UpdatePlanDeTrabajoDto } from './dto';
 import { CreateInformeDto } from 'src/informe/dto/create-informe.dto';
+import { CreateEvaluacionEstudianteDto } from 'src/evaluacion-estudiante/dto/create-evaluacion-estudiante.dto';
 
 @Controller('plan-trabajo')
 export class PlanDeTrabajoController {
@@ -81,5 +82,11 @@ export class PlanDeTrabajoController {
   @Roles(Rol.Estudiante)
   createInformeFinal(@Body() createInformeDto: CreateInformeDto, @GetUser() usuario: Usuario) {
     return this.planDeTrabajoService.createInformeFinal(createInformeDto, usuario);
+  }
+
+  @Post('evaluacion-estudiante')
+  @Roles(Rol.Estudiante)
+  createEvaluacionEstudiante(@Body() createEvaluacionEstudianteDto: CreateEvaluacionEstudianteDto, @GetUser() usuario: Usuario) {
+    return this.planDeTrabajoService.createEvaluacionEstudiante(createEvaluacionEstudianteDto, usuario);
   }
 }

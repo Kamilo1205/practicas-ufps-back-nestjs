@@ -12,6 +12,8 @@ import { AsignacionService } from 'src/asignacion/asignacion.service';
 import { CreateResultadosDto, UpdatePlanDeTrabajoDto } from './dto';
 import { CreateInformeDto } from 'src/informe/dto/create-informe.dto';
 import { InformeService } from 'src/informe/informe.service';
+import { CreateEvaluacionEstudianteDto } from 'src/evaluacion-estudiante/dto/create-evaluacion-estudiante.dto';
+import { EvaluacionEstudianteService } from 'src/evaluacion-estudiante/evaluacion-estudiante.service';
 
 @Injectable()
 export class PlanDeTrabajoService {
@@ -23,7 +25,8 @@ export class PlanDeTrabajoService {
     private readonly tutorInstitucionalService: TutorInstitucionalService,
     private readonly tutorEmpresarialService: TutoresService,
     private readonly asignacionService: AsignacionService,
-    private readonly informeService: InformeService
+    private readonly informeService: InformeService,
+    private readonly evaluacionEstudianteService: EvaluacionEstudianteService
   ) {}
 
   async findAll(query: PaginateQuery) {
@@ -143,7 +146,8 @@ export class PlanDeTrabajoService {
         'seccionActividades.comentarios', 
         'objetivo',
         'objetivo.comentarios',
-        'asignacion'
+        'asignacion',
+        'evaluacion'
       ],
     });
 
@@ -192,5 +196,13 @@ export class PlanDeTrabajoService {
     const planDeTrabajo = await this.findOneByEstudianteBySemestreActual(usuario);
     const informeFinal = await this.informeService.create(createPrimerInformeDto);
     return this.planDeTrabajoRepository.save({ ...planDeTrabajo, informeFinal });
+  }
+
+  async createEvaluacionEstudiante(createEvaluacionEstudianteDto: CreateEvaluacionEstudianteDto, usuario: Usuario) {
+    const planDeTrabajo = await this.findOneByEstudianteBySemestreActual(usuario);
+    let evaluacion = null;
+    if (!planDeTrabajo.evaluacion) evaluacion = await this.evaluacionEstudianteService.create(createEvaluacionEstudianteDto);
+    else evaluacion = await this.evaluacionEstudianteService.update(evaluacion.id, createEvaluacionEstudianteDto);
+    return this.planDeTrabajoRepository.save({ ...planDeTrabajo, evaluacion });
   }
 }

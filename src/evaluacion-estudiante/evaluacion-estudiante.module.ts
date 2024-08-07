@@ -6,6 +6,7 @@ import { EvaluacionEstudianteService } from './evaluacion-estudiante.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EvaluacionEstudiante])],
-  providers: [EvaluacionEstudianteService]
+  providers: [EvaluacionEstudianteService],
+  exports: [EvaluacionEstudianteService]
 })
 export class EvaluacionEstudianteModule {}
