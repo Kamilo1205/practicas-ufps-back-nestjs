@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { TutoresService } from './tutores.service';
 import { CreateTutorDto } from './dto/create-tutor.dto';
 import { UpdateTutorDto } from './dto/update-tutor.dto';
@@ -24,19 +24,19 @@ export class TutoresController {
 
   @Get(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.tutoresService.findOne(id);
   }
 
   @Patch(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  update(@Param('id') id: string, @Body() updateTutorDto: UpdateTutorDto) {
+  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateTutorDto: UpdateTutorDto) {
     return this.tutoresService.update(id, updateTutorDto);
   }
 
   @Delete(':id')
   @Roles(Rol.Coordinador, Rol.Administrador)
-  remove(@Param('id') id: string) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.tutoresService.remove(id);
   }
 }

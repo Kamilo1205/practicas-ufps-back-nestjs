@@ -4,6 +4,7 @@ import { UpdateInformeDto } from './dto/update-informe.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Informe } from './entities/informe.entity';
 import { Repository } from 'typeorm';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Injectable()
 export class InformeService {
@@ -31,5 +32,10 @@ export class InformeService {
 
   async remove(id: string): Promise<void> {
     await this.informeRepository.delete(id);
+  }
+
+  async aprobarInforme(id: string, usuario: Usuario) {
+    const informe = await this.findOne(id);
+    return this.informeRepository.save({ ...informe, tutorAprobo: usuario.tutor  });
   }
 }

@@ -3,6 +3,7 @@ import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Asignacion } from 'src/asignacion/entities/asignacion.entity';
+import { Informe } from 'src/informe/entities/informe.entity';
 
 @Entity()
 export class Tutor extends BaseEntity {
@@ -27,4 +28,7 @@ export class Tutor extends BaseEntity {
 
   @OneToMany(() => Asignacion, (asignacion) => asignacion.tutor)
   asignaciones: Asignacion[];
+
+  @OneToMany(() => Informe, (informe) => informe.tutorAprobo)
+  informesAprobados: Informe[];
 }

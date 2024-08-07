@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { PlanDeTrabajo } from 'src/plan-de-trabajo/entities/plan-de-trabajo.entity';
+import { Tutor } from 'src/tutores/entities/tutor.entity';
 
 @Entity()
 export class Informe extends BaseEntity {
@@ -27,4 +28,7 @@ export class Informe extends BaseEntity {
   
   @OneToOne(() => PlanDeTrabajo, (planDeTrabajo) => planDeTrabajo.primerInforme)
   informeFinal: PlanDeTrabajo;
+
+  @ManyToOne(() => Tutor, (tutor) => tutor.informesAprobados)
+  tutorAprobo: Tutor;
 }

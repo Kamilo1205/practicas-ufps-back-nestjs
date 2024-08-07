@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { InformeService } from './informe.service';
 import { UpdateInformeDto } from './dto/update-informe.dto';
-import { Roles } from 'src/auth/decorators';
+import { GetUser, Roles } from 'src/auth/decorators';
 import { Rol } from 'src/auth/enums';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Controller('informe')
 export class InformeController {
@@ -24,6 +25,12 @@ export class InformeController {
   @Roles(Rol.Estudiante)
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.informeService.remove(id);
+  }
+
+  @Patch(':id/aprobar')
+  @Roles(Rol.Tutor)
+  aprobar(@Param('id', new ParseUUIDPipe()) id: string, @GetUser() usuario: Usuario) {
+    return this.informeService.aprovarInforme(id, usuario);
   }
 
 }
