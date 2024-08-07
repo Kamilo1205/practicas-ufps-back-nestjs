@@ -171,7 +171,7 @@ export class EmpresasService {
     return solicitudes.flatMap(solicitud => solicitud.asignaciones.map(asignacion => asignacion.estudiante));
   }
 
-  async desahibilitarTutor(empresaId: string, tutorId: string) {
+  async deshabilitarTutor(empresaId: string, tutorId: string) {
     const empresa = await this.empresasRepository.findOne({ where: { id: empresaId }, relations: ['tutores']});
     
     const tutor = empresa.tutores.find(t => t.id === tutorId);
