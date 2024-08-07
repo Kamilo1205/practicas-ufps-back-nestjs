@@ -30,5 +30,5 @@ export class EmpresaSolicitud extends BaseEntity{
   esRenumerado: string;
 
   @OneToMany(() => Asignacion, (asignaciones) => asignaciones.solicitud)
-  asignaciones: Asignacion;
+  asignaciones: Asignacion[];
 }
