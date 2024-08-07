@@ -202,7 +202,6 @@ export class PlanDeTrabajoService {
     const planDeTrabajo = await this.findOneByEstudianteBySemestreActual(usuario);
     let evaluacion = null;
     if (!planDeTrabajo.evaluacion) evaluacion = await this.evaluacionEstudianteService.create(createEvaluacionEstudianteDto);
-    else evaluacion = await this.evaluacionEstudianteService.update(evaluacion.id, createEvaluacionEstudianteDto);
     return this.planDeTrabajoRepository.save({ ...planDeTrabajo, evaluacion });
   }
 }
