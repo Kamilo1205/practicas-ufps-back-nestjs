@@ -103,7 +103,7 @@ export class EmpresasService {
         'ciudad.departamento.pais', 
         'industria',
         'solicitudes',
-        'solicitud.asignaciones'
+        'solicitudes.asignaciones'
       ],
     });
   }
