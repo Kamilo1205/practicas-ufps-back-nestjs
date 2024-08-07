@@ -65,7 +65,7 @@ export class PlanDeTrabajoController {
     return this.planDeTrabajoService.aprobarPorTutorInstitucional(id, usuario.tutorInstitucional.id);
   }
 
-  @Patch(':id/agregar-resultado')
+  @Patch(':id/agregar-resultados')
   @Roles(Rol.Estudiante)
   async agregarResultado(@Param('id', new ParseUUIDPipe()) id: string, @Body() createResultadosDto: CreateResultadosDto) {
     return this.planDeTrabajoService.agregarResultados(id, createResultadosDto);
