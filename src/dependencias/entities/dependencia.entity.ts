@@ -1,8 +1,9 @@
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Tutor } from 'src/tutores/entities/tutor.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
-import { Column, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
+@Entity()
 export class Dependencia extends BaseEntity{
   @Column({ unique: true })
   nombre: string;
