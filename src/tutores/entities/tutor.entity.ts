@@ -4,6 +4,7 @@ import { Empresa } from 'src/empresas/entities/empresa.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Asignacion } from 'src/asignacion/entities/asignacion.entity';
 import { Informe } from 'src/informe/entities/informe.entity';
+import { Dependencia } from 'src/dependencias/entities/dependencia.entity';
 
 @Entity()
 export class Tutor extends BaseEntity {
@@ -25,6 +26,9 @@ export class Tutor extends BaseEntity {
 
   @ManyToOne(() => Empresa, (empresa) => empresa.tutores)
   empresa: Empresa;
+
+  @ManyToOne(() => Dependencia, (dependencia) => dependencia.tutores)
+  dependencia: Dependencia;
 
   @OneToMany(() => Asignacion, (asignacion) => asignacion.tutor)
   asignaciones: Asignacion[];
