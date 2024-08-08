@@ -4,5 +4,6 @@ export enum Rol {
   Director = 'director',
   Empresa = 'empresa',
   Tutor = 'tutor',
-  Administrador = 'administrador'
+  Administrador = 'administrador',
+  Dependencia = 'dependencia'
 }

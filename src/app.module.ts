@@ -49,6 +49,7 @@ import { GrupoPracticasModule } from './grupo-practicas/grupo-practicas.module';
 import { DirectorModule } from './director/director.module';
 import { InformeModule } from './informe/informe.module';
 import { EvaluacionEstudianteModule } from './evaluacion-estudiante/evaluacion-estudiante.module';
+import { DependenciasModule } from './dependencias/dependencias.module';
 
 @Module({
   imports: [
@@ -99,7 +100,8 @@ import { EvaluacionEstudianteModule } from './evaluacion-estudiante/evaluacion-e
     GrupoPracticasModule,
     DirectorModule,
     InformeModule,
-    EvaluacionEstudianteModule
+    EvaluacionEstudianteModule,
+    DependenciasModule
   ],
   controllers: [AppController],
   providers: [

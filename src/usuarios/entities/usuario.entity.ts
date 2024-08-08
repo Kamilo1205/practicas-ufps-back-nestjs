@@ -8,6 +8,7 @@ import { BaseEntity } from 'src/common/entities/base.entity';
 import { TutorInstitucional } from 'src/tutor-institucional/entities/tutor-institucional.entity';
 import { Comentario } from 'src/comentarios/entities/comentario.entity';
 import { Director } from 'src/director/entities/director.entity';
+import { Dependencia } from 'src/dependencias/entities/dependencia.entity';
 
 @Entity() // Define que esta clase es una entidad de la base de datos.
 export class Usuario extends BaseEntity {
@@ -60,6 +61,10 @@ export class Usuario extends BaseEntity {
   @OneToOne(() => TutorInstitucional, (tutorInstitucional) => tutorInstitucional.usuario)
   @Transform(({ value }) => (value ? value : undefined))
   tutorInstitucional: TutorInstitucional;
+
+  @OneToOne(() => Dependencia, (dependencia) => dependencia.usuario)
+  @Transform(({ value }) => (value ? value : undefined))
+  dependencia: Dependencia;
 
   @OneToMany(() => Comentario, (comentario) => comentario.autor)
   comentarios: Comentario[];
