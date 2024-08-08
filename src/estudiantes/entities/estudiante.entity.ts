@@ -35,7 +35,7 @@ export class Estudiante extends BaseEntity {
   @Column({ nullable: true })
   telefono: string;
 
-  @OneToOne(() => GrupoPractica)
+  @ManyToOne(() => GrupoPractica)
   @JoinColumn()
   grupoMatriculado: GrupoPractica;
 
