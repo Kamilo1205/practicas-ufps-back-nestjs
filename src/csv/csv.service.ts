@@ -34,11 +34,11 @@ export class CsvService {
     });
     
     const grupoPractica = await this.grupoPracticasService.findOne(grupoId);
-
     const emails = parsedData[0];
 
     const promises = emails.map(async (email: string) => {
       let usuario: Usuario = await this.usuariosService.findOneByEmail(email);
+      console.log(usuario);
       let estudiante = null;
 
       if (usuario) {
@@ -48,6 +48,7 @@ export class CsvService {
         usuario = await this.usuariosService.createEstudiante(email);
         estudiante = await this.estudiantesService.createEstudiante(usuario, grupoPractica);
       }
+      console.log(estudiante);
     });
 
     await Promise.all(promises);
