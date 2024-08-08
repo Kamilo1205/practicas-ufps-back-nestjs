@@ -5,23 +5,40 @@ import { CreateTutorDto, UpdateTutorDto } from './dto';
 import { Tutor } from './entities/tutor.entity';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 import { EmpresasService } from 'src/empresas/empresas.service';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { DependenciasService } from 'src/dependencias/dependencias.service';
 
 @Injectable()
 export class TutoresService {
   constructor(
     @InjectRepository(Tutor) private readonly tutorRepository: Repository<Tutor>,
     private readonly usuariosService: UsuariosService,
-    private readonly empresasService: EmpresasService
+    private readonly empresasService: EmpresasService,
+    private readonly dependenciasService: DependenciasService
   ) {}
   
-  async create(empresaId: string, createTutorDto: CreateTutorDto) {
+  async create(usuario: Usuario, createTutorDto: CreateTutorDto) {
     const { email, nombre, apellidos } = createTutorDto;
     const displayName = `${nombre} ${apellidos}`;
 
-    const usuario = await this.usuariosService.createTutor(email, displayName);
-    const empresa = await this.empresasService.findOne(empresaId);
+    const usuarioTutor = await this.usuariosService.createTutor(email, displayName);
+    let empresa = null;
+    let dependencia = null;
+
+    if (usuario.empresa) {
+      empresa = await this.empresasService.findOne(usuario.empresa.id);
+    } 
+    if (usuario.dependencia) {
+      dependencia = await this.dependenciasService.findOne(usuario.dependencia.id);
+    }
     
-    const tutor = this.tutorRepository.create({ ...createTutorDto, usuario, empresa });
+    // Creación del tutor, asignando las relaciones si existen
+    const tutor = this.tutorRepository.create({ 
+      ...createTutorDto, 
+      usuario, 
+      empresa: empresa ? { id: empresa.id } : null,
+      dependencia: dependencia ? { id: dependencia.id } : null
+    });
     return this.tutorRepository.save(tutor);
   }
 

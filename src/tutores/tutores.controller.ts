@@ -13,7 +13,7 @@ export class TutoresController {
   @Post()
   @Roles(Rol.Empresa)
   create(@Body() createTutorDto: CreateTutorDto, @GetUser() usuario: Usuario) {
-    return this.tutoresService.create(usuario.empresa.id, createTutorDto);
+    return this.tutoresService.create(usuario, createTutorDto);
   }
 
   @Get()
