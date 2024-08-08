@@ -31,10 +31,12 @@ export class AuthService {
     private readonly mailService: MailService
   ) {}
 
-  async crearUsuarioEmpresa(createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
-    const { id: rolId } = await this.rolesService.findOneByNombre(Rol.Empresa);
+  async crearUsuario(createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
+    const rolNombre = createUsuarioEmpresaDto.email.endsWith('@ufps.edu.co') ? Rol.Dependencia : Rol.Empresa;
+    const rol = await this.rolesService.findOneByNombre(rolNombre);
+
     return this.usuariosService.create({
-      ...createUsuarioEmpresaDto, rolesIds: [rolId], 
+      ...createUsuarioEmpresaDto, rolesIds: [rol.id], 
       imagenUrl: null, displayName: null, 
       estaActivo: true, emailConfirmado: null, 
       estaRegistrado: false

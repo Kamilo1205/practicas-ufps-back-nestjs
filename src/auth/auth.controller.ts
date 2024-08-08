@@ -20,7 +20,7 @@ export class AuthController {
   @Public()
   @UseInterceptors(JwtCookieInterceptor)
   async register(@Body() createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
-    const usuario = await this.authService.crearUsuarioEmpresa(createUsuarioEmpresaDto);
+    const usuario = await this.authService.crearUsuario(createUsuarioEmpresaDto);
     const accessToken = this.authService.getJwtAccessToken(usuario.id);
     const refreshToken = this.authService.getJwtRefreshToken(usuario.id);
     await this.authService.setCurrentRefreshToken(usuario.id, refreshToken);
