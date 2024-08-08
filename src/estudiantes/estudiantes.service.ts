@@ -125,14 +125,14 @@ export class EstudiantesService {
     return savedEstudiante;
   }
 
-  async agregarEstudianteASemestre(estudianteId: string) {
+  async agregarEstudianteASemestre(estudianteId: string, grupoMatriculado: GrupoPractica) {
     const estudiante = await this.estudianteRepository.findOne({
       where: { id: estudianteId },
       relations: ['semestres'],
     });
     const semestre = await this.semestreService.getSemestreActual();
     estudiante.semestres.push(semestre);
-    return this.estudianteRepository.save(estudiante);
+    return this.estudianteRepository.save({ ...estudiante, grupoMatriculado });
   }
 
   findAll(query: PaginateQuery) {
