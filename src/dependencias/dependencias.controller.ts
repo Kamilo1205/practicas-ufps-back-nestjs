@@ -10,7 +10,7 @@ export class DependenciasController {
   constructor(private readonly dependenciaService: DependenciasService) {}
 
   @Post()
-  @Roles(Rol.Dependencia)
+  @Roles(Rol.Empresa)
   create(@Body() createDependencia: CreateDependencia, @GetUser() usuario: Usuario) {
     return this.dependenciaService.create(createDependencia, usuario);
   }
