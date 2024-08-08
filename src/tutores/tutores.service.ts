@@ -35,9 +35,9 @@ export class TutoresService {
     // Creación del tutor, asignando las relaciones si existen
     const tutor = this.tutorRepository.create({ 
       ...createTutorDto, 
-      usuario, 
-      empresa: empresa ? { id: empresa.id } : null,
-      dependencia: dependencia ? { id: dependencia.id } : null
+      usuario: usuarioTutor, 
+      empresa: empresa ? empresa : null,
+      dependencia: dependencia ? dependencia : null
     });
     return this.tutorRepository.save(tutor);
   }
