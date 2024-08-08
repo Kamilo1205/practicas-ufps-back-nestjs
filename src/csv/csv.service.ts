@@ -33,29 +33,20 @@ export class CsvService {
     const grupoPractica = await this.grupoPracticasService.findOne(grupoId);
     const emails = parsedData[0];
 
-    const errors = [];
-
     const promises = emails.map(async (email: string) => {
-      try {
-        let usuario: Usuario = await this.usuariosService.findOneByEmail(email);
-        let estudiante = null;
+      let usuario: Usuario = await this.usuariosService.findOneByEmail(email);
+      let estudiante = null;
 
-        if (usuario) {
-          await this.usuariosService.update(usuario.id, { estaActivo: true });
-          await this.estudiantesService.agregarEstudianteASemestre(usuario.estudiante.id);
-        } else {
-          usuario = await this.usuariosService.createEstudiante(email);
-          estudiante = await this.estudiantesService.createEstudiante(usuario, grupoPractica);
-        }
-      } catch (error) {
-        errors.push({ email, error: error.message });
+      if (usuario) {
+        await this.usuariosService.update(usuario.id, { estaActivo: true });
+        await this.estudiantesService.agregarEstudianteASemestre(usuario.estudiante.id);
+      } else {
+        usuario = await this.usuariosService.createEstudiante(email);
+        estudiante = await this.estudiantesService.createEstudiante(usuario, grupoPractica);
       }
     });
 
-    await Promise.all(promises);
-
-    if (errors.length > 0) {
-      console.log(`Errors occurred while processing CSV: ${JSON.stringify(errors)}`);
-    }
+    const results = await Promise.allSettled(promises);
+    console.log(results);
   }
 }
