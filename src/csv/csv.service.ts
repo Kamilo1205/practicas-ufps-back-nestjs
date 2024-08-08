@@ -32,6 +32,7 @@ export class CsvService {
     
     const grupoPractica = await this.grupoPracticasService.findOne(grupoId);
     const emails = parsedData[0];
+    console.log(emails);
 
     const promises = emails.map(async (email: string) => {
       let usuario: Usuario = await this.usuariosService.findOneByEmail(email);
