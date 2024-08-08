@@ -10,7 +10,7 @@ export class Director extends BaseEntity {
   @Column()
   apellidos: string;
 
-  @Column({ default: true })
+  @Column({ default: false })
   actual: boolean;
   
   @OneToOne(() => Usuario, (usuario) => usuario.directorPrograma, { eager: true })

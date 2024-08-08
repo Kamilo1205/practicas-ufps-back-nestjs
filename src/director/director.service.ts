@@ -18,7 +18,8 @@ export class DirectorService {
     const existingDirector = await this.directorRepository.findOne({ where: { nombres, apellidos } });
     if (existingDirector) throw new ConflictException(`Ya existe un director con los nombres ${nombres} y apellido ${apellidos}`);
     const usuario = await this.usuarioService.createDirector(email, `${nombres} ${apellidos}`);
-    return this.directorRepository.save({ ...createDirectorDto, usuario });
+    await this.directorRepository.update({ actual: true }, { actual: false });
+    return await this.directorRepository.save({ ...createDirectorDto, usuario, actual: true });
   }
 
   findAll() {
