@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PaginateQuery, paginate } from 'nestjs-paginate';
 import { PlanDeTrabajo } from './entities/plan-de-trabajo.entity';
 import { EstudiantesService } from 'src/estudiantes/estudiantes.service';
@@ -204,8 +204,9 @@ export class PlanDeTrabajoService {
     return this.planDeTrabajoRepository.save({ ...planDeTrabajo, evaluacion });
   }
 
-  async updateEvaluacionEstudiante(updateEvaluacionEstudianteDto: UpdateEvaluacionEstudianteDto, usuario: Usuario) {
+  async updateEvaluacionEstudiante(evaluacionId: string, updateEvaluacionEstudianteDto: UpdateEvaluacionEstudianteDto, usuario: Usuario) {
     const planDeTrabajo = await this.findOneByEstudianteBySemestreActual(usuario);
-    return this.evaluacionEstudianteService.update(planDeTrabajo.evaluacion.id, updateEvaluacionEstudianteDto);
+    if (planDeTrabajo.evaluacion.id != evaluacionId) throw new UnauthorizedException(`No tiene persmiso para modificar el plan de trabajo`);
+    return this.evaluacionEstudianteService.update(evaluacionId, updateEvaluacionEstudianteDto);
   }
 }

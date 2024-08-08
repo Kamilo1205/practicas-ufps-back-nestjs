@@ -90,9 +90,9 @@ export class PlanDeTrabajoController {
     return this.planDeTrabajoService.createEvaluacionEstudiante(createEvaluacionEstudianteDto, usuario);
   }
 
-  @Patch('evaluacion-estudiante')
+  @Patch('evaluacion-estudiante/:evaluacionId')
   @Roles(Rol.Estudiante)
-  updateEvaluacionEstudiante(@Body() createEvaluacionEstudianteDto: CreateEvaluacionEstudianteDto, @GetUser() usuario: Usuario) {
-    return this.planDeTrabajoService.updateEvaluacionEstudiante(createEvaluacionEstudianteDto, usuario);
+  updateEvaluacionEstudiante(@Param('evaluacionId', new ParseUUIDPipe()) evaluacionId: string, @Body() createEvaluacionEstudianteDto: CreateEvaluacionEstudianteDto, @GetUser() usuario: Usuario) {
+    return this.planDeTrabajoService.updateEvaluacionEstudiante(evaluacionId, createEvaluacionEstudianteDto, usuario);
   }
 }
