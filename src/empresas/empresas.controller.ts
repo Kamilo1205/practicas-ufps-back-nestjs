@@ -113,7 +113,7 @@ export class EmpresasController {
     await this.empresasService.habilitarTutor(usuario.empresa.id, tutorId);
   }
 
-  @Post('subir-convenio')
+  @Post('w')
   @Roles(Rol.Empresa)
   @UseInterceptors(FileInterceptor('file'))
   subirConvenio(@UploadedFile() file: Express.Multer.File, @GetUser() usuario: Usuario){
