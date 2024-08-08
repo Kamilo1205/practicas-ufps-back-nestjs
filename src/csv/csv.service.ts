@@ -27,7 +27,8 @@ export class CsvService {
 
       if (usuario) {
         await this.usuariosService.update(usuario.id, { estaActivo: true });
-        await this.estudiantesService.agregarEstudianteASemestre(usuario.estudiante.id);
+        if (usuario.estudiante) await this.estudiantesService.agregarEstudianteASemestre(usuario.estudiante.id);
+        else await this.estudiantesService.createEstudiante(usuario, grupoPractica);
       } else {
         usuario = await this.usuariosService.createEstudiante(email);
         estudiante = await this.estudiantesService.createEstudiante(usuario, grupoPractica);

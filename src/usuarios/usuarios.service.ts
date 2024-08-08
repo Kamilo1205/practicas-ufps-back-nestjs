@@ -149,8 +149,7 @@ export class UsuariosService {
       email: email ? email.toLowerCase() : usuario.email,
       ...(hashedPassword && { password: hashedPassword }),  
     });
-    await this.usuariosRepository.save(usuarioActualizar);
-    return this.usuariosRepository.findOneBy({ id });
+    return await this.usuariosRepository.save(usuarioActualizar);
   }
 
   async updatePassword(email: string, password: string) {
