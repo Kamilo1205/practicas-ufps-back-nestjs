@@ -78,7 +78,7 @@ export class EmpresasController {
   }
 
   @Get()
-  @Roles(Rol.Coordinador, Rol.Administrador)
+  @Roles(Rol.Coordinador, Rol.Administrador, Rol.Director)
   findAll(@Paginate() query: PaginateQuery) {
     return this.empresasService.findAll(query);
   }
@@ -113,7 +113,7 @@ export class EmpresasController {
     await this.empresasService.habilitarTutor(usuario.empresa.id, tutorId);
   }
 
-  @Post('w')
+  @Post('subir-convenio')
   @Roles(Rol.Empresa)
   @UseInterceptors(FileInterceptor('file'))
   subirConvenio(@UploadedFile() file: Express.Multer.File, @GetUser() usuario: Usuario){
