@@ -32,7 +32,7 @@ export class AuthService {
   ) {}
 
   async crearUsuario(createUsuarioEmpresaDto: CreateUsuarioEmpresaDto) {
-    const rolNombre = createUsuarioEmpresaDto.email.endsWith('@ufps.edu.co') ? Rol.Dependencia : Rol.Empresa;
+    const rolNombre = Rol.Empresa;
     const rol = await this.rolesService.findOneByNombre(rolNombre);
 
     return this.usuariosService.create({
