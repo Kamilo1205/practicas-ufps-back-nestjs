@@ -4,14 +4,20 @@ import { Dependencia } from './entities/dependencia.entity';
 import { Repository } from 'typeorm';
 import { CreateDependencia } from './dto/create-dependencia.dto';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { UsuariosService } from 'src/usuarios/usuarios.service';
 
 @Injectable()
 export class DependenciasService {
-  constructor(@InjectRepository(Dependencia) private readonly dependenciaRepository: Repository<Dependencia>) {}
+  constructor(
+    @InjectRepository(Dependencia) private readonly dependenciaRepository: Repository<Dependencia>,
+    private readonly usuariosService: UsuariosService
+  ) {}
 
-  create(createDependencia: CreateDependencia, usuario: Usuario) {
+  async create(createDependencia: CreateDependencia, usuario: Usuario) {
     const dependencia = this.dependenciaRepository.create({ ...createDependencia, usuario });
-    return this.dependenciaRepository.save(dependencia);
+    const dependenciaGuardada = await this.dependenciaRepository.save(dependencia);
+    await this.usuariosService.update(usuario.id, { estaRegistrado: true });
+    return dependenciaGuardada;
   }
 
   findAll() {
