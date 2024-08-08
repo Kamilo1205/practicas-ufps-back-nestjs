@@ -1,7 +1,7 @@
 export enum Rol {
   Estudiante = 'estudiante',
   Coordinador = 'coordinador',
-  Director = 'director',
+  Director = 'director-programa',
   Empresa = 'empresa',
   Tutor = 'tutor',
   Administrador = 'administrador',
