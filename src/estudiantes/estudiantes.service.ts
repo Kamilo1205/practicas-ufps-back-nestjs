@@ -38,7 +38,6 @@ export class EstudiantesService {
   async createEstudiante(usuario: Usuario, grupoMatriculado: GrupoPractica) {
     const semestreActual = await this.semestreService.getSemestreActual();
     const estudiante = this.estudianteRepository.create({ 
-      id: usuario.id,
       usuario,
       grupoMatriculado,
       semestres: [semestreActual]
