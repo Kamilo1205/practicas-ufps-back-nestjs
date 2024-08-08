@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { parse } from 'csv-parse';
-import { Rol } from 'src/auth/enums';
 import { EstudiantesService } from 'src/estudiantes/estudiantes.service';
 import { GrupoPracticasService } from 'src/grupo-practicas/grupo-practicas.service';
-import { RolesService } from 'src/roles/roles.service';
-import { SemestreService } from 'src/semestre/semestre.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 
@@ -36,11 +33,13 @@ export class CsvService {
     const grupoPractica = await this.grupoPracticasService.findOne(grupoId);
     const emails = parsedData[0];
 
+    const errors = [];
+
     const promises = emails.map(async (email: string) => {
       try {
         let usuario: Usuario = await this.usuariosService.findOneByEmail(email);
         let estudiante = null;
-  
+
         if (usuario) {
           await this.usuariosService.update(usuario.id, { estaActivo: true });
           await this.estudiantesService.agregarEstudianteASemestre(usuario.estudiante.id);
@@ -48,11 +47,15 @@ export class CsvService {
           usuario = await this.usuariosService.createEstudiante(email);
           estudiante = await this.estudiantesService.createEstudiante(usuario, grupoPractica);
         }
-      } catch(error) {
-        console.log(error);
+      } catch (error) {
+        errors.push({ email, error: error.message });
       }
     });
 
     await Promise.all(promises);
+
+    if (errors.length > 0) {
+      console.log(`Errors occurred while processing CSV: ${JSON.stringify(errors)}`);
+    }
   }
 }
