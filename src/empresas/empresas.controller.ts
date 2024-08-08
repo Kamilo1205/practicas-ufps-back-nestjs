@@ -113,10 +113,10 @@ export class EmpresasController {
     await this.empresasService.habilitarTutor(usuario.empresa.id, tutorId);
   }
 
-  @Post('subir-convenio')
-  @Roles(Rol.Empresa)
+  @Post(':id/subir-convenio')
+  @Roles(Rol.Director, Rol.Administrador, Rol.Coordinador)
   @UseInterceptors(FileInterceptor('file'))
-  subirConvenio(@UploadedFile() file: Express.Multer.File, @GetUser() usuario: Usuario){
-    return this.empresasService.subirConvenio(usuario.empresa.id, file);
+  subirConvenio(@Param('id', new ParseUUIDPipe()) id: string, @UploadedFile() file: Express.Multer.File, @GetUser() usuario: Usuario){
+    return this.empresasService.subirConvenio(id, file);
   }
 }
