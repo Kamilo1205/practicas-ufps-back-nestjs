@@ -67,6 +67,7 @@ export class GoogleDriveService {
 
       return response.data.id;
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException('No se pudo crear o reemplazar el archivo en Google Drive.');
     }
   }
