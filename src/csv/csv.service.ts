@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { parse } from 'csv-parse';
+import { parse } from 'papaparse';
+
 import { EstudiantesService } from 'src/estudiantes/estudiantes.service';
 import { GrupoPracticasService } from 'src/grupo-practicas/grupo-practicas.service';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
@@ -14,25 +15,11 @@ export class CsvService {
   ) {}
 
   async readCsvFile(grupoId: string, file: Express.Multer.File) {
-    const csvContent: Buffer = file.buffer;
-    const parsedData: any = await new Promise((resolve, reject) => {
-      parse(
-        csvContent, {
-          columns: false,          // Mantén esto en false si no hay encabezados
-          relax_quotes: true,      // Permite comillas flexibles
-          skip_empty_lines: true,  // Omite líneas vacías
-          trim: true               // Recorta espacios en blanco alrededor de las entradas
-        }, (err, records) => {
-        if (err) { 
-          return reject(err);
-        }
-        resolve(records);
-      });
-    });
-    
+    const csvContent: string = file.buffer.toString();
+    const result = parse(csvContent, { header: false });
+    const emails = [...new Set(result.data.map((row: string[]) => row[0]))]; 
+
     const grupoPractica = await this.grupoPracticasService.findOne(grupoId);
-    const emails = parsedData[0];
-    console.log(emails);
 
     const promises = emails.map(async (email: string) => {
       let usuario: Usuario = await this.usuariosService.findOneByEmail(email);
