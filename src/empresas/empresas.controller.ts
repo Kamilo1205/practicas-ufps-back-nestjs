@@ -106,4 +106,10 @@ export class EmpresasController {
   async deshabilitarTutor(@Param('tutorId', new ParseUUIDPipe()) tutorId: string, @GetUser() usuario: Usuario): Promise<void> {
     await this.empresasService.deshabilitarTutor(usuario.empresa.id, tutorId);
   }
+
+  @Patch('habilitar-tutor/:tutorId')
+  @Roles(Rol.Empresa)
+  async habilitarTutor(@Param('tutorId', new ParseUUIDPipe()) tutorId: string, @GetUser() usuario: Usuario): Promise<void> {
+    await this.empresasService.habilitarTutor(usuario.empresa.id, tutorId);
+  }
 }

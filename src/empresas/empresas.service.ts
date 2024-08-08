@@ -172,10 +172,18 @@ export class EmpresasService {
   }
 
   async deshabilitarTutor(empresaId: string, tutorId: string) {
-    const empresa = await this.empresasRepository.findOne({ where: { id: empresaId }, relations: ['tutores']});
+    const empresa = await this.empresasRepository.findOne({ where: { id: empresaId }, relations: ['tutores', 'tutores.usuario']});
     
     const tutor = empresa.tutores.find(t => t.id === tutorId);
     if (!tutor) throw new UnauthorizedException('El tutor no pertenece a esta empresa');
-    await this.usuariosService.update(tutorId, { estaActivo: false });
+    await this.usuariosService.update(tutor.usuario.id, { estaActivo: false });
+  }
+
+  async habilitarTutor(empresaId: string, tutorId: string) {
+    const empresa = await this.empresasRepository.findOne({ where: { id: empresaId }, relations: ['tutores', 'tutores.usuario']});
+    
+    const tutor = empresa.tutores.find(t => t.id === tutorId);
+    if (!tutor) throw new UnauthorizedException('El tutor no pertenece a esta empresa');
+    await this.usuariosService.update(tutor.usuario.id, { estaActivo: true });
   }
 }
