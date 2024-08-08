@@ -186,4 +186,10 @@ export class EmpresasService {
     if (!tutor) throw new UnauthorizedException('El tutor no pertenece a esta empresa');
     await this.usuariosService.update(tutor.usuario.id, { estaActivo: true });
   }
+
+  async subirConvenio(empresaId: string, file: Express.Multer.File) {
+    const empresa = await this.empresasRepository.findOne({ where: { id: empresaId } });
+    const convenioUrl = await this.googleDriveService.uploadAndReplaceFile(`Convenio`, [empresa.googleDriveFolderId], file[0]);
+    return this.empresasRepository.save({ ...empresa, convenioActivo: true, convenioUrl });
+  }
 }

@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, ParseUUIDPipe } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, ParseUUIDPipe, UploadedFile } from '@nestjs/common';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { EmpresasService } from './empresas.service';
 import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
 import { GetUser, Roles } from 'src/auth/decorators';
@@ -111,5 +111,12 @@ export class EmpresasController {
   @Roles(Rol.Empresa)
   async habilitarTutor(@Param('tutorId', new ParseUUIDPipe()) tutorId: string, @GetUser() usuario: Usuario): Promise<void> {
     await this.empresasService.habilitarTutor(usuario.empresa.id, tutorId);
+  }
+
+  @Post('subir-convenio')
+  @Roles(Rol.Empresa)
+  @UseInterceptors(FileInterceptor('file'))
+  subirConvenio(@UploadedFile() file: Express.Multer.File, @GetUser() usuario: Usuario){
+    return this.empresasService.subirConvenio(usuario.empresa.id, file);
   }
 }

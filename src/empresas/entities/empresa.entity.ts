@@ -36,6 +36,9 @@ export class Empresa extends BaseEntity {
   @Column({ nullable: true })
   soilicitudConvenioUrl: string;
 
+  @Column({ nullable: true })
+  convenioUrl: string;
+
   @Column({ default: false })
   convenioActivo: boolean;
 
